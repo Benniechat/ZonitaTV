@@ -2,12 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\Zonita\GenerateChannelReports;
+use App\Jobs\Zonita\MonitorScheduleHealth;
+use App\Jobs\Zonita\ProcessPlaybackFailure;
 use App\Models\Category;
 use App\Models\Channel;
 use App\Models\ChannelSourceRule;
 use App\Models\ContentRight;
+use App\Models\PlaybackFailure;
+use App\Models\ScheduleEntry;
+use App\Models\SystemAlert;
 use App\Models\Video;
 use App\Services\Zonita\ChannelRelevanceService;
+use App\Services\Zonita\ChannelReserveService;
 use App\Services\Zonita\ContentRotationService;
 use App\Services\Zonita\PlaybackContinuityService;
 use App\Services\Zonita\ProgrammeScheduleService;
@@ -295,5 +302,89 @@ class ZonitaProgrammingEngineTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Zonita Football Test');
         $response->assertSee('Programme Guide');
+    }
+
+    public function test_monitor_schedule_health_detects_low_reserve_and_alerts(): void
+    {
+        // Channel has min_reserve_count = 3, but no eligible videos in sports
+        $job = new MonitorScheduleHealth($this->footballChannel, minFutureHours: 24, minReserveCount: 3);
+        $job->handle(app(ChannelReserveService::class));
+
+        $this->assertDatabaseHas('system_alerts', [
+            'channel_id' => $this->footballChannel->id,
+            'alert_type' => 'low_reserve',
+            'level' => 'critical',
+        ]);
+    }
+
+    public function test_process_playback_failure_creates_stream_degraded_alert_on_frequency(): void
+    {
+        $video = Video::create([
+            'youtube_id' => 'FAILTEST01',
+            'title' => 'Failing Video',
+            'is_embeddable' => true,
+            'availability_status' => 'approved',
+            'confidence_score' => 100,
+            'category_slug' => 'sports',
+            'duration_seconds' => 1200,
+        ]);
+
+        // Dispatch 5 failure jobs
+        for ($i = 0; $i < 5; $i++) {
+            $job = new ProcessPlaybackFailure(
+                channelId: $this->footballChannel->id,
+                youtubeId: 'FAILTEST01',
+                errorCode: '150'
+            );
+            $job->handle(app(\App\Services\Zonita\PlaybackContinuityService::class));
+        }
+
+        $this->assertDatabaseHas('system_alerts', [
+            'channel_id' => $this->footballChannel->id,
+            'alert_type' => 'stream_degraded',
+            'level' => 'critical',
+        ]);
+    }
+
+    public function test_generate_channel_reports_aggregates_metrics(): void
+    {
+        $job = new GenerateChannelReports($this->footballChannel, lookbackHours: 24);
+        $reports = $job->handle(app(ChannelReserveService::class));
+
+        $this->assertArrayHasKey($this->footballChannel->slug, $reports);
+        $this->assertSame($this->footballChannel->id, $reports[$this->footballChannel->slug]['channel_id']);
+        $this->assertArrayHasKey('uptime_percentage', $reports[$this->footballChannel->slug]);
+    }
+
+    public function test_admin_broadcasting_management_interface(): void
+    {
+        $response = $this->get(route('admin.broadcasting.index'));
+        $response->assertStatus(200);
+        $response->assertSee('24/7 Virtual Broadcasting Network');
+        $response->assertSee($this->footballChannel->name);
+
+        $rulesResponse = $this->get(route('admin.broadcasting.rules.edit', $this->footballChannel));
+        $rulesResponse->assertStatus(200);
+        $rulesResponse->assertSee('Programming Rules: '.$this->footballChannel->name);
+
+        $updateResponse = $this->post(route('admin.broadcasting.rules.update', $this->footballChannel), [
+            'search_keywords' => 'Updated Football, Soccer Highlights',
+            'excluded_keywords' => 'gaming, esports',
+            'approved_publishers' => 'UEFA, FIFA',
+            'min_duration_minutes' => 10,
+            'max_duration_minutes' => 90,
+            'repeat_cooldown_hours' => 12,
+            'min_reserve_count' => 6,
+            'scheduling_mode' => 'continuous',
+            'timezone' => 'Africa/Lagos',
+        ]);
+
+        $updateResponse->assertRedirect(route('admin.broadcasting.index'));
+        $this->assertDatabaseHas('channel_source_rules', [
+            'channel_id' => $this->footballChannel->id,
+            'min_duration_minutes' => 10,
+            'repeat_cooldown_hours' => 12,
+            'scheduling_mode' => 'continuous',
+        ]);
     }
 }
