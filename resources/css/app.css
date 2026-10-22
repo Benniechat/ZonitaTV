@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+@source '../views/**/*.blade.php';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --color-zoniva-red: #e50914;
+    --color-zoniva-dark: #0f1115;
+    --color-zoniva-card: #181b20;
+    --color-zoniva-border: #282d37;
+}
+
+body {
+    background-color: #0b0d10;
+    color: #e2e8f0;
+}
