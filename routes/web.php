@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BroadcastingAdminController;
 use App\Http\Controllers\Admin\ChannelAdminController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
@@ -50,6 +51,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Channels
     Route::resource('channels', ChannelAdminController::class);
+
+    // 24/7 Virtual Broadcasting Engine
+    Route::prefix('broadcasting')->name('broadcasting.')->group(function () {
+        Route::get('/', [BroadcastingAdminController::class, 'index'])->name('index');
+        Route::post('/regenerate/{channel}', [BroadcastingAdminController::class, 'regenerateSchedule'])->name('regenerate');
+        Route::post('/reverify', [BroadcastingAdminController::class, 'reverifyVideos'])->name('reverify');
+        Route::post('/alert/{alert}/resolve', [BroadcastingAdminController::class, 'resolveAlert'])->name('resolve-alert');
+        Route::get('/rules/{channel}', [BroadcastingAdminController::class, 'editRule'])->name('rules.edit');
+        Route::post('/rules/{channel}', [BroadcastingAdminController::class, 'updateRule'])->name('rules.update');
+    });
 
     // Rights & Permissions
     Route::get('rights', [RightsAdminController::class, 'index'])->name('rights.index');
