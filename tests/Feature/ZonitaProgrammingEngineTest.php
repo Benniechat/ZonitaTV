@@ -9,9 +9,6 @@ use App\Models\Category;
 use App\Models\Channel;
 use App\Models\ChannelSourceRule;
 use App\Models\ContentRight;
-use App\Models\PlaybackFailure;
-use App\Models\ScheduleEntry;
-use App\Models\SystemAlert;
 use App\Models\Video;
 use App\Services\Zonita\ChannelRelevanceService;
 use App\Services\Zonita\ChannelReserveService;
@@ -336,7 +333,7 @@ class ZonitaProgrammingEngineTest extends TestCase
                 youtubeId: 'FAILTEST01',
                 errorCode: '150'
             );
-            $job->handle(app(\App\Services\Zonita\PlaybackContinuityService::class));
+            $job->handle(app(PlaybackContinuityService::class));
         }
 
         $this->assertDatabaseHas('system_alerts', [
