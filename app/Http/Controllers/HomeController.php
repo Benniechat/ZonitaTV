@@ -277,7 +277,7 @@ class HomeController extends Controller
             'created_at' => now(),
         ]);
 
-        $officialWhatsAppChannelUrl = config('services.whatsapp.channel_url', 'https://whatsapp.com/channel/zonivatv');
+        $officialWhatsAppChannelUrl = config('services.whatsapp.channel_url', 'https://whatsapp.com/channel/0029VbDeFOLCHDycVG6zZz3z');
 
         return redirect()->away($officialWhatsAppChannelUrl);
     }

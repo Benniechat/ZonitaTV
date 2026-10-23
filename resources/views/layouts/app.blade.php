@@ -80,6 +80,12 @@
                         </div>
                     </div>
 
+                    <!-- WhatsApp Channel Pill -->
+                    <a href="{{ route('wa.join') }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5 fill-current text-emerald-400" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/></svg>
+                        WhatsApp
+                    </a>
+
                     <!-- Admin Portal Pill -->
                     <a href="{{ route('admin.dashboard') }}" class="hidden md:inline-flex items-center px-3 py-1.5 text-xs text-gray-400 hover:text-white border border-gray-800 rounded-lg hover:border-gray-700 transition">
                         Admin
@@ -120,6 +126,10 @@
                     <a href="{{ route('pages.terms') }}" class="hover:text-white transition">Terms</a>
                     <a href="{{ route('guide.index') }}" class="hover:text-white transition">TV Guide</a>
                     <a href="{{ route('channels.index') }}" class="hover:text-white transition">Channels</a>
+                    <a href="{{ route('wa.join') }}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 font-medium transition flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/></svg>
+                        WhatsApp Channel
+                    </a>
                 </div>
             </div>
             <div class="pt-6 text-center md:text-left text-gray-500 text-[11px] flex flex-col md:flex-row items-center justify-between gap-2">

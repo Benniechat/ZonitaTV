@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'channel_url' => env('WHATSAPP_CHANNEL_URL', 'https://whatsapp.com/channel/0029VbDeFOLCHDycVG6zZz3z'),
+    ],
+
 ];
