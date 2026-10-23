@@ -1,6 +1,6 @@
 -- ================================================================
 -- ZONIVA TV ENTERPRISE MASTER DATABASE DUMP
--- Generated: 2026-10-22T17:16:08+00:00
+-- Generated: 2026-10-23T22:15:55+00:00
 -- RDBMS Target: MySQL 8.0+ / SQLite 3.35+
 -- Prepared with parameterized data isolation & SQL injection immunity
 -- ================================================================
@@ -9,7 +9,7 @@
 -- Table: users
 -- ----------------------------------------------------------------
 -- Records count: 1
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `role`) VALUES (1, 'Zoniva Administrator', 'admin@zonivatv.com', NULL, '$2y$12$Pas6o0pA6hYIOyNtPrVVS.Xkl0vUNFfruDM1OU8/jccxCzYKtNE4O', NULL, '2026-10-17 17:02:46', '2026-10-18 09:07:41', 'super_admin');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `role`, `google_id`, `avatar`) VALUES (1, 'Zoniva Administrator', 'admin@zonivatv.com', NULL, '$2y$12$Pas6o0pA6hYIOyNtPrVVS.Xkl0vUNFfruDM1OU8/jccxCzYKtNE4O', NULL, '2026-10-17 17:02:46', '2026-10-18 09:07:41', 'super_admin', NULL, NULL);
 
 -- ----------------------------------------------------------------
 -- Table: categories
@@ -6009,7 +6009,7 @@ INSERT INTO `programmes` (`id`, `channel_id`, `category_id`, `title`, `slug`, `d
 -- ----------------------------------------------------------------
 -- Table: viewing_events
 -- ----------------------------------------------------------------
--- Records count: 121
+-- Records count: 129
 INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (1, NULL, 1, 'M3u6q5oUxMA3ZqoZb16oBkPX2y1oULVjOVfMQMqF', 'page_view', 'NGA', '2026-10-17 17:27:36');
 INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (2, NULL, 7, '9tTjoDFWGBKidLQXJDCNHOLNuN7dYvOYDlJaJXMW', 'page_view', 'NGA', '2026-10-17 17:29:12');
 INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (3, NULL, 1, '9tTjoDFWGBKidLQXJDCNHOLNuN7dYvOYDlJaJXMW', 'page_view', 'NGA', '2026-10-17 17:30:19');
@@ -6131,6 +6131,14 @@ INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `even
 INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (119, NULL, 61, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 16:13:00');
 INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (120, NULL, 23, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 16:31:36');
 INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (121, NULL, 76, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 16:32:12');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (122, NULL, 82, 'M4qw5x3auYpHLQ8VFFFeju9y86u3kL0KDD2vR4kF', 'page_view', 'NGA', '2026-10-22 17:17:15');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (123, NULL, 75, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:18:21');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (124, NULL, 75, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:18:43');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (125, NULL, 68, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:19:40');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (126, NULL, 62, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:22:50');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (127, NULL, 71, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:24:58');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (128, NULL, 58, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:25:19');
+INSERT INTO `viewing_events` (`id`, `user_id`, `channel_id`, `session_id`, `event_type`, `ip_country`, `created_at`) VALUES (129, NULL, 74, 'lezVzFqYWfBuyPpRQpJcQMJL5Qfvzd9i2Gu3TVaP', 'page_view', 'NGA', '2026-10-22 17:39:28');
 
 -- ----------------------------------------------------------------
 -- Table: stream_checks
