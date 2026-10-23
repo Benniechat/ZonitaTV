@@ -9,6 +9,7 @@ use App\Models\ContentRight;
 use App\Models\Programme;
 use App\Models\User;
 use App\Services\EpgSyncService;
+use App\Services\Zonita\ChannelProgrammingEngine;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -429,5 +430,8 @@ class DatabaseSeeder extends Seeder
 
         // 5. Generate continuous EPG for all channels
         app(EpgSyncService::class)->generateDynamicSchedulesForAllChannels();
+
+        // 6. Deploy Zonita 24/7 Virtual Playout Network & Rolling Schedules
+        app(ChannelProgrammingEngine::class)->deployPilotNetwork();
     }
 }

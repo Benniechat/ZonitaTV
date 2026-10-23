@@ -39,6 +39,13 @@ php artisan storage:link --no-interaction || true
 echo "==> Running database migrations..."
 php artisan migrate --force --no-interaction || true
 
+# If database has no channels (e.g. fresh Supabase PostgreSQL), seed initial catalogue
+CHANNEL_COUNT=$(php artisan tinker --execute 'echo \App\Models\Channel::count();' 2>/dev/null || echo "0")
+if [ "$CHANNEL_COUNT" = "0" ]; then
+    echo "==> Fresh database detected. Seeding full channel catalogue and 24/7 schedules..."
+    php artisan db:seed --force --no-interaction || true
+fi
+
 # Production optimizations caching
 if [ "${APP_ENV:-production}" = "production" ]; then
     echo "==> Optimizing configuration, route, and view caches..."

@@ -55,6 +55,43 @@ If you prefer to configure the Web Service manually via Render's dashboard:
 
 ---
 
+## Using Supabase as the Database (Recommended for Production)
+
+**Yes, absolutely!** Supabase provides a cloud-hosted, high-performance PostgreSQL database that works natively with Laravel. It solves Render's ephemeral disk limitation completely for free.
+
+### 1. Retrieve Your Supabase Database Credentials
+1. Go to your [Supabase Dashboard](https://supabase.com/dashboard) and open your project.
+2. Navigate to **Project Settings** (gear icon) &rarr; **Database**.
+3. Under **Connection string**, select **URI** or **Parameters**.
+   - Note: Choose **Session mode (port 5432)** or direct connection (port 5432).
+
+### 2. Configure Environment Variables in Render
+In your Render Web Service dashboard, set:
+
+#### Option A: Individual Variables
+| Key | Value | Example |
+|---|---|---|
+| `DB_CONNECTION` | `pgsql` | `pgsql` |
+| `DB_HOST` | `aws-0-[region].pooler.supabase.com` | `aws-0-eu-central-1.pooler.supabase.com` |
+| `DB_PORT` | `5432` | `5432` |
+| `DB_DATABASE` | `postgres` | `postgres` |
+| `DB_USERNAME` | `postgres.[project-ref]` | `postgres.abcdefghijklm` |
+| `DB_PASSWORD` | *(Your Supabase DB Password)* | `YourSecretPassword123!` |
+| `DB_SSLMODE` | `require` | `require` |
+
+#### Option B: Single Connection URL
+Alternatively, simply set:
+- **`DB_CONNECTION`**: `pgsql`
+- **`DATABASE_URL`**: `postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres?sslmode=require`
+
+### 3. Automatic Schema & Data Seeding
+When your Render container starts, the startup script automatically:
+1. Connects to Supabase over SSL (`pdo_pgsql`).
+2. Runs all database migrations (`php artisan migrate --force`).
+3. If the database is fresh, automatically seeds the 50 channels and 5 Zonita 24/7 virtual broadcasting stations with their 7-day rolling schedules!
+
+---
+
 ## Database Persistence
 
 - **Using SQLite (Default)**:
