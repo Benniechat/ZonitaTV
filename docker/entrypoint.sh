@@ -77,13 +77,19 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAI
     fi
 fi
 
+# Enforce HTTPS scheme on APP_URL for production
+if [ -n "$APP_URL" ] && [ "${APP_URL#http://}" != "$APP_URL" ]; then
+    APP_URL="https://${APP_URL#http://}"
+fi
+APP_URL="${APP_URL:-https://zonitatv.onrender.com}"
+
 # Write runtime .env file so PHP-FPM workers read the active configuration
 cat <<EOF > /var/www/html/.env
 APP_NAME="${APP_NAME:-Zonita TV}"
 APP_ENV="${APP_ENV:-production}"
 APP_KEY="${APP_KEY}"
 APP_DEBUG="${APP_DEBUG:-false}"
-APP_URL="${APP_URL:-http://localhost}"
+APP_URL="${APP_URL}"
 
 LOG_CHANNEL=stderr
 LOG_LEVEL=info
