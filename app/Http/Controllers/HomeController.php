@@ -42,7 +42,7 @@ class HomeController extends Controller
 
         // Calculate time remaining for live items
         $liveTrending->transform(function ($prog) use ($now) {
-            $diffMins = max(10, $now->diffInMinutes($prog->end_time, false));
+            $diffMins = (int) max(10, $now->diffInMinutes($prog->end_time, false));
             $hours = intdiv($diffMins, 60);
             $mins = $diffMins % 60;
             $prog->time_left_str = ($hours > 0 ? "{$hours}h " : '')."{$mins}m left";
