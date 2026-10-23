@@ -268,14 +268,21 @@ class HomeController extends Controller
 
     public function whatsappRedirect(Request $request)
     {
-        ViewingEvent::create([
-            'user_id' => $request->user()?->id,
-            'channel_id' => null,
-            'session_id' => $request->session()->getId(),
-            'event_type' => 'destination_click',
-            'ip_country' => $request->header('CF-IPCountry', 'NGA'),
-            'created_at' => now(),
-        ]);
+        try {
+            $channelId = Channel::first()?->id;
+            if ($channelId) {
+                ViewingEvent::create([
+                    'user_id' => $request->user()?->id,
+                    'channel_id' => $channelId,
+                    'session_id' => $request->session()->getId(),
+                    'event_type' => 'destination_click',
+                    'ip_country' => $request->header('CF-IPCountry', 'NGA'),
+                    'created_at' => now(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Telemetry failure should never block external redirect
+        }
 
         $officialWhatsAppChannelUrl = config('services.whatsapp.channel_url', 'https://whatsapp.com/channel/0029VbDeFOLCHDycVG6zZz3z');
 

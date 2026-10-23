@@ -384,4 +384,10 @@ class ZonitaProgrammingEngineTest extends TestCase
             'scheduling_mode' => 'continuous',
         ]);
     }
+
+    public function test_whatsapp_channel_redirect(): void
+    {
+        $response = $this->get('/wa/join');
+        $response->assertRedirect('https://whatsapp.com/channel/0029VbDeFOLCHDycVG6zZz3z');
+    }
 }
