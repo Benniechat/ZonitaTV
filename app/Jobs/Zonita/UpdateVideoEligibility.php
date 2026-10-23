@@ -33,14 +33,14 @@ class UpdateVideoEligibility implements ShouldQueue
                         ->orWhere('last_verified_at', '<', $staleThreshold);
                 });
         })
-        ->orWhere(function ($query) {
-            $query->whereNotNull('cooldown_until')
-                ->where('cooldown_until', '<=', Carbon::now());
-        })
-        ->limit($this->batchLimit)
-        ->get();
+            ->orWhere(function ($query) {
+                $query->whereNotNull('cooldown_until')
+                    ->where('cooldown_until', '<=', Carbon::now());
+            })
+            ->limit($this->batchLimit)
+            ->get();
 
-        Log::info("Starting video eligibility reverification batch of {$videos->count()} videos (forced: " . ($this->force ? 'yes' : 'no') . ')');
+        Log::info("Starting video eligibility reverification batch of {$videos->count()} videos (forced: ".($this->force ? 'yes' : 'no').')');
 
         $verifiedCount = 0;
         $failedCount = 0;
@@ -52,7 +52,7 @@ class UpdateVideoEligibility implements ShouldQueue
                 $verifiedCount++;
             } else {
                 $failedCount++;
-                Log::warning("Video [{$video->youtube_id}] marked non-approved during eligibility sweep: " . ($result['status'] ?? 'unknown'));
+                Log::warning("Video [{$video->youtube_id}] marked non-approved during eligibility sweep: ".($result['status'] ?? 'unknown'));
             }
         }
 
