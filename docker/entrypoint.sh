@@ -78,8 +78,12 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAI
 fi
 
 # Enforce HTTPS scheme on APP_URL for production
-if [ -n "$APP_URL" ] && [ "${APP_URL#http://}" != "$APP_URL" ]; then
-    APP_URL="https://${APP_URL#http://}"
+if [ -n "$APP_URL" ]; then
+    if [ "${APP_URL#http://}" != "$APP_URL" ]; then
+        APP_URL="https://${APP_URL#http://}"
+    elif [ "${APP_URL#https://}" = "$APP_URL" ]; then
+        APP_URL="https://${APP_URL}"
+    fi
 fi
 APP_URL="${APP_URL:-https://zonitatv.onrender.com}"
 
