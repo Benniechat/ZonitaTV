@@ -13,33 +13,71 @@ mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
 mkdir -p /var/www/html/storage/logs
 mkdir -p /var/www/html/bootstrap/cache
-
-# SQLite setup if DB_CONNECTION is sqlite
-if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
-    DB_PATH="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
-    mkdir -p "$(dirname "$DB_PATH")"
-    if [ ! -f "$DB_PATH" ]; then
-        echo "==> Creating SQLite database at ${DB_PATH}..."
-        touch "$DB_PATH"
-        if [ -f "/var/www/html/database/zoniva_master_schema_and_data.sql" ]; then
-            echo "==> Seeding initial master catalogue from database/zoniva_master_schema_and_data.sql..."
-            sqlite3 "$DB_PATH" < /var/www/html/database/zoniva_master_schema_and_data.sql || true
-        fi
-    fi
-    chown -R www-data:www-data "$(dirname "$DB_PATH")"
-    chmod 664 "$DB_PATH" || true
-fi
-
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Ensure APP_KEY exists. If missing, generate one automatically so app never fails with 500
+if [ -z "$APP_KEY" ]; then
+    echo "==> No APP_KEY provided in environment. Generating application key..."
+    APP_KEY=$(php artisan key:generate --show --no-interaction)
+    export APP_KEY="$APP_KEY"
+    echo "==> Generated APP_KEY=${APP_KEY}"
+fi
 
 # Ensure storage symlink exists
 php artisan storage:link --no-interaction || true
+
+# Test database connection
+echo "==> Testing database connection (${DB_CONNECTION:-sqlite})..."
+DB_STATUS=$(php -r '
+try {
+    require __DIR__."/vendor/autoload.php";
+    $app = require_once __DIR__."/bootstrap/app.php";
+    $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+    $kernel->bootstrap();
+    \Illuminate\Support\Facades\DB::connection()->getPdo();
+    echo "OK";
+} catch (\Throwable $e) {
+    echo "FAIL: " . $e->getMessage();
+}
+' 2>/dev/null || echo "FAIL: Unknown error")
+
+echo "==> Database check result: ${DB_STATUS}"
+
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAIL"; then
+    if echo "$DB_STATUS" | grep -q "FAIL"; then
+        echo "==> Database connection failed with: ${DB_STATUS}"
+        if [ "${DB_CONNECTION}" = "pgsql" ]; then
+            echo "==> Notice: Direct Supabase hostname (db.*.supabase.co) is IPv6-only."
+            echo "==> If Render cannot route IPv6, use Supabase Connection Pooler: aws-0-[region].pooler.supabase.com:5432"
+            echo "==> Falling back to local SQLite to keep web service alive..."
+            export DB_CONNECTION=sqlite
+            export DB_DATABASE=/var/www/html/database/database.sqlite
+        fi
+    fi
+
+    # Initialize SQLite if used as primary or fallback
+    if [ "${DB_CONNECTION}" = "sqlite" ]; then
+        DB_PATH="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
+        mkdir -p "$(dirname "$DB_PATH")"
+        if [ ! -f "$DB_PATH" ]; then
+            echo "==> Initializing SQLite database at ${DB_PATH}..."
+            touch "$DB_PATH"
+            if [ -f "/var/www/html/database/zoniva_master_schema_and_data.sql" ]; then
+                echo "==> Populating master catalogue from database/zoniva_master_schema_and_data.sql..."
+                sqlite3 "$DB_PATH" < /var/www/html/database/zoniva_master_schema_and_data.sql || true
+            fi
+        fi
+        chown -R www-data:www-data "$(dirname "$DB_PATH")"
+        chmod 664 "$DB_PATH" || true
+    fi
+fi
 
 # Run migrations
 echo "==> Running database migrations..."
 php artisan migrate --force --no-interaction || true
 
-# If database has no channels (e.g. fresh Supabase PostgreSQL), seed initial catalogue
+# Seed database if channels are empty
 CHANNEL_COUNT=$(php artisan tinker --execute 'echo \App\Models\Channel::count();' 2>/dev/null || echo "0")
 if [ "$CHANNEL_COUNT" = "0" ]; then
     echo "==> Fresh database detected. Seeding full channel catalogue and 24/7 schedules..."
