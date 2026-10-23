@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: zonivatv
+    name: zonitatv
     env: docker
     dockerfilePath: Dockerfile
     plan: free
@@ -19,7 +19,7 @@ services:
       - key: APP_URL
         fromService:
           type: web
-          name: zonivatv
+          name: zonitatv
           property: host
       - key: DB_CONNECTION
         value: sqlite

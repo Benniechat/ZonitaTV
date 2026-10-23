@@ -13,13 +13,13 @@ Because the project includes [`render.yaml`](./render.yaml) and a production [`D
 
 2. **Create New Blueprint Instance**:
    - Click **New +** in the top navigation bar and select **Blueprint**.
-   - Connect your GitHub repository: `Benniechat/ZonivaTV`.
+   - Connect your GitHub repository: `Benniechat/ZonitaTV`.
    - Render will detect the `render.yaml` configuration automatically.
 
 3. **Deploy**:
-   - Give the instance a name (e.g. `zonivatv`).
+   - Give the instance a name (e.g. `zonitatv`).
    - Click **Apply**.
-   - Render will build the Docker container (compiling Vite assets and setting up PHP 8.3 + Nginx) and boot your application on your custom Render subdomain (`https://zonivatv.onrender.com`).
+   - Render will build the Docker container (compiling Vite assets and setting up PHP 8.3 + Nginx) and boot your application on your custom Render subdomain (`https://zonitatv.onrender.com`).
 
 ---
 
@@ -29,9 +29,9 @@ If you prefer to configure the Web Service manually via Render's dashboard:
 
 1. Click **New +** > **Web Service**.
 2. Select **Build and deploy from a Git repository**.
-3. Choose your repository: `Benniechat/ZonivaTV`.
+3. Choose your repository: `Benniechat/ZonitaTV`.
 4. Configure the service settings:
-   - **Name**: `zonivatv`
+   - **Name**: `zonitatv`
    - **Region**: Choose the closest region to your primary audience (e.g., Frankfurt or Oregon).
    - **Runtime**: Select **Docker**.
    - **Instance Type**: **Free** (or Starter for persistent disks / high traffic).
@@ -44,7 +44,7 @@ If you prefer to configure the Web Service manually via Render's dashboard:
    | `APP_ENV` | `production` | Production Environment |
    | `APP_DEBUG` | `false` | Disable debug backtraces |
    | `APP_KEY` | *(Generate in Render or run `php artisan key:generate --show`)* | 32-character encryption key |
-   | `APP_URL` | `https://zonivatv.onrender.com` | Your Render URL |
+   | `APP_URL` | `https://zonitatv.onrender.com` | Your Render URL |
    | `DB_CONNECTION` | `sqlite` | Database engine |
    | `DB_DATABASE` | `/var/www/html/database/database.sqlite` | SQLite database file path |
    | `SESSION_DRIVER` | `cookie` | Stateful cookie sessions |
