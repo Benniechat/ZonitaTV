@@ -49,7 +49,7 @@ class MonitorScheduleHealth implements ShouldQueue
         $isScheduleLow = ! $maxScheduledEnd || Carbon::parse($maxScheduledEnd, $timezone)->lessThan($thresholdTime);
 
         if ($isScheduleLow) {
-            Log::warning("Low schedule threshold detected on channel [{$channel->slug}]. Future end: " . ($maxScheduledEnd ?? 'none'));
+            Log::warning("Low schedule threshold detected on channel [{$channel->slug}]. Future end: ".($maxScheduledEnd ?? 'none'));
 
             $existingAlert = SystemAlert::where('channel_id', $channel->id)
                 ->where('alert_type', 'low_schedule')

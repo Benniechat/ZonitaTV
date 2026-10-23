@@ -112,8 +112,12 @@
                                                 }
                                             });
                                         },
+                                        isHolding: false,
+                                        holdingMessage: 'Preparing your next programme...',
                                         handleStreamError(event) {
                                             console.warn('Playback error code:', event.data, 'Requesting verified reserve replacement from Zonita Engine...');
+                                            this.isHolding = true;
+                                            this.holdingMessage = 'Preparing your next programme...';
                                             const prog = this.currentProg();
                                             fetch('/api/playback/report-failure', {
                                                 method: 'POST',
@@ -129,6 +133,7 @@
                                             })
                                             .then(r => r.json())
                                             .then(data => {
+                                                this.isHolding = false;
                                                 if (data.status === 'recovered' && data.replacement) {
                                                     console.log('Zonita Engine deployed reserve replacement:', data.replacement.video_id);
                                                     this.playlist[this.currentIndex] = data.replacement;
@@ -143,6 +148,7 @@
                                                 }
                                             })
                                             .catch(err => {
+                                                this.isHolding = false;
                                                 console.error('Engine communication error, auto-advancing to next scheduled programme:', err);
                                                 this.playNext();
                                             });
@@ -179,6 +185,16 @@
                                     <!-- YouTube Playout Container -->
                                     <div class="relative w-full h-full pointer-events-auto">
                                         <div id="linear-yt-frame" class="absolute inset-0 w-full h-full scale-[1.02] transform origin-center"></div>
+
+                                        <!-- Holding Screen Overlay -->
+                                        <div x-show="isHolding" x-cloak class="absolute inset-0 bg-black/95 z-30 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md">
+                                            <div class="w-12 h-12 mb-4 relative flex items-center justify-center">
+                                                <div class="absolute inset-0 rounded-full border-2 border-red-600 border-t-transparent animate-spin"></div>
+                                                <img src="{{ asset($channel->logo_path) }}" class="w-6 h-6 object-contain">
+                                            </div>
+                                            <div class="text-sm font-bold text-white mb-1" x-text="holdingMessage">Preparing your next programme...</div>
+                                            <div class="text-xs text-gray-400">Zonita TV Automatic Recovery Engine</div>
+                                        </div>
                                     </div>
 
                                     <!-- Top-Right Live Station Bug -->
