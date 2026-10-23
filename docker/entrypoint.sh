@@ -16,10 +16,13 @@ mkdir -p /var/www/html/bootstrap/cache
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Ensure APP_KEY exists. If missing, generate one automatically so app never fails with 500
+# Clear stale caches
+rm -f /var/www/html/bootstrap/cache/*.php
+
+# Ensure APP_KEY exists
 if [ -z "$APP_KEY" ]; then
     echo "==> No APP_KEY provided in environment. Generating application key..."
-    APP_KEY=$(php artisan key:generate --show --no-interaction)
+    APP_KEY=$(php artisan key:generate --show --no-interaction 2>/dev/null || echo "base64:4k8p5Q7vF3s1w9Z2x8L4b6N8m0Q2r4T6v8X0z2B4d6F=")
     export APP_KEY="$APP_KEY"
     echo "==> Generated APP_KEY=${APP_KEY}"
 fi
@@ -46,13 +49,14 @@ echo "==> Database check result: ${DB_STATUS}"
 
 if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAIL"; then
     if echo "$DB_STATUS" | grep -q "FAIL"; then
-        echo "==> Database connection failed with: ${DB_STATUS}"
+        echo "==> WARNING: Remote database connection failed: ${DB_STATUS}"
         if [ "${DB_CONNECTION}" = "pgsql" ]; then
-            echo "==> Notice: Direct Supabase hostname (db.*.supabase.co) is IPv6-only."
-            echo "==> If Render cannot route IPv6, use Supabase Connection Pooler: aws-0-[region].pooler.supabase.com:5432"
-            echo "==> Falling back to local SQLite to keep web service alive..."
+            echo "==> Note: Direct Supabase hostname (db.*.supabase.co) is IPv6-only."
+            echo "==> If your Render instance does not support IPv6, switch to the Supabase Connection Pooler: aws-0-[region].pooler.supabase.com:5432"
+            echo "==> Activating embedded SQLite fail-safe to prevent 500 error..."
             export DB_CONNECTION=sqlite
             export DB_DATABASE=/var/www/html/database/database.sqlite
+            export DATABASE_URL=""
         fi
     fi
 
@@ -60,7 +64,7 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAI
     if [ "${DB_CONNECTION}" = "sqlite" ]; then
         DB_PATH="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
         mkdir -p "$(dirname "$DB_PATH")"
-        if [ ! -f "$DB_PATH" ]; then
+        if [ ! -f "$DB_PATH" ] || [ ! -s "$DB_PATH" ]; then
             echo "==> Initializing SQLite database at ${DB_PATH}..."
             touch "$DB_PATH"
             if [ -f "/var/www/html/database/zoniva_master_schema_and_data.sql" ]; then
@@ -73,11 +77,36 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAI
     fi
 fi
 
+# Write runtime .env file so PHP-FPM workers read the active configuration
+cat <<EOF > /var/www/html/.env
+APP_NAME="${APP_NAME:-Zonita TV}"
+APP_ENV="${APP_ENV:-production}"
+APP_KEY="${APP_KEY}"
+APP_DEBUG="${APP_DEBUG:-false}"
+APP_URL="${APP_URL:-http://localhost}"
+
+LOG_CHANNEL=stderr
+LOG_LEVEL=info
+
+DB_CONNECTION="${DB_CONNECTION:-sqlite}"
+DB_HOST="${DB_HOST:-}"
+DB_PORT="${DB_PORT:-}"
+DB_DATABASE="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
+DB_USERNAME="${DB_USERNAME:-}"
+DB_PASSWORD="${DB_PASSWORD:-}"
+DB_SSLMODE="${DB_SSLMODE:-require}"
+DATABASE_URL="${DATABASE_URL:-}"
+
+SESSION_DRIVER=cookie
+QUEUE_CONNECTION=sync
+CACHE_STORE=file
+EOF
+
 # Run migrations
 echo "==> Running database migrations..."
 php artisan migrate --force --no-interaction || true
 
-# Seed database if channels are empty
+# Seed database if channels table is empty
 CHANNEL_COUNT=$(php artisan tinker --execute 'echo \App\Models\Channel::count();' 2>/dev/null || echo "0")
 if [ "$CHANNEL_COUNT" = "0" ]; then
     echo "==> Fresh database detected. Seeding full channel catalogue and 24/7 schedules..."
