@@ -20,7 +20,18 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'google_id',
+        'avatar',
     ];
+
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            return $this->avatar;
+        }
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=ea580c&color=ffffff&bold=true';
+    }
 
     protected $hidden = [
         'password',

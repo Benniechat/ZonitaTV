@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\DiagnosticsAdminController;
 use App\Http\Controllers\Admin\IngestAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
 use App\Http\Controllers\Api\PlaybackController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\GuideController;
@@ -43,6 +45,17 @@ Route::prefix('api/playback')->group(function () {
 Route::view('/about', 'pages.about')->name('pages.about');
 Route::view('/privacy', 'pages.privacy')->name('pages.privacy');
 Route::view('/terms', 'pages.terms')->name('pages.terms');
+
+// Authentication & Identity
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+});
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // --- Administration Operations ---
 Route::prefix('admin')->name('admin.')->group(function () {

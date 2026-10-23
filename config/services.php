@@ -39,4 +39,10 @@ return [
         'channel_url' => env('WHATSAPP_CHANNEL_URL', 'https://whatsapp.com/channel/0029VbDeFOLCHDycVG6zZz3z'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost').'/auth/google/callback'),
+    ],
+
 ];
