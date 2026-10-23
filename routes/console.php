@@ -2,9 +2,9 @@
 
 use App\Jobs\Zonita\GenerateChannelReports;
 use App\Jobs\Zonita\MonitorScheduleHealth;
+use App\Jobs\Zonita\RefreshChannelQueue;
 use App\Jobs\Zonita\UpdateVideoEligibility;
 use App\Models\Channel;
-use App\Jobs\Zonita\RefreshChannelQueue;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;

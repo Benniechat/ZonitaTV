@@ -35,7 +35,7 @@ class RefreshChannelQueue implements ShouldQueue
         $needsReplenishment = ! $maxScheduledEnd || Carbon::parse($maxScheduledEnd, $timezone)->lessThan($thresholdTime);
 
         if ($needsReplenishment) {
-            Log::info("Channel queue replenishment triggered for [{$this->channel->slug}]. Max future end: " . ($maxScheduledEnd ?? 'none'));
+            Log::info("Channel queue replenishment triggered for [{$this->channel->slug}]. Max future end: ".($maxScheduledEnd ?? 'none'));
             $scheduleService->generateRollingSchedule($this->channel, 7);
         }
     }

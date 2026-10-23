@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\Zonita\RefreshChannelQueue;
 use App\Jobs\Zonita\UpdateVideoEligibility;
 use App\Models\Channel;
 use App\Models\ChannelSourceRule;
