@@ -33,7 +33,7 @@
                     <tr class="hover:bg-gray-900/40 transition">
                         <td class="py-3 px-4">
                             <div class="flex items-center space-x-3">
-                                <img src="{{ asset($channel->logo_path) }}" alt="{{ $channel->name }}" class="w-8 h-8 object-contain rounded bg-gray-900 p-1">
+                                <img src="{{ $channel->logo_url }}" alt="{{ $channel->name }}" class="w-8 h-8 object-contain rounded bg-gray-900 p-1">
                                 <div>
                                     <div class="font-bold text-white">{{ $channel->name }}</div>
                                     <div class="text-[10px] text-gray-400">{{ $channel->broadcaster_name }} &bull; {{ $channel->country_code }}</div>

@@ -22,7 +22,7 @@
     <!-- Thumbnail & Logo Area -->
     <a href="{{ route('channels.show', $channel->slug) }}" class="relative block aspect-video w-full bg-gradient-to-br from-gray-900 to-[#101216] overflow-hidden p-6 flex items-center justify-center">
         @if($channel->logo_path)
-            <img src="{{ asset($channel->logo_path) }}" alt="{{ $channel->name }}" class="max-h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-110 drop-shadow-md">
+            <img src="{{ $channel->logo_url }}" alt="{{ $channel->name }}" class="max-h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-110 drop-shadow-md">
         @else
             <div class="w-16 h-16 rounded-xl bg-gray-800 flex items-center justify-center text-xl font-bold text-gray-400">
                 {{ substr($channel->name, 0, 2) }}
