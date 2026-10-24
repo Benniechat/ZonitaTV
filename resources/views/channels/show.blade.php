@@ -48,7 +48,7 @@
 
                     @if($playback['mode'] === 'direct_stream')
                         {{-- Mode A: Authorised Direct Playback via HLS.js --}}
-                        <video id="zoniva-player" autoplay  class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_path ? asset($channel->banner_path) : '' }}" ></video>
+                        <video id="zoniva-player" autoplay  class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_url ?? '' }}" ></video>
                         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
@@ -260,7 +260,7 @@
 
                     @elseif($playback['mode'] === 'zoniva_original')
                         {{-- Mode D: Zoniva Originals --}}
-                        <video id="zoniva-player" class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_path ? asset($channel->banner_path) : '' }}"></video>
+                        <video id="zoniva-player" class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_url ?? '' }}"></video>
                         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
@@ -279,7 +279,7 @@
                     @else
                         {{-- Mode C: Authorised External Broadcaster Destination --}}
                         <div class="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-[#141822] to-[#0b0d12]">
-                            <img src="{{ asset($channel->logo_path) }}" alt="{{ $channel->name }}" class="h-16 w-auto mb-4 drop-shadow">
+                            <img src="{{ $channel->logo_url }}" alt="{{ $channel->name }}" class="h-16 w-auto mb-4 drop-shadow">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20 mb-3">
                                 Official Broadcaster Viewing Destination
                             </span>
@@ -324,7 +324,7 @@
             <div class="bg-[#12151c] border border-gray-800 rounded-2xl p-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-800">
                     <div class="flex items-center space-x-4">
-                        <img src="{{ asset($channel->logo_path) }}" alt="{{ $channel->name }}" class="w-14 h-14 object-contain rounded-xl bg-gray-900 border border-gray-800 p-2">
+                        <img src="{{ $channel->logo_url }}" alt="{{ $channel->name }}" class="w-14 h-14 object-contain rounded-xl bg-gray-900 border border-gray-800 p-2">
                         <div>
                             <div class="flex items-center gap-2">
                                 <h1 class="text-xl sm:text-2xl font-bold text-white">{{ $channel->name }}</h1>
@@ -494,7 +494,7 @@
                 <div class="space-y-3">
                     @foreach($relatedChannels as $rel)
                         <a href="{{ route('channels.show', $rel->slug) }}" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-900/80 transition group">
-                            <img src="{{ asset($rel->logo_path) }}" alt="{{ $rel->name }}" class="w-10 h-10 object-contain rounded-lg bg-gray-900 border border-gray-800 p-1">
+                            <img src="{{ $rel->logo_url }}" alt="{{ $rel->name }}" class="w-10 h-10 object-contain rounded-lg bg-gray-900 border border-gray-800 p-1">
                             <div class="flex-grow">
                                 <h4 class="text-xs font-bold text-white group-hover:text-red-400 transition">{{ $rel->name }}</h4>
                                 <p class="text-[10px] text-gray-400">{{ $rel->categories->first()?->name ?? 'General' }} &bull; {{ $rel->country_code }}</p>
