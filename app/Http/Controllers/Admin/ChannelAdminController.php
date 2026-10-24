@@ -39,6 +39,10 @@ class ChannelAdminController extends Controller
             'name' => 'required|string|max:150',
             'tagline' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'logo_path' => 'nullable|string|max:500',
+            'banner_path' => 'nullable|string|max:500',
+            'logo_file' => 'nullable|image|max:10240',
+            'banner_file' => 'nullable|image|max:10240',
             'broadcaster_name' => 'nullable|string|max:150',
             'broadcaster_website' => 'nullable|url|max:255',
             'official_destination_url' => 'required|url|max:500',
@@ -55,11 +59,29 @@ class ChannelAdminController extends Controller
             'rights_status' => 'required|string|in:pending_review,directory_approved,embedding_approved,redistribution_approved,restricted,expired,rejected',
         ]);
 
+        $logoPath = $validated['logo_path'] ?? null;
+        if ($request->hasFile('logo_file')) {
+            $uploadRes = $this->cloudinary->upload($request->file('logo_file'), 'zonita/logos');
+            if ($uploadRes['success'] ?? false) {
+                $logoPath = $uploadRes['secure_url'];
+            }
+        }
+
+        $bannerPath = $validated['banner_path'] ?? null;
+        if ($request->hasFile('banner_file')) {
+            $uploadRes = $this->cloudinary->upload($request->file('banner_file'), 'zonita/banners');
+            if ($uploadRes['success'] ?? false) {
+                $bannerPath = $uploadRes['secure_url'];
+            }
+        }
+
         $channel = Channel::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']).'-'.rand(100, 999),
             'tagline' => $validated['tagline'],
             'description' => $validated['description'],
+            'logo_path' => $logoPath,
+            'banner_path' => $bannerPath,
             'broadcaster_name' => $validated['broadcaster_name'],
             'broadcaster_website' => $validated['broadcaster_website'],
             'official_destination_url' => $validated['official_destination_url'],
@@ -117,6 +139,10 @@ class ChannelAdminController extends Controller
             'name' => 'required|string|max:150',
             'tagline' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'logo_path' => 'nullable|string|max:500',
+            'banner_path' => 'nullable|string|max:500',
+            'logo_file' => 'nullable|image|max:10240',
+            'banner_file' => 'nullable|image|max:10240',
             'broadcaster_name' => 'nullable|string|max:150',
             'broadcaster_website' => 'nullable|url|max:255',
             'official_destination_url' => 'required|url|max:500',
@@ -126,10 +152,28 @@ class ChannelAdminController extends Controller
             'categories' => 'array',
         ]);
 
+        $logoPath = $validated['logo_path'] ?? $channel->logo_path;
+        if ($request->hasFile('logo_file')) {
+            $uploadRes = $this->cloudinary->upload($request->file('logo_file'), 'zonita/logos');
+            if ($uploadRes['success'] ?? false) {
+                $logoPath = $uploadRes['secure_url'];
+            }
+        }
+
+        $bannerPath = $validated['banner_path'] ?? $channel->banner_path;
+        if ($request->hasFile('banner_file')) {
+            $uploadRes = $this->cloudinary->upload($request->file('banner_file'), 'zonita/banners');
+            if ($uploadRes['success'] ?? false) {
+                $bannerPath = $uploadRes['secure_url'];
+            }
+        }
+
         $channel->update([
             'name' => $validated['name'],
             'tagline' => $validated['tagline'],
             'description' => $validated['description'],
+            'logo_path' => $logoPath,
+            'banner_path' => $bannerPath,
             'broadcaster_name' => $validated['broadcaster_name'],
             'broadcaster_website' => $validated['broadcaster_website'],
             'official_destination_url' => $validated['official_destination_url'],
