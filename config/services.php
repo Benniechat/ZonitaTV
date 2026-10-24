@@ -45,4 +45,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost').'/auth/google/callback'),
     ],
 
+    'cloudinary' => [
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME', 'jcjugta9'),
+        'api_key' => env('CLOUDINARY_API_KEY', '269289579262165'),
+        'api_secret' => env('CLOUDINARY_API_SECRET'),
+        'upload_preset' => env('CLOUDINARY_UPLOAD_PRESET', 'zonita_uploads'),
+    ],
+
 ];
