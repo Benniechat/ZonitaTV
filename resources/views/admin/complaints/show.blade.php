@@ -2,7 +2,7 @@
 
 @section('title', "Complaint {$complaint->reference_number} - Zonita TV Admin")
 
-@section('content')
+@section('admin_content')
 <div class="space-y-6 max-w-5xl">
 
     <!-- Header -->

@@ -37,8 +37,8 @@ class LegalComplianceTest extends TestCase
         $response = $this->get('/copyright-policy');
 
         $response->assertStatus(200);
-        $response->assertSee('Copyright &amp; Complaints Policy', false);
-        $response->assertSee('Notice &amp; Review Procedure', false);
+        $response->assertSee('Copyright & Complaints Policy');
+        $response->assertSee('Notice & Review Procedure');
     }
 
     public function test_privacy_policy_page_renders_successfully(): void
@@ -64,7 +64,7 @@ class LegalComplianceTest extends TestCase
         $response = $this->get('/content-rights');
 
         $response->assertStatus(200);
-        $response->assertSee('Content Rights &amp; Removal Policy', false);
+        $response->assertSee('Content Rights & Removal Policy');
         $response->assertSee('Software-Enforced Rights Lifecycle');
     }
 
@@ -182,9 +182,13 @@ class LegalComplianceTest extends TestCase
             'role' => 'super_admin',
         ]);
 
-        $channel = Channel::factory()->create([
+        $channel = Channel::create([
             'name' => 'Test Channel',
             'slug' => 'test-channel',
+            'playback_mode' => 'embed_player',
+            'official_destination_url' => 'https://youtube.com/@testchannel',
+            'is_active' => true,
+            'is_published' => true,
         ]);
 
         $video = Video::create([
