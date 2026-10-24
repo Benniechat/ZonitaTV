@@ -62,7 +62,7 @@
                 @foreach($recentChannels as $ch)
                     <div class="py-3 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <img src="{{ asset($ch->logo_path) }}" alt="{{ $ch->name }}" class="w-8 h-8 object-contain rounded bg-gray-900 p-1">
+                            <img src="{{ $ch->logo_url }}" alt="{{ $ch->name }}" class="w-8 h-8 object-contain rounded bg-gray-900 p-1" onerror="this.onerror=null; this.src='{{ asset(config('channels.default_logo', 'images/logo/zonitatvlogo2.png')) }}';">
                             <div>
                                 <h4 class="text-xs font-bold text-white">{{ $ch->name }}</h4>
                                 <span class="text-[10px] text-gray-400">{{ $ch->playback_mode }} &bull; {{ $ch->country_code }}</span>

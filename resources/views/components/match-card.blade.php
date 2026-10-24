@@ -18,7 +18,7 @@
     <div class="px-4 py-3 bg-gray-900/60 border-b border-gray-800/60 flex items-center justify-between">
         <div class="flex items-center gap-2">
             @if($fixture->competition?->emblem_url)
-                <img src="{{ $fixture->competition->emblem_url }}" class="w-4 h-4 object-contain">
+                <img src="{{ $fixture->competition->emblem_url }}" class="w-4 h-4 object-contain" onerror="this.style.display='none';">
             @endif
             <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 truncate max-w-[140px]">
                 {{ $fixture->competition?->name }}
@@ -43,7 +43,7 @@
         <!-- Home Team -->
         <div class="flex-1 flex flex-col items-center text-center">
             <div class="w-14 h-14 rounded-2xl bg-gray-900 border border-gray-800 p-2 flex items-center justify-center mb-2 group-hover:scale-105 transition shadow">
-                <img src="{{ $fixture->homeTeam?->logo }}" alt="{{ $fixture->homeTeam?->name }}" class="max-h-full max-w-full object-contain">
+                <img src="{{ $fixture->homeTeam?->logo }}" alt="{{ $fixture->homeTeam?->name }}" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-xs font-black text-gray-400\'>{{ substr($fixture->homeTeam?->name ?? 'HT', 0, 3) }}</span>';">
             </div>
             <h4 class="text-xs font-bold text-white line-clamp-1">{{ $fixture->homeTeam?->name }}</h4>
             <span class="text-[10px] text-gray-500 font-mono">{{ $fixture->homeTeam?->tla }}</span>
@@ -68,7 +68,7 @@
         <!-- Away Team -->
         <div class="flex-1 flex flex-col items-center text-center">
             <div class="w-14 h-14 rounded-2xl bg-gray-900 border border-gray-800 p-2 flex items-center justify-center mb-2 group-hover:scale-105 transition shadow">
-                <img src="{{ $fixture->awayTeam?->logo }}" alt="{{ $fixture->awayTeam?->name }}" class="max-h-full max-w-full object-contain">
+                <img src="{{ $fixture->awayTeam?->logo }}" alt="{{ $fixture->awayTeam?->name }}" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-xs font-black text-gray-400\'>{{ substr($fixture->awayTeam?->name ?? 'AT', 0, 3) }}</span>';">
             </div>
             <h4 class="text-xs font-bold text-white line-clamp-1">{{ $fixture->awayTeam?->name }}</h4>
             <span class="text-[10px] text-gray-500 font-mono">{{ $fixture->awayTeam?->tla }}</span>

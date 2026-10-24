@@ -241,22 +241,33 @@
                     @foreach($popularChannels as $channel)
                         <a href="{{ route('channels.show', $channel->slug) }}" 
                            class="group relative rounded-2xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col shadow-lg">
-                            <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
-                                <img src="{{ $channel->banner_path ?: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=400&q=80' }}" 
+                            <div class="relative aspect-video w-full overflow-hidden bg-gray-900 flex items-center justify-center">
+                                <img src="{{ $channel->banner_url }}" 
                                      alt="{{ $channel->name }}" 
-                                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 filter brightness-[0.75] group-hover:brightness-[0.85]"
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='{{ $channel->getCategoryBannerUrl() }}';">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20"></div>
+
+                                <!-- Floating frosted glass channel badge -->
+                                <div class="relative z-10 p-1.5 rounded-xl bg-black/45 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center">
+                                    <img src="{{ $channel->logo_url }}" 
+                                         alt="{{ $channel->name }}" 
+                                         class="h-7 w-auto max-w-[70px] object-contain drop-shadow"
+                                         loading="lazy"
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-[10px] font-black text-white px-1.5 py-0.5 rounded bg-red-600/80\'>{{ $channel->initials }}</span>';">
+                                </div>
                             </div>
 
-                            <div class="p-3 flex items-end justify-between">
-                                <div>
+                            <div class="p-3 flex items-end justify-between bg-[#121620]">
+                                <div class="min-w-0 pr-1">
                                     <h3 class="text-xs font-bold text-white group-hover:text-amber-400 transition truncate">
                                         {{ $channel->name }}
                                     </h3>
-                                    <span class="text-[10px] text-gray-400">{{ $channel->categories->first()?->name ?? 'General' }}</span>
+                                    <span class="text-[10px] text-gray-400 block truncate">{{ $channel->categories->first()?->name ?? 'General' }}</span>
                                 </div>
 
-                                <div class="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+                                <div class="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold shrink-0">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                                     <span>Online</span>
                                 </div>
@@ -284,7 +295,7 @@
                         @foreach($footballSports as $item)
                             <a href="{{ route('channels.show', $item['slug']) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col">
                                 <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80';">
                                     <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-purple-900/70 text-[8px] font-bold text-purple-300 uppercase">Sports</span>
                                 </div>
                                 <div class="p-2.5">
@@ -311,7 +322,7 @@
                         @foreach($newsWorld as $item)
                             <a href="{{ route('channels.show', $item['slug']) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col">
                                 <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=400&q=80';">
                                     <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-blue-900/70 text-[8px] font-bold text-blue-300 uppercase">News</span>
                                 </div>
                                 <div class="p-2.5">
@@ -343,7 +354,7 @@
                         @foreach($faithInspiration as $item)
                             <a href="{{ route('channels.show', $item['slug']) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col">
                                 <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=400&q=80';">
                                     <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-amber-900/70 text-[8px] font-bold text-amber-300 uppercase">Christian</span>
                                 </div>
                                 <div class="p-2.5">
@@ -370,7 +381,7 @@
                         @foreach($learningDiscovery as $item)
                             <a href="{{ route('channels.show', $item['slug']) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col">
                                 <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80';">
                                     <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-emerald-900/70 text-[8px] font-bold text-emerald-300 uppercase">Education</span>
                                 </div>
                                 <div class="p-2.5">

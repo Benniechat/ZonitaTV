@@ -59,30 +59,54 @@ class Channel extends Model
     public function getLogoUrlAttribute(): string
     {
         if (empty($this->logo_path)) {
-            return asset('images/logo/zonitatvlogo2.png');
+            return asset(config('channels.default_logo', 'images/logo/zonitatvlogo2.png'));
         }
 
         if (str_starts_with($this->logo_path, 'http://') || str_starts_with($this->logo_path, 'https://')) {
             return $this->logo_path;
         }
 
-        return asset($this->logo_path);
+        return asset(ltrim($this->logo_path, '/'));
     }
 
     /**
-     * Resolve the channel banner URL, supporting Cloudinary CDN and local storage.
+     * Resolve the channel banner URL, supporting Cloudinary CDN, remote HTTP URLs, and category-themed broadcast backdrops.
      */
-    public function getBannerUrlAttribute(): ?string
+    public function getBannerUrlAttribute(): string
     {
-        if (empty($this->banner_path)) {
-            return null;
+        if (! empty($this->banner_path)) {
+            if (str_starts_with($this->banner_path, 'http://') || str_starts_with($this->banner_path, 'https://')) {
+                return $this->banner_path;
+            }
+
+            return asset(ltrim($this->banner_path, '/'));
         }
 
-        if (str_starts_with($this->banner_path, 'http://') || str_starts_with($this->banner_path, 'https://')) {
-            return $this->banner_path;
+        return $this->getCategoryBannerUrl();
+    }
+
+    /**
+     * Get a curated high-resolution broadcast banner based on channel category.
+     */
+    public function getCategoryBannerUrl(): string
+    {
+        $categorySlug = $this->categories->first()?->slug ?? 'default';
+        $defaultBanners = config('channels.default_banners', []);
+
+        return $defaultBanners[$categorySlug] ?? $defaultBanners['default'] ?? 'https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&fit=crop&w=1400&q=80';
+    }
+
+    /**
+     * Get 2-letter uppercase initials for monogram badge fallback.
+     */
+    public function getInitialsAttribute(): string
+    {
+        $words = preg_split('/\s+/', trim($this->name));
+        if (count($words) >= 2) {
+            return mb_strtoupper(mb_substr($words[0], 0, 1) . mb_substr($words[1], 0, 1));
         }
 
-        return asset($this->banner_path);
+        return mb_strtoupper(mb_substr($this->name, 0, 2));
     }
 
     public function streams(): HasMany

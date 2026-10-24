@@ -49,7 +49,7 @@
                         <div>
                             <div class="text-[11px] font-bold text-gray-400 flex items-center gap-1.5">
                                 @if($fixture->competition?->emblem_url)
-                                    <img src="{{ $fixture->competition->emblem_url }}" class="w-3.5 h-3.5 object-contain">
+                                    <img src="{{ $fixture->competition->emblem_url }}" class="w-3.5 h-3.5 object-contain" onerror="this.style.display='none';">
                                 @endif
                                 <span>{{ $fixture->competition?->name ?? 'Football' }}</span>
                             </div>
@@ -69,7 +69,7 @@
                         <div class="flex items-center gap-3 w-40 justify-end text-right">
                             <span class="text-xs sm:text-sm font-bold text-white truncate">{{ $fixture->homeTeam?->name }}</span>
                             @if($fixture->homeTeam?->crest_url)
-                                <img src="{{ $fixture->homeTeam->crest_url }}" class="w-6 h-6 object-contain shrink-0">
+                                <img src="{{ $fixture->homeTeam->crest_url }}" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none';">
                             @endif
                         </div>
 
@@ -87,7 +87,7 @@
                         <!-- Away -->
                         <div class="flex items-center gap-3 w-40 justify-start text-left">
                             @if($fixture->awayTeam?->crest_url)
-                                <img src="{{ $fixture->awayTeam->crest_url }}" class="w-6 h-6 object-contain shrink-0">
+                                <img src="{{ $fixture->awayTeam->crest_url }}" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none';">
                             @endif
                             <span class="text-xs sm:text-sm font-bold text-white truncate">{{ $fixture->awayTeam?->name }}</span>
                         </div>

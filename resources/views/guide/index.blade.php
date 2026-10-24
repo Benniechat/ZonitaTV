@@ -66,9 +66,10 @@
                             <!-- Header with Channel & Times -->
                             <div class="flex items-center justify-between gap-3 mb-3">
                                 <div class="flex items-center space-x-2.5">
-                                    <img src="{{ asset($prog->channel->logo_path ?? '/images/logo/zonivatvLogo.png') }}" 
+                                    <img src="{{ $prog->channel?->logo_url ?? asset(config('channels.default_logo', 'images/logo/zonitatvlogo2.png')) }}" 
                                          alt="{{ $prog->channel->name ?? '' }}" 
-                                         class="w-8 h-8 object-contain rounded-lg bg-gray-900 border border-gray-800 p-0.5">
+                                         class="w-8 h-8 object-contain rounded-lg bg-gray-900 border border-gray-800 p-0.5"
+                                         onerror="this.onerror=null; this.src='{{ asset(config('channels.default_logo', 'images/logo/zonitatvlogo2.png')) }}';">
                                     <span class="text-xs font-bold text-gray-300">{{ $prog->channel->name ?? 'Channel' }}</span>
                                 </div>
                                 <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white uppercase tracking-wider">LIVE</span>
