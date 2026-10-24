@@ -37,8 +37,8 @@ class LegalComplianceTest extends TestCase
         $response = $this->get('/copyright-policy');
 
         $response->assertStatus(200);
-        $response->assertSee('Copyright & Complaints Policy');
-        $response->assertSee('Notice & Review Procedure');
+        $response->assertSee('Copyright & Complaints Policy', false);
+        $response->assertSee('Notice & Review Procedure', false);
     }
 
     public function test_privacy_policy_page_renders_successfully(): void
@@ -55,7 +55,7 @@ class LegalComplianceTest extends TestCase
         $response = $this->get('/advertising-policy');
 
         $response->assertStatus(200);
-        $response->assertSee('Advertising &amp; Sponsorship Disclosure', false);
+        $response->assertSee('Advertising & Sponsorship Disclosure', false);
         $response->assertSee('Strict Technical Player Integrity');
     }
 
@@ -64,7 +64,7 @@ class LegalComplianceTest extends TestCase
         $response = $this->get('/content-rights');
 
         $response->assertStatus(200);
-        $response->assertSee('Content Rights & Removal Policy');
+        $response->assertSee('Content Rights & Removal Policy', false);
         $response->assertSee('Software-Enforced Rights Lifecycle');
     }
 
@@ -203,6 +203,7 @@ class LegalComplianceTest extends TestCase
             'channel_id' => $channel->id,
             'video_id' => $video->id,
             'title' => 'Disputed Match Stream',
+            'duration_seconds' => 1800,
             'start_time' => now()->addMinutes(10),
             'end_time' => now()->addMinutes(40),
             'status' => 'scheduled',
