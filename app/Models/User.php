@@ -33,6 +33,14 @@ class User extends Authenticatable
         return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=ea580c&color=ffffff&bold=true';
     }
 
+    /**
+     * Always normalize stored email to lowercase and trimmed.
+     */
+    public function setEmailAttribute(string $value): void
+    {
+        $this->attributes['email'] = strtolower(trim($value));
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

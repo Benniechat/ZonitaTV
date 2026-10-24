@@ -34,16 +34,29 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
 
         try {
-            if (Auth::attempt($credentials, $remember)) {
-                $request->session()->regenerate();
+            $email = strtolower(trim($credentials['email']));
 
-                return redirect()->intended(route('home'))
-                    ->with('success', 'Welcome back, '.Auth::user()->name.'!');
+            // Case-insensitive & trimmed lookup across PostgreSQL, MySQL, and SQLite
+            $user = User::whereRaw('LOWER(TRIM(email)) = ?', [$email])->first();
+
+            if (! $user) {
+                return back()->withErrors([
+                    'email' => 'No account found with this email address. Please check your spelling or register a new account.',
+                ])->onlyInput('email');
             }
 
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ])->onlyInput('email');
+            if (! Hash::check($credentials['password'], $user->password)) {
+                return back()->withErrors([
+                    'email' => 'The password you entered is incorrect. Please check your password and try again.',
+                    'password' => 'The password you entered is incorrect.',
+                ])->onlyInput('email');
+            }
+
+            Auth::login($user, $remember);
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('home'))
+                ->with('success', 'Welcome back, '.$user->name.'!');
         } catch (\Throwable $e) {
             Log::error('Authentication login error: '.$e->getMessage(), [
                 'email' => $credentials['email'] ?? null,
@@ -71,15 +84,24 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         try {
+            $email = strtolower(trim($validated['email']));
+
+            // Case-insensitive duplicate check
+            if (User::whereRaw('LOWER(TRIM(email)) = ?', [$email])->exists()) {
+                return back()->withErrors([
+                    'email' => 'An account with this email address already exists. Please sign in instead.',
+                ])->withInput($request->except('password', 'password_confirmation'));
+            }
+
             $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
+                'name' => trim($validated['name']),
+                'email' => $email,
+                'password' => $validated['password'],
                 'role' => 'user',
             ]);
 

@@ -67,6 +67,35 @@ class AuthenticationTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    public function test_user_can_login_with_case_insensitive_and_padded_email(): void
+    {
+        $user = User::create([
+            'name' => 'Case User',
+            'email' => 'caseuser@example.com',
+            'password' => 'mypassword123',
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => '  CASEUSER@EXAMPLE.COM  ',
+            'password' => 'mypassword123',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_login_fails_with_unregistered_email(): void
+    {
+        $response = $this->post('/login', [
+            'email' => 'nonexistent@example.com',
+            'password' => 'somepassword123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertStringContainsString('No account found with this email address', session('errors')->first('email'));
+        $this->assertGuest();
+    }
+
     public function test_login_fails_with_invalid_password(): void
     {
         User::create([

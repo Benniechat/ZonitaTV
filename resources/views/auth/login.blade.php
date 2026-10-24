@@ -39,6 +39,16 @@
             <form action="{{ route('login') }}" method="POST" class="space-y-4">
                 @csrf
 
+                @if ($errors->any())
+                    <div class="p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-xs flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="space-y-0.5">
+                            <span class="font-bold text-white block">Sign in unsuccessful</span>
+                            <span>{{ $errors->first() }}</span>
+                        </div>
+                    </div>
+                @endif
+
                 <div>
                     <label for="email" class="block text-xs font-semibold text-gray-300 mb-1.5">Email Address</label>
                     <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
