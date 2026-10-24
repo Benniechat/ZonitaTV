@@ -32,11 +32,68 @@
             <div class="relative w-full aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border border-gray-800 flex items-center justify-center">
                 
                 @if($mode === 'mode_b_embed' && $sporty?->feed_endpoint)
-                    <!-- Mode B: Authorised Embed Player -->
-                    <iframe src="{{ $sporty->feed_endpoint }}" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                    <!-- Mode B: Authorised Embed Player (Realtime Lock) -->
+                    <div class="relative w-full h-full">
+                        <iframe src="{{ $sporty->feed_endpoint }}" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                        <!-- Transparent interaction shield to prevent manual timeline scrubbing -->
+                        <div class="absolute inset-0 z-10 cursor-default"></div>
+                        <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                            <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                <span>LIVE &bull; REAL-TIME BROADCAST</span>
+                            </div>
+                            <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
+                                <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                <span>Seeking Locked</span>
+                            </div>
+                        </div>
+                    </div>
                 @elseif($mode === 'mode_c_rebroadcast' && $sporty?->feed_endpoint)
-                    <!-- Mode C: Authorised Rebroadcast Stream -->
-                    <video id="sports-player" class="w-full h-full" controls autoplay playsinline poster="{{ $thumbnail }}"></video>
+                    <!-- Mode C: Authorised Rebroadcast Stream (Zero Scrubbing / Pure Live) -->
+                    <div class="relative w-full h-full bg-black flex items-center justify-center group" id="sports-player-wrapper">
+                        <video id="sports-player" class="w-full h-full object-contain pointer-events-none" autoplay playsinline poster="{{ $thumbnail }}"></video>
+                        <div class="absolute inset-0 z-10 cursor-pointer" id="sports-click-shield"></div>
+
+                        <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                            <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                <span>ON-AIR LIVE &bull; REAL-TIME</span>
+                            </div>
+                            <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
+                                <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                <span>Seeking Locked</span>
+                            </div>
+                        </div>
+
+                        <div class="absolute bottom-3 right-3 z-20 flex items-center gap-2">
+                            <button type="button" id="sports-mute-btn" class="p-2 rounded-xl bg-black/80 hover:bg-black border border-gray-800 text-white backdrop-blur-md transition shadow-lg text-xs" title="Toggle Audio">
+                                Audio Toggle
+                            </button>
+                            <button type="button" id="sports-fs-btn" class="p-2 rounded-xl bg-black/80 hover:bg-black border border-gray-800 text-white backdrop-blur-md transition shadow-lg text-xs" title="Fullscreen">
+                                Fullscreen
+                            </button>
+                        </div>
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const v = document.getElementById('sports-player');
+                            const muteBtn = document.getElementById('sports-mute-btn');
+                            const fsBtn = document.getElementById('sports-fs-btn');
+                            const wrapper = document.getElementById('sports-player-wrapper');
+                            const shield = document.getElementById('sports-click-shield');
+
+                            const toggleMute = () => { if (v) v.muted = !v.muted; };
+                            const toggleFs = () => {
+                                if (!document.fullscreenElement) { wrapper?.requestFullscreen?.(); }
+                                else { document.exitFullscreen?.(); }
+                            };
+
+                            muteBtn?.addEventListener('click', toggleMute);
+                            shield?.addEventListener('click', toggleMute);
+                            fsBtn?.addEventListener('click', toggleFs);
+                            shield?.addEventListener('dblclick', toggleFs);
+                        });
+                    </script>
                 @else
                     <!-- Mode A: Official-Link Discovery Stage -->
                     <div class="relative w-full h-full bg-gradient-to-br from-red-950/40 via-[#0d1017] to-black p-8 sm:p-12 flex flex-col justify-between">

@@ -43,42 +43,114 @@
         <div class="lg:col-span-2 space-y-6">
             
             <!-- Video Stage Area -->
-            <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
+            <div id="player-stage-container" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
                 @if($playback['allowed'])
 
                     @if($playback['mode'] === 'direct_stream')
-                        {{-- Mode A: Authorised Direct Playback via HLS.js --}}
-                        <video id="zoniva-player" autoplay  class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_url ?? '' }}" ></video>
+                        {{-- Mode A: Authorised Direct Playback via HLS.js (Real-Time Live Playout, No Seeking) --}}
+                        <div class="relative w-full h-full bg-black flex items-center justify-center group" id="hls-player-wrapper">
+                            <video id="zoniva-player" autoplay playsinline poster="{{ $channel->banner_url ?? '' }}" class="w-full h-full object-contain pointer-events-none"></video>
+                            
+                            <!-- Transparent Interaction Shield to Block Scrubbing -->
+                            <div class="absolute inset-0 z-10 cursor-pointer" id="hls-click-shield"></div>
+
+                            <!-- Top-Left: Linear Realtime Broadcast Watermark & Lock Indicator -->
+                            <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    <span>24/7 REAL-TIME STREAM</span>
+                                </div>
+                                <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
+                                    <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    <span>Seeking Locked</span>
+                                </div>
+                            </div>
+
+                            <!-- Top-Right TV Controls (Mute / Fullscreen) -->
+                            <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
+                                <button type="button" id="hls-mute-btn" class="p-2 rounded-xl bg-black/80 hover:bg-black border border-gray-800 text-white backdrop-blur-md transition shadow-lg" title="Toggle Audio">
+                                    <svg class="w-4 h-4 text-emerald-400" id="hls-mute-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                                </button>
+                                <button type="button" id="hls-fs-btn" class="p-2 rounded-xl bg-black/80 hover:bg-black border border-gray-800 text-white backdrop-blur-md transition shadow-lg" title="Fullscreen">
+                                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
                         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 const video = document.getElementById('zoniva-player');
                                 const streamUrl = "{{ $playback['stream']->stream_url }}";
+                                let hls = null;
                                 if (Hls.isSupported()) {
-                                    const hls = new Hls({ enableWorker: true });
+                                    hls = new Hls({ enableWorker: true, liveSyncDurationCount: 3 });
                                     hls.loadSource(streamUrl);
                                     hls.attachMedia(video);
                                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                                     video.src = streamUrl;
                                 }
+
+                                // Lock to live realtime edge - strictly prevent fast forward or rewind
+                                video.addEventListener('seeking', function () {
+                                    if (hls && hls.liveSyncPosition) {
+                                        video.currentTime = hls.liveSyncPosition;
+                                    }
+                                });
+
+                                const muteBtn = document.getElementById('hls-mute-btn');
+                                const fsBtn = document.getElementById('hls-fs-btn');
+                                const shield = document.getElementById('hls-click-shield');
+                                const container = document.getElementById('player-stage-container');
+
+                                const toggleMute = () => { video.muted = !video.muted; };
+                                const toggleFs = () => {
+                                    if (!document.fullscreenElement) { container?.requestFullscreen?.(); }
+                                    else { document.exitFullscreen?.(); }
+                                };
+
+                                muteBtn?.addEventListener('click', toggleMute);
+                                shield?.addEventListener('click', toggleMute);
+                                fsBtn?.addEventListener('click', toggleFs);
+                                shield?.addEventListener('dblclick', toggleFs);
+
+                                // Prevent seeking keyboard shortcuts
+                                window.addEventListener('keydown', (e) => {
+                                    if (['ArrowLeft', 'ArrowRight', 'j', 'l', 'J', 'L', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+                                        if (!['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+                                            e.preventDefault();
+                                        }
+                                    }
+                                });
                             });
                         </script>
 
                     @elseif($playback['mode'] === 'embed_player')
-                        {{-- Mode B: Official Broadcaster Embed Player & 24/7 Linear Playout Engine --}}
+                        {{-- Mode B: Official Broadcaster Embed Player & 24/7 Real-Time Linear Playout Engine --}}
                         <div class="relative w-full h-full overflow-hidden bg-black flex items-center justify-center group/embed">
                             @if(isset($linearPlayout) && !empty($linearPlayout['playlist_queue']))
-                                {{-- 24/7 Continuous Automated Playout Engine --}}
+                                {{-- 24/7 Continuous Automated Real-Time Playout Engine (No Fast Forward, No Rewind) --}}
                                 <div x-data="{
                                         playlist: {{ json_encode($linearPlayout['playlist_queue']) }},
                                         currentIndex: 0,
                                         player: null,
                                         isMuted: false,
+                                        syncInterval: null,
+                                        programmeAnchorTime: null,
+                                        isFullscreen: false,
                                         currentProg() {
                                             return this.playlist[this.currentIndex] || {};
                                         },
                                         init() {
                                             this.loadYouTubeIframeAPI();
+                                            // Globally prevent keyboard seeking shortcuts when watching
+                                            window.addEventListener('keydown', (e) => {
+                                                if (['ArrowLeft', 'ArrowRight', 'j', 'l', 'J', 'L', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+                                                    if (!['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }
+                                            });
                                         },
                                         loadYouTubeIframeAPI() {
                                             if (!window.YT) {
@@ -93,24 +165,69 @@
                                         },
                                         initPlayer() {
                                             const prog = this.currentProg();
+                                            const startSecs = Math.floor(prog.start_seconds || 0);
+                                            // Anchor the programme start to the wall clock for exact realtime synchronization
+                                            this.programmeAnchorTime = Date.now() - (startSecs * 1000);
+
                                             this.player = new YT.Player('linear-yt-frame', {
                                                 videoId: prog.video_id,
                                                 playerVars: {
                                                     'autoplay': 1,
-                                                    'controls': 1,
+                                                    'controls': 0,        // ZERO CONTROLS: Hides seek bar, fast forward, rewind, and scrubber
+                                                    'disablekb': 1,       // DISABLE KEYBOARD: Disables arrow keys, j/l, numbers seeking
                                                     'modestbranding': 1,
                                                     'rel': 0,
-                                                    'start': prog.start_seconds || 0,
-                                                    'playsinline': 1
+                                                    'start': startSecs,
+                                                    'playsinline': 1,
+                                                    'iv_load_policy': 3,
+                                                    'fs': 0               // Fullscreen managed via TV control button
                                                 },
                                                 events: {
                                                     'onReady': (e) => {
-                                                        try { e.target.playVideo(); } catch(err) {}
+                                                        try { 
+                                                            e.target.playVideo();
+                                                            this.startRealtimeSyncTicker();
+                                                        } catch(err) {}
                                                     },
                                                     'onStateChange': (e) => this.onPlayerStateChange(e),
                                                     'onError': (e) => this.handleStreamError(e)
                                                 }
                                             });
+                                        },
+                                        startRealtimeSyncTicker() {
+                                            if (this.syncInterval) clearInterval(this.syncInterval);
+
+                                            // Real-time synchronization loop: enforces live linear position
+                                            this.syncInterval = setInterval(() => {
+                                                if (!this.player || typeof this.player.getCurrentTime !== 'function') return;
+
+                                                const prog = this.currentProg();
+                                                const liveElapsed = (Date.now() - this.programmeAnchorTime) / 1000;
+                                                const totalDuration = prog.duration_seconds || 1800;
+
+                                                // If programme duration has elapsed in real time, auto-advance to next scheduled item
+                                                if (liveElapsed >= totalDuration) {
+                                                    this.playNext();
+                                                    return;
+                                                }
+
+                                                try {
+                                                    const playerPos = this.player.getCurrentTime();
+                                                    const state = this.player.getPlayerState();
+
+                                                    // If video was paused or buffered, snap back to live position - no time shifting allowed
+                                                    if (state === 2) { // PAUSED
+                                                        this.player.seekTo(liveElapsed, true);
+                                                        this.player.playVideo();
+                                                        return;
+                                                    }
+
+                                                    // If playhead drifted from realtime wall-clock offset by more than 2 seconds, snap back
+                                                    if (Math.abs(playerPos - liveElapsed) > 2.0) {
+                                                        this.player.seekTo(liveElapsed, true);
+                                                    }
+                                                } catch(err) {}
+                                            }, 1000);
                                         },
                                         handleStreamError(event) {
                                             console.warn('Playback error code:', event.data, 'Requesting verified reserve replacement from Zonita Engine...');
@@ -132,6 +249,7 @@
                                                 if (data.status === 'recovered' && data.replacement) {
                                                     console.log('Zonita Engine deployed reserve replacement:', data.replacement.video_id);
                                                     this.playlist[this.currentIndex] = data.replacement;
+                                                    this.programmeAnchorTime = Date.now();
                                                     if (this.player && this.player.loadVideoById) {
                                                         this.player.loadVideoById({
                                                             videoId: data.replacement.video_id,
@@ -151,26 +269,46 @@
                                             // When video ends (YT.PlayerState.ENDED === 0), seamlessly roll into next scheduled programme
                                             if (event.data === 0) {
                                                 this.playNext();
+                                            } else if (event.data === 2) { // PAUSED
+                                                // Realtime television cannot be paused to watch from the past
+                                                const liveElapsed = (Date.now() - this.programmeAnchorTime) / 1000;
+                                                if (this.player && this.player.seekTo) {
+                                                    this.player.seekTo(liveElapsed, true);
+                                                    this.player.playVideo();
+                                                }
                                             }
                                         },
                                         playNext() {
                                             this.currentIndex = (this.currentIndex + 1) % this.playlist.length;
                                             const nextProg = this.currentProg();
+                                            const startSecs = Math.floor(nextProg.start_seconds || 0);
+                                            this.programmeAnchorTime = Date.now() - (startSecs * 1000);
+
                                             if (this.player && this.player.loadVideoById) {
                                                 this.player.loadVideoById({
                                                     videoId: nextProg.video_id,
-                                                    startSeconds: nextProg.start_seconds || 0
+                                                    startSeconds: startSecs
                                                 });
                                             }
                                         },
-                                        switchProgramme(idx) {
-                                            this.currentIndex = idx;
-                                            const prog = this.currentProg();
-                                            if (this.player && this.player.loadVideoById) {
-                                                this.player.loadVideoById({
-                                                    videoId: prog.video_id,
-                                                    startSeconds: prog.start_seconds || 0
-                                                });
+                                        toggleMute() {
+                                            if (!this.player) return;
+                                            if (this.player.isMuted()) {
+                                                this.player.unMute();
+                                                this.isMuted = false;
+                                            } else {
+                                                this.player.mute();
+                                                this.isMuted = true;
+                                            }
+                                        },
+                                        toggleFullscreen() {
+                                            const container = document.getElementById('player-stage-container');
+                                            if (!document.fullscreenElement) {
+                                                container?.requestFullscreen?.();
+                                                this.isFullscreen = true;
+                                            } else {
+                                                document.exitFullscreen?.();
+                                                this.isFullscreen = false;
                                             }
                                         }
                                      }"
@@ -181,17 +319,47 @@
                                         <div id="linear-yt-frame" class="absolute inset-0 w-full h-full scale-[1.02] transform origin-center"></div>
                                     </div>
 
-                                    <!-- Top-Right Live Station Bug -->
-                                    <div class="absolute top-3 right-3 pointer-events-none z-20 flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
-                                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                                        <span>24/7 LINEAR ON-AIR</span>
+                                    <!-- Transparent Interaction Shield to Block Scrubbing & Manual Seeking -->
+                                    <div class="absolute inset-0 z-10 cursor-pointer"
+                                         @click="toggleMute()"
+                                         @dblclick="toggleFullscreen()">
                                     </div>
 
-                                    <!-- Bottom Playout On-Air Lower Third Bug -->
+                                    <!-- Top-Left Live Station Bug & Real-Time Lock Indicator -->
+                                    <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                                        <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
+                                            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                            <span>24/7 REAL-TIME BROADCAST</span>
+                                        </div>
+                                        <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
+                                            <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                            <span>Seeking Locked</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Top-Right TV Controls (Audio Mute / Fullscreen) -->
+                                    <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
+                                        <button type="button" @click.stop="toggleMute()" class="p-2 rounded-xl bg-black/80 hover:bg-black border border-gray-800 text-white backdrop-blur-md transition shadow-lg" title="Toggle Audio">
+                                            <template x-if="isMuted">
+                                                <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+                                            </template>
+                                            <template x-if="!isMuted">
+                                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                                            </template>
+                                        </button>
+                                        <button type="button" @click.stop="toggleFullscreen()" class="p-2 rounded-xl bg-black/80 hover:bg-black border border-gray-800 text-white backdrop-blur-md transition shadow-lg" title="Fullscreen">
+                                            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                                        </button>
+                                    </div>
+
+                                    <!-- Bottom Playout On-Air Lower Third Bug (Realtime Synchronized) -->
                                     <div class="absolute bottom-3 left-3 z-20 max-w-md hidden sm:flex items-center gap-3 px-3.5 py-2 rounded-xl bg-black/85 backdrop-blur-md border border-gray-800 text-xs shadow-2xl">
                                         <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0"></div>
                                         <div class="truncate">
-                                            <div class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Playing Now</div>
+                                            <div class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold flex items-center gap-1.5">
+                                                <span>ON-AIR NOW</span>
+                                                <span class="text-[9px] text-gray-500">&bull; Live Sync</span>
+                                            </div>
                                             <div class="text-white font-bold truncate text-[11px]" x-text="currentProg().title"></div>
                                         </div>
                                     </div>
@@ -215,12 +383,12 @@
                                     
                                     if ($isYouTube && $streamUrl && !str_contains($streamUrl, 'autoplay=')) {
                                         $separator = str_contains($streamUrl, '?') ? '&' : '?';
-                                        $streamUrl .= $separator . 'autoplay=1&mute=0&controls=1&modestbranding=1&rel=0&playsinline=1&enablejsapi=1';
+                                        $streamUrl .= $separator . 'autoplay=1&mute=0&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&iv_load_policy=3&fs=0';
                                     }
                                 @endphp
 
                                 @if($isYouTube)
-                                    {{-- Stealth YouTube Container: Zoomed slightly to hide top header watermark and branding overlay --}}
+                                    {{-- Realtime YouTube Stream Container: Zero Seeking Controls --}}
                                     <div class="relative w-full h-full overflow-hidden pointer-events-auto">
                                         <iframe 
                                             src="{{ $streamUrl }}" 
@@ -231,15 +399,24 @@
                                             loading="eager">
                                         </iframe>
 
-                                        <!-- Top-right watermark shield with Zoniva Live badge to maintain clean interface -->
-                                        <div class="absolute top-3 right-3 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-semibold text-white shadow-xl">
-                                            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                                            <span>LIVE BROADCAST</span>
+                                        <!-- Transparent Click Shield to Block Manual Scrubbing -->
+                                        <div class="absolute inset-0 z-10 cursor-default"></div>
+
+                                        <!-- Top-left watermark shield with Zonita Real-Time badge -->
+                                        <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                                            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-semibold text-white shadow-xl">
+                                                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                                <span>24/7 REAL-TIME STREAM</span>
+                                            </div>
+                                            <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
+                                                <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                                <span>Seeking Locked</span>
+                                            </div>
                                         </div>
 
                                         @if($channel->official_destination_url)
                                             <!-- Bottom subtle external feed option if embed has browser restrictions -->
-                                            <div class="absolute bottom-3 right-3 z-10">
+                                            <div class="absolute bottom-3 right-3 z-20">
                                                 <a href="{{ $channel->official_destination_url }}" target="_blank" rel="noopener noreferrer" 
                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/80 hover:bg-black text-[11px] font-medium text-gray-300 hover:text-white border border-gray-700/80 backdrop-blur-md transition shadow-lg">
                                                     <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
@@ -259,20 +436,52 @@
                         </div>
 
                     @elseif($playback['mode'] === 'zoniva_original')
-                        {{-- Mode D: Zoniva Originals --}}
-                        <video id="zoniva-player" class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_url ?? '' }}"></video>
+                        {{-- Mode D: Zoniva Originals (Realtime Lock) --}}
+                        <div class="relative w-full h-full bg-black flex items-center justify-center group" id="originals-player-wrapper">
+                            <video id="zoniva-player" autoplay playsinline poster="{{ $channel->banner_url ?? '' }}" class="w-full h-full object-contain pointer-events-none"></video>
+                            
+                            <!-- Transparent Shield -->
+                            <div class="absolute inset-0 z-10 cursor-pointer" id="originals-click-shield"></div>
+
+                            <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    <span>ZONITA ORIGINAL &bull; REAL-TIME</span>
+                                </div>
+                                <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
+                                    <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    <span>Seeking Locked</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 const video = document.getElementById('zoniva-player');
                                 const streamUrl = "{{ $playback['stream']->stream_url }}";
+                                let hls = null;
                                 if (Hls.isSupported()) {
-                                    const hls = new Hls({ enableWorker: true });
+                                    hls = new Hls({ enableWorker: true, liveSyncDurationCount: 3 });
                                     hls.loadSource(streamUrl);
                                     hls.attachMedia(video);
                                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                                     video.src = streamUrl;
                                 }
+
+                                video.addEventListener('seeking', function () {
+                                    if (hls && hls.liveSyncPosition) {
+                                        video.currentTime = hls.liveSyncPosition;
+                                    }
+                                });
+
+                                const shield = document.getElementById('originals-click-shield');
+                                shield?.addEventListener('click', () => { video.muted = !video.muted; });
+                                shield?.addEventListener('dblclick', () => {
+                                    const container = document.getElementById('player-stage-container');
+                                    if (!document.fullscreenElement) { container?.requestFullscreen?.(); }
+                                    else { document.exitFullscreen?.(); }
+                                });
                             });
                         </script>
 
