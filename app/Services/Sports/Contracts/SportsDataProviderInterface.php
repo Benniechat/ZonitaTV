@@ -7,8 +7,7 @@ interface SportsDataProviderInterface
     /**
      * Get a list of upcoming fixtures across target competitions.
      *
-     * @param array<int, string> $competitionCodes
-     * @param int $daysAhead
+     * @param  array<int, string>  $competitionCodes
      * @return array<int, array<string, mixed>>
      */
     public function getUpcomingFixtures(array $competitionCodes = [], int $daysAhead = 7): array;
@@ -23,7 +22,6 @@ interface SportsDataProviderInterface
     /**
      * Fetch updated details for a single fixture by provider ID.
      *
-     * @param string|int $providerFixtureId
      * @return array<string, mixed>|null
      */
     public function getFixtureDetails(string|int $providerFixtureId): ?array;

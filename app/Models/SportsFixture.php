@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,6 +47,21 @@ class SportsFixture extends Model
         'raw_metadata' => 'array',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (SportsFixture $fixture) {
+            if ($fixture->utc_kickoff && empty($fixture->lagos_kickoff)) {
+                $fixture->lagos_kickoff = $fixture->utc_kickoff->copy()->timezone(config('sports.timezone', 'Africa/Lagos'));
+            }
+        });
+
+        static::updating(function (SportsFixture $fixture) {
+            if ($fixture->isDirty('utc_kickoff') && ! $fixture->isDirty('lagos_kickoff')) {
+                $fixture->lagos_kickoff = $fixture->utc_kickoff->copy()->timezone(config('sports.timezone', 'Africa/Lagos'));
+            }
+        });
+    }
+
     public function competition(): BelongsTo
     {
         return $this->belongsTo(SportsCompetition::class, 'competition_id');
@@ -90,7 +104,7 @@ class SportsFixture extends Model
      */
     public function scopeUpcoming(Builder $query): Builder
     {
-        return $query->where('status', 'scheduled')
+        return $query->whereIn('status', ['scheduled', 'timed'])
             ->where('utc_kickoff', '>=', now())
             ->orderBy('utc_kickoff', 'asc');
     }
@@ -101,8 +115,7 @@ class SportsFixture extends Model
     public function scopeLive(Builder $query): Builder
     {
         return $query->where(function ($q) {
-            $q->where('status', 'in_play')
-                ->orWhere('status', 'paused')
+            $q->whereIn('status', ['in_play', 'paused', 'live'])
                 ->orWhere(function ($sub) {
                     $sub->where('is_live', true)
                         ->where('utc_kickoff', '<=', now())

@@ -37,3 +37,8 @@ Schedule::call(function () {
 Schedule::call(function () {
     GenerateChannelReports::dispatch(lookbackHours: 24);
 })->dailyAt('00:05')->name('zonita:daily-broadcast-reports');
+
+// --- Zonita Sports Autonomous MCR Live Engine ---
+Schedule::command('sports:sync-fixtures')->everyThirtyMinutes()->name('sports:sync-fixtures');
+Schedule::command('sports:verify-broadcasts')->everyFifteenMinutes()->name('sports:verify-broadcasts');
+Schedule::command('sports:run-scheduler --once')->everyFiveMinutes()->name('sports:run-scheduler');

@@ -29,6 +29,7 @@ class SyncSportsFixturesCommand extends Command
         );
 
         $this->info('Sports fixture synchronization completed successfully.');
+
         return 0;
     }
 }

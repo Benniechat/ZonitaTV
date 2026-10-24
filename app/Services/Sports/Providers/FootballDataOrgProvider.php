@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class FootballDataOrgProvider implements SportsDataProviderInterface
 {
     protected ?string $apiKey;
+
     protected string $baseUrl;
 
     public function __construct()
@@ -22,6 +23,7 @@ class FootballDataOrgProvider implements SportsDataProviderInterface
     {
         if (empty($this->apiKey)) {
             Log::info('FootballDataOrgProvider: No API key configured. Skipping external request.');
+
             return [];
         }
 
@@ -42,6 +44,7 @@ class FootballDataOrgProvider implements SportsDataProviderInterface
                     'status' => $response->status(),
                     'body' => $response->json(),
                 ]);
+
                 return [];
             }
 
@@ -55,7 +58,8 @@ class FootballDataOrgProvider implements SportsDataProviderInterface
 
             return $normalized;
         } catch (\Throwable $e) {
-            Log::error('FootballDataOrgProvider exception: ' . $e->getMessage());
+            Log::error('FootballDataOrgProvider exception: '.$e->getMessage());
+
             return [];
         }
     }
@@ -87,7 +91,8 @@ class FootballDataOrgProvider implements SportsDataProviderInterface
 
             return $normalized;
         } catch (\Throwable $e) {
-            Log::error('FootballDataOrgProvider live check exception: ' . $e->getMessage());
+            Log::error('FootballDataOrgProvider live check exception: '.$e->getMessage());
+
             return [];
         }
     }

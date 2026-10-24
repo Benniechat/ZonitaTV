@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
 use App\Http\Controllers\Admin\IngestAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
+use App\Http\Controllers\Admin\SportsAdminController;
 use App\Http\Controllers\Api\PlaybackController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalComplianceController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SportsController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,15 @@ Route::get('/channel/{slug}', [ChannelController::class, 'show'])->name('channel
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/guide', [GuideController::class, 'index'])->name('guide.index');
+
+// --- Automated Live Sports Broadcasting & Discovery Engine ---
+Route::prefix('sports')->name('sports.')->group(function () {
+    Route::get('/', [SportsController::class, 'index'])->name('index');
+    Route::get('/live', [SportsController::class, 'live'])->name('live');
+    Route::get('/upcoming', [SportsController::class, 'upcoming'])->name('upcoming');
+    Route::get('/schedule', [SportsController::class, 'schedule'])->name('schedule');
+    Route::get('/match/{fixture}', [SportsController::class, 'show'])->name('show');
+});
 
 // Audience Engine & Growth
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
@@ -86,6 +97,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/alert/{alert}/resolve', [BroadcastingAdminController::class, 'resolveAlert'])->name('resolve-alert');
         Route::get('/rules/{channel}', [BroadcastingAdminController::class, 'editRule'])->name('rules.edit');
         Route::post('/rules/{channel}', [BroadcastingAdminController::class, 'updateRule'])->name('rules.update');
+    });
+
+    // Sports Master Control Room (MCR)
+    Route::prefix('sports')->name('sports.')->group(function () {
+        Route::get('/', [SportsAdminController::class, 'index'])->name('index');
+        Route::post('/sync-fixtures', [SportsAdminController::class, 'syncFixtures'])->name('sync-fixtures');
+        Route::post('/verify-broadcasts', [SportsAdminController::class, 'verifyBroadcasts'])->name('verify-broadcasts');
+        Route::post('/sync-schedule', [SportsAdminController::class, 'syncSchedule'])->name('sync-schedule');
+        Route::post('/sessions/{session}/emergency-fallback', [SportsAdminController::class, 'emergencyFallback'])->name('emergency-fallback');
+        Route::post('/sessions/{session}/force-mode-a', [SportsAdminController::class, 'forceModeA'])->name('force-mode-a');
+        Route::post('/fixtures/{fixture}/toggle-mode', [SportsAdminController::class, 'toggleMode'])->name('toggle-mode');
     });
 
     // Rights & Permissions

@@ -54,7 +54,10 @@
                         </a>
                         <a href="{{ route('guide.index') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Live TV</a>
                         <a href="{{ route('channels.index') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Channels</a>
-                        <a href="{{ route('categories.show', 'sports') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Sports</a>
+                        <a href="{{ route('sports.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('sports.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            Sports
+                        </a>
                         <a href="{{ route('categories.show', 'news') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">News</a>
                         <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
                         <a href="{{ route('categories.show', 'education') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Education</a>

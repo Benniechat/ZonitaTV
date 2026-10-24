@@ -32,7 +32,6 @@ class FixtureDiscoveryService
     /**
      * Discover and sync upcoming and live fixtures into database.
      *
-     * @param int $daysAhead
      * @return array<string, int>
      */
     public function syncFixtures(int $daysAhead = 7): array
@@ -62,14 +61,26 @@ class FixtureDiscoveryService
         return [
             'discovered' => $discoveredCount,
             'updated' => $updatedCount,
+            'new_fixtures' => $discoveredCount,
+            'updated_fixtures' => $updatedCount,
             'live_in_play' => $liveCount,
         ];
     }
 
     /**
+     * Alias for syncing fixtures across all competitions.
+     *
+     * @return array<string, int>
+     */
+    public function syncAllCompetitions(int $daysAhead = 7): array
+    {
+        return $this->syncFixtures($daysAhead);
+    }
+
+    /**
      * Persist normalized fixture with strict deduplication.
      *
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
     public function persistNormalizedFixture(array $data): array
@@ -167,10 +178,12 @@ class FixtureDiscoveryService
 
         if ($fixture) {
             $fixture->update($attributes);
+
             return ['action' => 'updated', 'fixture' => $fixture];
         }
 
         $fixture = SportsFixture::create($attributes);
+
         return ['action' => 'created', 'fixture' => $fixture];
     }
 }

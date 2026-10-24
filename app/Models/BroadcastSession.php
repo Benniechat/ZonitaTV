@@ -32,6 +32,18 @@ class BroadcastSession extends Model
         'ended_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (BroadcastSession $session) {
+            if (empty($session->title)) {
+                $fixture = $session->fixture ?? SportsFixture::find($session->fixture_id);
+                $session->title = $fixture
+                    ? (($fixture->homeTeam?->name ?? 'Home').' vs '.($fixture->awayTeam?->name ?? 'Away'))
+                    : 'Live Sports Broadcast Session';
+            }
+        });
+    }
+
     public function fixture(): BelongsTo
     {
         return $this->belongsTo(SportsFixture::class, 'fixture_id');
@@ -50,6 +62,19 @@ class BroadcastSession extends Model
     public function failures(): HasMany
     {
         return $this->hasMany(BroadcastFailure::class, 'session_id');
+    }
+
+    /**
+     * Record a failure incident during this broadcast session.
+     */
+    public function recordFailure(string $failureType, string $errorMessage, array $details = []): BroadcastFailure
+    {
+        return $this->failures()->create([
+            'failure_type' => $failureType,
+            'error_message' => $errorMessage,
+            'details' => $details,
+            'resolved' => false,
+        ]);
     }
 
     /**

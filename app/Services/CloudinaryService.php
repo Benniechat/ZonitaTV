@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Log;
 class CloudinaryService
 {
     protected string $cloudName;
+
     protected string $apiKey;
+
     protected ?string $apiSecret;
+
     protected string $uploadPreset;
 
     public function __construct()
@@ -49,7 +52,7 @@ class CloudinaryService
     /**
      * Generate signed upload parameters for Cloudinary Frontend Upload Widget.
      *
-     * @param array<string, mixed> $customParams
+     * @param  array<string, mixed>  $customParams
      * @return array<string, mixed>
      */
     public function generateUploadSignature(array $customParams = []): array
@@ -73,7 +76,7 @@ class CloudinaryService
         }
         $stringToSign = implode('&', $paramPairs);
 
-        $signature = $this->apiSecret ? sha1($stringToSign . $this->apiSecret) : null;
+        $signature = $this->apiSecret ? sha1($stringToSign.$this->apiSecret) : null;
 
         return [
             'signature' => $signature,
@@ -88,9 +91,7 @@ class CloudinaryService
     /**
      * Direct upload from server (e.g. from Controller or CLI).
      *
-     * @param string|UploadedFile $file
-     * @param string $folder
-     * @param array<string, mixed> $options
+     * @param  array<string, mixed>  $options
      * @return array<string, mixed>
      */
     public function upload(string|UploadedFile $file, string $folder = 'zonita', array $options = []): array
@@ -118,7 +119,7 @@ class CloudinaryService
                     $pairs[] = "{$k}={$v}";
                 }
             }
-            $postData['signature'] = sha1(implode('&', $pairs) . $this->apiSecret);
+            $postData['signature'] = sha1(implode('&', $pairs).$this->apiSecret);
             $postData['api_key'] = $this->apiKey;
         } else {
             $postData['upload_preset'] = $this->uploadPreset;
@@ -140,6 +141,7 @@ class CloudinaryService
 
             if ($response->successful()) {
                 $data = $response->json();
+
                 return [
                     'success' => true,
                     'secure_url' => $data['secure_url'] ?? null,
@@ -159,10 +161,11 @@ class CloudinaryService
 
             return [
                 'success' => false,
-                'error' => $response->json()['error']['message'] ?? 'Cloudinary upload failed with HTTP ' . $response->status(),
+                'error' => $response->json()['error']['message'] ?? 'Cloudinary upload failed with HTTP '.$response->status(),
             ];
         } catch (\Throwable $e) {
             Log::error('Cloudinary upload exception', ['message' => $e->getMessage()]);
+
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -173,9 +176,7 @@ class CloudinaryService
     /**
      * Generate an optimized deliver URL for an asset.
      *
-     * @param string $publicId
-     * @param array<string, mixed> $transformations
-     * @return string
+     * @param  array<string, mixed>  $transformations
      */
     public function url(string $publicId, array $transformations = []): string
     {
@@ -190,9 +191,7 @@ class CloudinaryService
     /**
      * Generate a Cloudinary fetch URL for external media (e.g. YouTube thumbnails).
      *
-     * @param string $externalUrl
-     * @param array<string, mixed> $transformations
-     * @return string
+     * @param  array<string, mixed>  $transformations
      */
     public function fetchUrl(string $externalUrl, array $transformations = []): string
     {
@@ -201,7 +200,7 @@ class CloudinaryService
             'quality' => 'auto',
         ], $transformations));
 
-        return "https://res.cloudinary.com/{$this->cloudName}/image/fetch/{$transString}/" . urlencode($externalUrl);
+        return "https://res.cloudinary.com/{$this->cloudName}/image/fetch/{$transString}/".urlencode($externalUrl);
     }
 
     protected function buildTransformationString(array $trans): string
@@ -209,22 +208,22 @@ class CloudinaryService
         $parts = [];
 
         if (! empty($trans['width'])) {
-            $parts[] = 'w_' . $trans['width'];
+            $parts[] = 'w_'.$trans['width'];
         }
         if (! empty($trans['height'])) {
-            $parts[] = 'h_' . $trans['height'];
+            $parts[] = 'h_'.$trans['height'];
         }
         if (! empty($trans['crop'])) {
-            $parts[] = 'c_' . $trans['crop'];
+            $parts[] = 'c_'.$trans['crop'];
         }
         if (! empty($trans['gravity'])) {
-            $parts[] = 'g_' . $trans['gravity'];
+            $parts[] = 'g_'.$trans['gravity'];
         }
         if (! empty($trans['fetch_format'])) {
-            $parts[] = 'f_' . $trans['fetch_format'];
+            $parts[] = 'f_'.$trans['fetch_format'];
         }
         if (! empty($trans['quality'])) {
-            $parts[] = 'q_' . $trans['quality'];
+            $parts[] = 'q_'.$trans['quality'];
         }
 
         return implode(',', $parts);
