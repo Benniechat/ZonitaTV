@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BroadcastingAdminController;
 use App\Http\Controllers\Admin\ChannelAdminController;
+use App\Http\Controllers\Admin\CloudinaryMediaController;
 use App\Http\Controllers\Admin\ComplaintAdminController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
@@ -105,4 +106,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('complaints/{complaint}', [ComplaintAdminController::class, 'show'])->name('complaints.show');
     Route::post('complaints/{complaint}/status', [ComplaintAdminController::class, 'updateStatus'])->name('complaints.status');
     Route::post('complaints/{complaint}/takedown', [ComplaintAdminController::class, 'takedown'])->name('complaints.takedown');
+
+    // Cloudinary Media Storage & Upload Widget Operations
+    Route::prefix('media')->name('media.')->group(function () {
+        Route::get('/', [CloudinaryMediaController::class, 'index'])->name('index');
+        Route::get('/signature', [CloudinaryMediaController::class, 'signature'])->name('signature');
+        Route::post('/upload', [CloudinaryMediaController::class, 'upload'])->name('upload');
+    });
 });
