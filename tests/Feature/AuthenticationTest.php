@@ -20,6 +20,7 @@ class AuthenticationTest extends TestCase
         $response->assertSee('Welcome Back');
         $response->assertSee('Continue with Google');
         $response->assertSee('Sign In');
+        $response->assertSee('Show password');
     }
 
     public function test_register_page_renders_with_google_signup_button(): void
@@ -29,6 +30,7 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Create Free Account');
         $response->assertSee('Sign up with Google');
+        $response->assertSee('Show password');
     }
 
     public function test_user_can_register_with_email_and_password(): void

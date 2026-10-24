@@ -59,21 +59,55 @@
                     @enderror
                 </div>
 
-                <div>
+                <div x-data="{ show: false }">
                     <label for="password" class="block text-xs font-semibold text-gray-300 mb-1.5">Password</label>
-                    <input type="password" name="password" id="password" required
-                           class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
-                           placeholder="At least 8 characters">
+                    <div class="relative flex items-center">
+                        <input :type="show ? 'text' : 'password'" name="password" id="password" required
+                               class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl pl-4 pr-11 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
+                               placeholder="At least 8 characters">
+                        <button type="button" 
+                                @click="show = !show" 
+                                :aria-label="show ? 'Hide password' : 'Show password'"
+                                :title="show ? 'Hide password' : 'Show password'"
+                                class="absolute right-3 p-1 text-gray-400 hover:text-white focus:outline-none transition">
+                            <!-- Eye icon (Show) -->
+                            <svg x-show="!show" class="w-4 h-4 text-gray-400 hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <!-- Eye-slash icon (Hide) -->
+                            <svg x-show="show" x-cloak class="w-4 h-4 text-amber-400 hover:text-amber-300 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                            </svg>
+                        </button>
+                    </div>
                     @error('password')
                         <p class="text-red-400 text-[11px] mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div>
+                <div x-data="{ show: false }">
                     <label for="password_confirmation" class="block text-xs font-semibold text-gray-300 mb-1.5">Confirm Password</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" required
-                           class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
-                           placeholder="Repeat password">
+                    <div class="relative flex items-center">
+                        <input :type="show ? 'text' : 'password'" name="password_confirmation" id="password_confirmation" required
+                               class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl pl-4 pr-11 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
+                               placeholder="Repeat password">
+                        <button type="button" 
+                                @click="show = !show" 
+                                :aria-label="show ? 'Hide password' : 'Show password'"
+                                :title="show ? 'Hide password' : 'Show password'"
+                                class="absolute right-3 p-1 text-gray-400 hover:text-white focus:outline-none transition">
+                            <!-- Eye icon (Show) -->
+                            <svg x-show="!show" class="w-4 h-4 text-gray-400 hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <!-- Eye-slash icon (Hide) -->
+                            <svg x-show="show" x-cloak class="w-4 h-4 text-amber-400 hover:text-amber-300 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold text-xs tracking-wider uppercase transition shadow-lg shadow-orange-600/20 active:scale-[0.99] mt-2">
