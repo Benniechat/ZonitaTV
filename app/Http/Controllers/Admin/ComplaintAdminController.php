@@ -132,7 +132,7 @@ class ComplaintAdminController extends Controller
             'status' => 'content_disabled',
             'action_taken' => "Automated Takedown: {$action}. Reason: {$reason}",
             'resolution_notes' => ($complaint->resolution_notes ? $complaint->resolution_notes."\n\n" : '').
-                "[Takedown Executed ".now()->toIso8601String()." by ".Auth::user()->name."]: {$reason}",
+                '[Takedown Executed '.now()->toIso8601String().' by '.Auth::user()->name."]: {$reason}",
             'resolved_by_user_id' => Auth::id(),
             'resolved_at' => now(),
         ]);

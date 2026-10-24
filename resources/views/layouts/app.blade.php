@@ -163,28 +163,78 @@
     <!-- Footer -->
     <footer class="bg-[#080a0e] border-t border-gray-800/60 mt-20 pt-12 pb-8 text-gray-400 text-xs">
         <div class="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-gray-800/60">
-                <div class="flex items-center space-x-4">
-                    <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-9 w-auto">
-                    <span class="text-gray-500">Discover More. Watch Smarter.</span>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-gray-800/60">
+                <!-- Brand & Mission -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-8 w-auto">
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Continuous virtual television & smart electronic programming guide. Discover verified news, sports commentary, Christian worship, and entertainment.
+                    </p>
+                    <div class="pt-1">
+                        <a href="{{ route('wa.join') }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg transition">
+                            <svg class="w-3.5 h-3.5 fill-current text-emerald-400" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/></svg>
+                            Join Official WhatsApp
+                        </a>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-6 text-gray-400">
-                    <a href="{{ route('pages.about') }}" class="hover:text-white transition">About</a>
-                    <a href="{{ route('pages.privacy') }}" class="hover:text-white transition">Privacy Policy</a>
-                    <a href="{{ route('pages.terms') }}" class="hover:text-white transition">Terms</a>
-                    <a href="{{ route('guide.index') }}" class="hover:text-white transition">TV Guide</a>
-                    <a href="{{ route('channels.index') }}" class="hover:text-white transition">Channels</a>
-                    <a href="{{ route('wa.join') }}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 font-medium transition flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/></svg>
-                        WhatsApp Channel
+
+                <!-- Navigation & Guide -->
+                <div class="space-y-2 text-xs">
+                    <p class="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Explore & Watch</p>
+                    <ul class="space-y-1.5">
+                        <li><a href="{{ route('home') }}" class="hover:text-white transition">Home</a></li>
+                        <li><a href="{{ route('guide.index') }}" class="hover:text-white transition">24/7 Live TV Playout</a></li>
+                        <li><a href="{{ route('channels.index') }}" class="hover:text-white transition">Channels Directory</a></li>
+                        <li><a href="{{ route('categories.show', 'sports') }}" class="hover:text-white transition">Sports Hub</a></li>
+                        <li><a href="{{ route('categories.show', 'news') }}" class="hover:text-white transition">Live News Bulletins</a></li>
+                        <li><a href="{{ route('categories.show', 'christian-tv') }}" class="hover:text-white transition">Christian Television</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Compliance Framework -->
+                <div class="space-y-2 text-xs">
+                    <p class="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Legal & Governance</p>
+                    <ul class="space-y-1.5">
+                        <li><a href="{{ route('legal.disclaimer') }}" class="hover:text-amber-400 transition">Legal Disclaimer</a></li>
+                        <li><a href="{{ route('legal.terms') }}" class="hover:text-amber-400 transition">Terms of Use</a></li>
+                        <li><a href="{{ route('legal.copyright') }}" class="hover:text-amber-400 transition">Copyright Policy</a></li>
+                        <li><a href="{{ route('legal.content-rights') }}" class="hover:text-amber-400 transition">Content Rights & Verification</a></li>
+                        <li><a href="{{ route('legal.privacy') }}" class="hover:text-amber-400 transition">Privacy Policy (NDPA)</a></li>
+                        <li><a href="{{ route('legal.advertising') }}" class="hover:text-amber-400 transition">Advertising & Sponsorship</a></li>
+                    </ul>
+                </div>
+
+                <!-- Rights & Complaints Reporting -->
+                <div class="space-y-3 text-xs">
+                    <p class="font-bold text-white uppercase tracking-wider text-[11px] mb-1">Content Protection</p>
+                    <p class="text-gray-400 text-[11px]">
+                        Are you a copyright holder or broadcaster? We respect intellectual property and provide a rapid notice-and-takedown procedure.
+                    </p>
+                    <a href="{{ route('legal.report') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-500 transition shadow-lg shadow-red-600/20">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        Report Content / Takedown
                     </a>
+                    <div class="text-[11px] text-gray-500">
+                        Notice desk: <a href="mailto:copyright@zonitatv.com" class="text-amber-400 underline">copyright@zonitatv.com</a>
+                    </div>
                 </div>
             </div>
+
+            <!-- Third-Party Embedding Disclosure Note -->
+            <div class="py-4 text-[11px] text-gray-500 leading-relaxed border-b border-gray-800/60">
+                <p>
+                    <strong class="text-gray-400">Platform Transparency Notice:</strong> Zonita TV is an independent discovery and virtual scheduling guide. Linear video streams are displayed utilizing YouTube's official embedded player technology. Zonita TV does not host, download, or re-encode third-party media files. All trademarks, channel logos, and video broadcasts belong to their respective rights holders.
+                </p>
+            </div>
+
+            <!-- Bottom Copyright & Status -->
             <div class="pt-6 text-center md:text-left text-gray-500 text-[11px] flex flex-col md:flex-row items-center justify-between gap-2">
-                <p>&copy; {{ date('Y') }} Zonita TV. All rights reserved. Content discovery platform indexing authorised broadcasts.</p>
+                <p>&copy; {{ date('Y') }} Zonita TV. All rights reserved. Operating context: Federal Republic of Nigeria.</p>
                 <div class="flex items-center space-x-2">
-                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Verified Feeds</span>
-                    <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">EPG Synced</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Protected Embeds</span>
+                    <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Takedown Active</span>
                 </div>
             </div>
         </div>
