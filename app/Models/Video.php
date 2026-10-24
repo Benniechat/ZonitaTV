@@ -15,6 +15,9 @@ class Video extends Model
         'youtube_id',
         'title',
         'description',
+        'thumbnail_url',
+        'media_url',
+        'cloudinary_public_id',
         'channel_title',
         'published_at',
         'duration_seconds',
@@ -109,5 +112,26 @@ class Video extends Model
         }
 
         return $this->confidence_score >= 50;
+    }
+
+    /**
+     * Get the display thumbnail URL, prioritizing Cloudinary CDN.
+     */
+    public function getThumbnailUrlAttribute(): string
+    {
+        if (! empty($this->attributes['thumbnail_url'])) {
+            return $this->attributes['thumbnail_url'];
+        }
+
+        if (! empty($this->youtube_id)) {
+            $cloudName = config('services.cloudinary.cloud_name');
+            if ($cloudName) {
+                return "https://res.cloudinary.com/{$cloudName}/image/fetch/f_auto,q_auto,w_480,h_270,c_fill/https://img.youtube.com/vi/{$this->youtube_id}/hqdefault.jpg";
+            }
+
+            return "https://img.youtube.com/vi/{$this->youtube_id}/hqdefault.jpg";
+        }
+
+        return asset('images/logo/zonitatvlogo2.png');
     }
 }
