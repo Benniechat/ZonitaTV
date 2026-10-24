@@ -44,7 +44,7 @@ class BroadcastSession extends Model
 
     public function transitions(): HasMany
     {
-        return $this->hasMany(BroadcastStateTransition::class, 'session_id')->latest('created_at');
+        return $this->hasMany(BroadcastStateTransition::class, 'session_id')->orderBy('id', 'asc');
     }
 
     public function failures(): HasMany

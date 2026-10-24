@@ -93,6 +93,7 @@ class SportsBroadcastingSchemaTest extends TestCase
         $session->refresh();
         $this->assertEquals('broadcast_verified', $session->current_state);
         $this->assertCount(2, $session->transitions);
-        $this->assertEquals('monitoring', $session->transitions->last()->to_state);
+        $this->assertEquals('monitoring', $session->transitions->first()->to_state);
+        $this->assertEquals('broadcast_verified', $session->transitions->last()->to_state);
     }
 }
