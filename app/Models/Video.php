@@ -61,9 +61,15 @@ class Video extends Model
         return $this->hasMany(PlaybackFailure::class);
     }
 
+    public function complaints(): HasMany
+    {
+        return $this->hasMany(ContentComplaint::class);
+    }
+
     public function scopeEligibleForScheduling(Builder $query): Builder
     {
         return $query->whereIn('availability_status', ['approved', 'scheduled'])
+            ->whereNotIn('availability_status', ['disabled', 'removed', 'complaint_received', 'under_investigation', 'restricted', 'expired', 'rights_rejected'])
             ->where('is_embeddable', true)
             ->where('confidence_score', '>=', 50)
             ->where(function (Builder $q) {
@@ -83,7 +89,18 @@ class Video extends Model
             return false;
         }
 
-        if (in_array($this->availability_status, ['deleted_or_missing', 'embedding_disabled', 'private_or_restricted', 'rights_rejected'])) {
+        if (in_array($this->availability_status, [
+            'deleted_or_missing',
+            'embedding_disabled',
+            'private_or_restricted',
+            'rights_rejected',
+            'disabled',
+            'removed',
+            'complaint_received',
+            'under_investigation',
+            'restricted',
+            'expired',
+        ])) {
             return false;
         }
 
