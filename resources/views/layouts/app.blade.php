@@ -7,6 +7,11 @@
     <title>@yield('title', 'Zonita TV - Discover More. Watch Smarter.')</title>
     <meta name="description" content="@yield('meta_description', 'Discover verified television channels, live sports, breaking news, Christian worship, and original productions through one organised digital platform.')">
 
+    <!-- Favicon (Using Official Zonita TV Logo) -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/zonitatvlogo2.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo/zonitatvlogo2.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo/zonitatvlogo2.png') }}">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,33 +41,33 @@
             <div class="flex items-center justify-between h-20">
                 
                 <!-- Logo & Nav Links -->
-                <div class="flex items-center space-x-6 xl:space-x-10">
-                    <a href="{{ route('home') }}" class="flex items-center group">
-                        <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-10 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105">
+                <div class="flex items-center space-x-4 xl:space-x-8">
+                    <a href="{{ route('home') }}" class="flex items-center group shrink-0">
+                        <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-9 sm:h-10 xl:h-11 w-auto object-contain transition-transform group-hover:scale-105">
                     </a>
 
                     <!-- Navigation Links with Amber active pill indicator -->
-                    <nav class="hidden lg:flex items-center space-x-1 text-sm font-medium">
-                        <a href="{{ route('home') }}" class="relative px-3.5 py-2 text-white font-semibold transition group">
+                    <nav class="hidden lg:flex items-center space-x-0.5 xl:space-x-1 text-xs xl:text-sm font-medium">
+                        <a href="{{ route('home') }}" class="relative px-2.5 xl:px-3.5 py-2 text-white font-semibold transition group shrink-0">
                             Home
-                            <span class="absolute bottom-0 left-3 right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                            <span class="absolute bottom-0 left-2.5 right-2.5 xl:left-3 xl:right-3 h-0.5 bg-amber-400 rounded-full"></span>
                         </a>
-                        <a href="{{ route('guide.index') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">Live TV</a>
-                        <a href="{{ route('channels.index') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">Channels</a>
-                        <a href="{{ route('categories.show', 'sports') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">Sports</a>
-                        <a href="{{ route('categories.show', 'news') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">News</a>
-                        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">Christian</a>
-                        <a href="{{ route('categories.show', 'education') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">Education</a>
-                        <a href="{{ route('categories.show', 'entertainment') }}" class="px-3.5 py-2 text-gray-400 hover:text-white transition">Entertainment</a>
+                        <a href="{{ route('guide.index') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Live TV</a>
+                        <a href="{{ route('channels.index') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Channels</a>
+                        <a href="{{ route('categories.show', 'sports') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Sports</a>
+                        <a href="{{ route('categories.show', 'news') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">News</a>
+                        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
+                        <a href="{{ route('categories.show', 'education') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Education</a>
+                        <a href="{{ route('categories.show', 'entertainment') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Entertainment</a>
                     </nav>
                 </div>
 
                 <!-- Search & Profile Controls -->
-                <div class="flex items-center space-x-4">
-                    <form action="{{ route('search') }}" method="GET" class="relative hidden sm:block w-64 xl:w-80">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search channels, shows, topics..." 
-                               class="w-full bg-[#151922] text-xs text-gray-200 placeholder-gray-500 pl-10 pr-4 py-2.5 rounded-full border border-gray-700/80 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition">
-                        <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center space-x-2 sm:space-x-3 xl:space-x-4 shrink-0">
+                    <form action="{{ route('search') }}" method="GET" class="relative hidden sm:block w-36 md:w-44 lg:w-48 xl:w-56 focus-within:w-52 lg:focus-within:w-60 xl:focus-within:w-68 transition-all duration-200">
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search channels..." 
+                               class="w-full bg-[#151922] text-xs text-gray-200 placeholder-gray-500 pl-9 pr-3 py-2 rounded-full border border-gray-700/80 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition">
+                        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </form>
