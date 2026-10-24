@@ -7,11 +7,16 @@ use App\Models\Category;
 use App\Models\Channel;
 use App\Models\ChannelStream;
 use App\Models\ContentRight;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ChannelAdminController extends Controller
 {
+    public function __construct(
+        protected CloudinaryService $cloudinary
+    ) {}
+
     public function index(Request $request)
     {
         $channels = Channel::with(['categories', 'latestRights', 'primaryStream'])
