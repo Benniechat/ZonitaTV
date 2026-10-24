@@ -105,16 +105,28 @@ DB_DATABASE="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
 DB_USERNAME="${DB_USERNAME:-}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 DB_SSLMODE="${DB_SSLMODE:-require}"
-DATABASE_URL="${DATABASE_URL:-}"
+$( [ -n "$DATABASE_URL" ] && echo "DATABASE_URL=\"${DATABASE_URL}\"" )
 
-SESSION_DRIVER=cookie
+GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID:-}"
+GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET:-}"
+
+SESSION_DRIVER="${SESSION_DRIVER:-file}"
 QUEUE_CONNECTION=sync
 CACHE_STORE=file
+MAIL_MAILER="${MAIL_MAILER:-log}"
 EOF
+
+# Ensure database directory and file permissions are always writable for SQLite journal files
+mkdir -p /var/www/html/database
+chown -R www-data:www-data /var/www/html/database
+chmod 775 /var/www/html/database
+if [ -f /var/www/html/database/database.sqlite ]; then
+    chmod 664 /var/www/html/database/database.sqlite
+fi
 
 # Run migrations
 echo "==> Running database migrations..."
-php artisan migrate --force --no-interaction || true
+php artisan migrate --force --no-interaction
 
 # Seed database if channels table is empty
 CHANNEL_COUNT=$(php artisan tinker --execute 'echo \App\Models\Channel::count();' 2>/dev/null || echo "0")
