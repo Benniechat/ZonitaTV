@@ -53,6 +53,38 @@ class Channel extends Model
         return $this->belongsToMany(Category::class, 'channel_categories');
     }
 
+    /**
+     * Resolve the channel logo URL, supporting Cloudinary CDN and local storage.
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        if (empty($this->logo_path)) {
+            return asset('images/logo/zonitatvlogo2.png');
+        }
+
+        if (str_starts_with($this->logo_path, 'http://') || str_starts_with($this->logo_path, 'https://')) {
+            return $this->logo_path;
+        }
+
+        return asset($this->logo_path);
+    }
+
+    /**
+     * Resolve the channel banner URL, supporting Cloudinary CDN and local storage.
+     */
+    public function getBannerUrlAttribute(): ?string
+    {
+        if (empty($this->banner_path)) {
+            return null;
+        }
+
+        if (str_starts_with($this->banner_path, 'http://') || str_starts_with($this->banner_path, 'https://')) {
+            return $this->banner_path;
+        }
+
+        return asset($this->banner_path);
+    }
+
     public function streams(): HasMany
     {
         return $this->hasMany(ChannelStream::class);
