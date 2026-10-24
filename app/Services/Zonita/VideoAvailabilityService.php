@@ -29,6 +29,17 @@ class VideoAvailabilityService
      */
     public function verifyVideo(Video $video, bool $force = false): array
     {
+        // Never automatically override a legal compliance takedown, disabled, or complaint-received video
+        if (in_array($video->availability_status, ['disabled', 'removed', 'complaint_received', 'rights_rejected'])) {
+            return [
+                'video_id' => $video->id,
+                'status' => $video->availability_status,
+                'is_playable' => false,
+                'cached' => true,
+                'reason' => 'Content has been excluded by legal compliance or administrative takedown.',
+            ];
+        }
+
         // Skip if recently verified, approved, and not forced
         if (! $force && $video->availability_status === 'approved' && $video->last_verified_at && $video->last_verified_at->diffInHours(now()) < $this->reverifyHours) {
             return [

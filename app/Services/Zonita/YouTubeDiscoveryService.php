@@ -28,6 +28,13 @@ class YouTubeDiscoveryService
         // 1. Duplicate check / fetch existing
         $video = Video::firstOrNew(['youtube_id' => $youtubeId]);
 
+        // Never re-discover content that has been disabled, removed, or received a takedown complaint
+        if ($video->exists && in_array($video->availability_status, ['disabled', 'removed', 'complaint_received', 'rights_rejected'])) {
+            Log::info("Discovery rejected for {$youtubeId}: excluded by legal compliance/takedown status ({$video->availability_status})");
+
+            return null;
+        }
+
         $video->title = $candidateData['title'] ?? ($video->title ?? 'Untitled Broadcast');
         $video->description = $candidateData['description'] ?? $video->description;
         $video->channel_title = $candidateData['channel_title'] ?? $video->channel_title;
