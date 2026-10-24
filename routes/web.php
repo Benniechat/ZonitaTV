@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BroadcastingAdminController;
 use App\Http\Controllers\Admin\ChannelAdminController;
+use App\Http\Controllers\Admin\ComplaintAdminController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
 use App\Http\Controllers\Admin\IngestAdminController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LegalComplianceController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -41,10 +43,20 @@ Route::prefix('api/playback')->group(function () {
     Route::get('/epg/{slug}', [PlaybackController::class, 'getEpg']);
 });
 
-// Static info pages
+// Legal Disclaimer & Platform Compliance Framework
+Route::get('/legal-disclaimer', [LegalComplianceController::class, 'disclaimer'])->name('legal.disclaimer');
+Route::get('/terms-of-use', [LegalComplianceController::class, 'terms'])->name('legal.terms');
+Route::get('/copyright-policy', [LegalComplianceController::class, 'copyrightPolicy'])->name('legal.copyright');
+Route::get('/privacy-policy', [LegalComplianceController::class, 'privacyPolicy'])->name('legal.privacy');
+Route::get('/advertising-policy', [LegalComplianceController::class, 'advertisingPolicy'])->name('legal.advertising');
+Route::get('/content-rights', [LegalComplianceController::class, 'contentRights'])->name('legal.content-rights');
+Route::get('/report-content', [LegalComplianceController::class, 'reportForm'])->name('legal.report');
+Route::post('/report-content', [LegalComplianceController::class, 'submitReport'])->name('legal.report.submit')->middleware('throttle:5,10');
+
+// Static info pages & backward-compatible aliases
 Route::view('/about', 'pages.about')->name('pages.about');
-Route::view('/privacy', 'pages.privacy')->name('pages.privacy');
-Route::view('/terms', 'pages.terms')->name('pages.terms');
+Route::redirect('/privacy', '/privacy-policy', 301);
+Route::redirect('/terms', '/terms-of-use', 301);
 
 // Authentication & Identity
 Route::middleware('guest')->group(function () {
@@ -87,4 +99,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('ingest', [IngestAdminController::class, 'index'])->name('ingest.index');
     Route::post('ingest/playlist', [IngestAdminController::class, 'runPlaylistIngest'])->name('ingest.playlist');
     Route::post('ingest/epg', [IngestAdminController::class, 'runEpgSync'])->name('ingest.epg');
+
+    // Legal Compliance & Content Complaints Management
+    Route::get('complaints', [ComplaintAdminController::class, 'index'])->name('complaints.index');
+    Route::get('complaints/{complaint}', [ComplaintAdminController::class, 'show'])->name('complaints.show');
+    Route::post('complaints/{complaint}/status', [ComplaintAdminController::class, 'updateStatus'])->name('complaints.status');
+    Route::post('complaints/{complaint}/takedown', [ComplaintAdminController::class, 'takedown'])->name('complaints.takedown');
 });
