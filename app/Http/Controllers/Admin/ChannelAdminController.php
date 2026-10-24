@@ -39,7 +39,7 @@ class ChannelAdminController extends Controller
             'official_destination_url' => 'required|url|max:500',
             'country_code' => 'required|string|size:3',
             'language_code' => 'required|string|max:10',
-            'playback_mode' => 'required|string|in:direct_stream,embed_player,external_destination,zoniva_original',
+            'playback_mode' => 'required|string|in:direct_stream,embed_player,external_destination,zonita_original',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
             'is_published' => 'boolean',
@@ -117,7 +117,7 @@ class ChannelAdminController extends Controller
             'official_destination_url' => 'required|url|max:500',
             'country_code' => 'required|string|size:3',
             'language_code' => 'required|string|max:10',
-            'playback_mode' => 'required|string|in:direct_stream,embed_player,external_destination,zoniva_original',
+            'playback_mode' => 'required|string|in:direct_stream,embed_player,external_destination,zonita_original',
             'categories' => 'array',
         ]);
 

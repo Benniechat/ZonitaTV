@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Add New Channel - Zoniva TV')
+@section('title', 'Add New Channel - Zonita TV')
 
 @section('admin_content')
 
@@ -66,8 +66,8 @@
                 <select name="playback_mode" required class="w-full bg-gray-900 text-sm text-white px-4 py-3 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500">
                     <option value="external_destination">Mode C: Official External Broadcaster Destination (Default)</option>
                     <option value="embed_player">Mode B: Official Broadcaster Embed Player (iframe)</option>
-                    <option value="direct_stream">Mode A: Authorised Direct Stream (HLS.js Inside Zoniva)</option>
-                    <option value="zoniva_original">Mode D: Zoniva Originals (Direct Media)</option>
+                    <option value="direct_stream">Mode A: Authorised Direct Stream (HLS.js Inside Zonita)</option>
+                    <option value="zonita_original">Mode D: Zonita Originals (Direct Media)</option>
                 </select>
             </div>
 

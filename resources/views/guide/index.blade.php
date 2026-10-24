@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Electronic Programme Guide (EPG) - Zoniva TV')
+@section('title', 'Electronic Programme Guide (EPG) - Zonita TV')
 @section('meta_description', 'View live and upcoming television programmes, match coverage, sermons, and documentaries across verified networks.')
 
 @section('content')
@@ -13,7 +13,7 @@
                 <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
                 Electronic Programme Guide (EPG)
             </div>
-            <h1 class="text-3xl font-extrabold text-white">Zoniva TV Electronic Guide</h1>
+            <h1 class="text-3xl font-extrabold text-white">Zonita TV Electronic Guide</h1>
             <p class="text-xs sm:text-sm text-gray-400 mt-1">Continuous schedules powered by XMLTV integration and channel metadata.</p>
         </div>
 
@@ -66,7 +66,7 @@
                             <!-- Header with Channel & Times -->
                             <div class="flex items-center justify-between gap-3 mb-3">
                                 <div class="flex items-center space-x-2.5">
-                                    <img src="{{ asset($prog->channel->logo_path ?? '/images/logo/zonivatvLogo.png') }}" 
+                                    <img src="{{ asset($prog->channel->logo_path ?? '/images/logo/zonitatvLogo.png') }}"
                                          alt="{{ $prog->channel->name ?? '' }}" 
                                          class="w-8 h-8 object-contain rounded-lg bg-gray-900 border border-gray-800 p-0.5">
                                     <span class="text-xs font-bold text-gray-300">{{ $prog->channel->name ?? 'Channel' }}</span>

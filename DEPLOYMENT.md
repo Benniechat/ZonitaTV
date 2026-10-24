@@ -95,7 +95,7 @@ When your Render container starts, the startup script automatically:
 ## Database Persistence
 
 - **Using SQLite (Default)**:
-  - On first boot, the Docker container automatically creates the SQLite database and populates it with your initial channel catalogue from `database/zoniva_master_schema_and_data.sql`.
+  - On first boot, the Docker container automatically creates the SQLite database and populates it with your initial channel catalogue from `database/zonita_master_schema_and_data.sql`.
   - For long-term persistent storage on Render across deploys, you can attach a Render **Disk** (e.g. 1GB mounted at `/var/www/html/database`) in the Render Service settings.
 
 - **Using Render Managed PostgreSQL (Optional)**:
@@ -109,6 +109,6 @@ When your Render container starts, the startup script automatically:
 ## Verifying Deployment
 
 Once the build finishes:
-1. Open your assigned URL: `https://zonivatv.onrender.com`.
-2. Check the live stations (e.g. `https://zonivatv.onrender.com/channel/zonita-football-24-7`).
-3. Access the operations console at `https://zonivatv.onrender.com/admin/broadcasting`.
+1. Open your assigned URL: `https://zonitatv.onrender.com`.
+2. Check the live stations (e.g. `https://zonitatv.onrender.com/channel/zonita-football-24-7`).
+3. Access the operations console at `https://zonitatv.onrender.com/admin/broadcasting`.

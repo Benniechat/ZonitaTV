@@ -35,7 +35,7 @@ class StreamVerificationService
             // Send lightweight HEAD / GET range request with 5s timeout
             $response = Http::timeout(5)
                 ->withHeaders([
-                    'User-Agent' => 'ZonivaTV-StreamDiagnosticBot/1.0 (+https://zonivatv.com)',
+                    'User-Agent' => 'ZonitaTV-StreamDiagnosticBot/1.0 (+https://zonitatv.com)',
                 ])
                 ->head($url);
 

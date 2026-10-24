@@ -13,7 +13,7 @@ use Throwable;
 class IptvPlaylistIngestService
 {
     /**
-     * Map IPTV-ORG group-titles to Zoniva TV categories
+     * Map IPTV-ORG group-titles to Zonita TV categories
      */
     protected array $categoryMap = [
         'sports' => 'sports',
@@ -56,7 +56,7 @@ class IptvPlaylistIngestService
     {
         $response = Http::timeout(45)
             ->withoutVerifying()
-            ->withHeaders(['User-Agent' => 'ZonivaTV-PlaylistIngest/1.0'])
+            ->withHeaders(['User-Agent' => 'ZonitaTV-PlaylistIngest/1.0'])
             ->get($sourceUrl);
 
         if (! $response->successful()) {
@@ -241,9 +241,9 @@ class IptvPlaylistIngestService
             'name' => $name,
             'slug' => $baseSlug,
             'tvg_id' => $tvgId,
-            'tagline' => $meta['group_title'] ? "Watch {$meta['group_title']} broadcast on Zoniva TV" : null,
+            'tagline' => $meta['group_title'] ? "Watch {$meta['group_title']} broadcast on Zonita TV" : null,
             'description' => "Verified live broadcast feed for {$name} discovered via open IPTV-ORG catalogue.",
-            'logo_path' => $logo ?: '/images/logo/zonivatvLogo.png',
+            'logo_path' => $logo ?: '/images/logo/zonitatvLogo.png',
             'broadcaster_name' => $name,
             'broadcaster_website' => null,
             'official_destination_url' => $streamUrl,

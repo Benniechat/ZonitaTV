@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Personalised Viewing Guide - Zoniva TV')
+@section('title', 'Personalised Viewing Guide - Zonita TV')
 
 @section('content')
 

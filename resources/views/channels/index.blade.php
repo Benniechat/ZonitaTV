@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Channel Directory - Zoniva TV')
+@section('title', 'Channel Directory - Zonita TV')
 @section('meta_description', 'Browse the complete directory of verified Nigerian and international television channels.')
 
 @section('content')

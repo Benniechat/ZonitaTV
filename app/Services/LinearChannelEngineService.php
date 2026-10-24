@@ -23,7 +23,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Football Central 24/7',
                 'slug' => 'football-central-24-7',
-                'tvg_id' => 'FootballCentral.zoniva',
+                'tvg_id' => 'FootballCentral.zonita',
                 'category_slug' => 'sports',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -44,7 +44,7 @@ class LinearChannelEngineService
                         'description' => 'The heroic journey of Nigeria national football team through AFCON and world qualifiers.',
                         'duration' => 30,
                         'video_id' => 'a-3c6jnjWpM',
-                        'presenter' => 'Zoniva Sports Docs',
+                        'presenter' => 'Zonita Sports Docs',
                     ],
                     [
                         'title' => 'Premier League Tactical Masterclass: The Art of the Counter',
@@ -74,7 +74,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Nollywood Gold Channel',
                 'slug' => 'nollywood-gold',
-                'tvg_id' => 'NollywoodGold.zoniva',
+                'tvg_id' => 'NollywoodGold.zonita',
                 'category_slug' => 'entertainment',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -88,7 +88,7 @@ class LinearChannelEngineService
                         'description' => 'A gripping tale of kingdom betrayal, heritage pride, and ancestral vindication in ancient times.',
                         'duration' => 60,
                         'video_id' => 'JkpD0aflaxs',
-                        'presenter' => 'Zoniva Cinema',
+                        'presenter' => 'Zonita Cinema',
                     ],
                     [
                         'title' => 'Lagos Rush Hour: High Stakes Drama',
@@ -125,7 +125,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Faith & Gospel Movies TV',
                 'slug' => 'faith-gospel-movies-tv',
-                'tvg_id' => 'GospelMovies.zoniva',
+                'tvg_id' => 'GospelMovies.zonita',
                 'category_slug' => 'christian-tv',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -176,7 +176,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Afrobeats Worldwide 24/7',
                 'slug' => 'afrobeats-worldwide',
-                'tvg_id' => 'AfrobeatsWorldwide.zoniva',
+                'tvg_id' => 'AfrobeatsWorldwide.zonita',
                 'category_slug' => 'entertainment',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -227,7 +227,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Gospel Worship 24/7',
                 'slug' => 'gospel-worship-24-7',
-                'tvg_id' => 'GospelWorship.zoniva',
+                'tvg_id' => 'GospelWorship.zonita',
                 'category_slug' => 'christian-tv',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -278,7 +278,7 @@ class LinearChannelEngineService
             [
                 'name' => 'African Heritage & Indigenous Beats',
                 'slug' => 'african-heritage-beats',
-                'tvg_id' => 'AfricanHeritage.zoniva',
+                'tvg_id' => 'AfricanHeritage.zonita',
                 'category_slug' => 'entertainment',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -329,7 +329,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Kids Wonder TV',
                 'slug' => 'kids-wonder-tv',
-                'tvg_id' => 'KidsWonder.zoniva',
+                'tvg_id' => 'KidsWonder.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -380,7 +380,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Tech Pulse Africa & Global',
                 'slug' => 'tech-pulse-tv',
-                'tvg_id' => 'TechPulse.zoniva',
+                'tvg_id' => 'TechPulse.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -431,7 +431,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Ideas & Talks 24/7',
                 'slug' => 'ideas-and-talks-tv',
-                'tvg_id' => 'IdeasAndTalks.zoniva',
+                'tvg_id' => 'IdeasAndTalks.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -482,7 +482,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Business Masterclass TV',
                 'slug' => 'business-masterclass-tv',
-                'tvg_id' => 'BusinessMasterclass.zoniva',
+                'tvg_id' => 'BusinessMasterclass.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -533,7 +533,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Discovery Docs & Earth',
                 'slug' => 'discovery-docs-earth',
-                'tvg_id' => 'DiscoveryDocs.zoniva',
+                'tvg_id' => 'DiscoveryDocs.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -584,7 +584,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Bollywood & K-Wave Cinema',
                 'slug' => 'bollywood-k-wave',
-                'tvg_id' => 'BollywoodKWave.zoniva',
+                'tvg_id' => 'BollywoodKWave.zonita',
                 'category_slug' => 'entertainment',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -635,7 +635,7 @@ class LinearChannelEngineService
             [
                 'name' => 'Trending Stories & Pop Culture TV',
                 'slug' => 'trending-stories-tv',
-                'tvg_id' => 'TrendingStories.zoniva',
+                'tvg_id' => 'TrendingStories.zonita',
                 'category_slug' => 'entertainment',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -705,7 +705,7 @@ class LinearChannelEngineService
                     'tvg_id' => $def['tvg_id'],
                     'tagline' => $def['tagline'],
                     'description' => $def['description'],
-                    'broadcaster_name' => 'Zoniva Media Network',
+                    'broadcaster_name' => 'Zonita Media Network',
                     'broadcaster_website' => config('app.url'),
                     'official_destination_url' => config('app.url').'/channel/'.$def['slug'],
                     'country_code' => $def['country_code'] ?? 'NGA',
@@ -731,7 +731,7 @@ class LinearChannelEngineService
             ContentRight::updateOrCreate(
                 ['channel_id' => $channel->id],
                 [
-                    'rights_holder_name' => 'Zoniva Media Network Linear Playout',
+                    'rights_holder_name' => 'Zonita Media Network Linear Playout',
                     'contract_reference' => 'ZONIVA-LINEAR-'.strtoupper(Str::random(6)),
                     'status' => 'directory_approved',
                     'allow_directory_listing' => true,

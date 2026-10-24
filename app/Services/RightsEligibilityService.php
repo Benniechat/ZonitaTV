@@ -54,17 +54,17 @@ class RightsEligibilityService
         $rights = $channel->latestRights;
         $primaryStream = $channel->primaryStream;
 
-        // Mode D: Zoniva Originals
-        if ($channel->playback_mode === 'zoniva_original') {
+        // Mode D: Zonita Originals
+        if ($channel->playback_mode === 'zonita_original') {
             return [
                 'allowed' => true,
-                'mode' => 'zoniva_original',
+                'mode' => 'zonita_original',
                 'stream' => $primaryStream,
                 'destination_url' => null,
             ];
         }
 
-        // Mode A: Direct HLS Playback inside Zoniva TV
+        // Mode A: Direct HLS Playback inside Zonita TV
         if ($channel->playback_mode === 'direct_stream' && $rights->allow_direct_hls && $primaryStream?->stream_url) {
             return [
                 'allowed' => true,

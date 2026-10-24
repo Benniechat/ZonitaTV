@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Channel Catalogue - Zoniva TV Administration')
+@section('title', 'Channel Catalogue - Zonita TV Administration')
 
 @section('admin_content')
 

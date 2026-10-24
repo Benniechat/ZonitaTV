@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Search Results for "' . $query . '" - Zoniva TV')
+@section('title', 'Search Results for "' . $query . '" - Zonita TV')
 
 @section('content')
 

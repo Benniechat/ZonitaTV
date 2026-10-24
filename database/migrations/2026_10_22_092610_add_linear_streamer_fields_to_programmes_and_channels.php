@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('channels', function (Blueprint $table) {
-            $table->string('curation_type')->default('linear_streamer')->after('playback_mode'); // linear_streamer, external_live, zoniva_original
+            $table->string('curation_type')->default('linear_streamer')->after('playback_mode'); // linear_streamer, external_live, zonita_original
             $table->json('curation_keywords')->nullable()->after('curation_type');
             $table->string('fallback_video_id', 30)->nullable()->after('curation_keywords');
         });

@@ -7,13 +7,13 @@ use Illuminate\Console\Command;
 
 class DeployLinearChannelsCommand extends Command
 {
-    protected $signature = 'zoniva:deploy-linear-channels';
+    protected $signature = 'zonita:deploy-linear-channels';
 
     protected $description = 'Deploys 24/7 automated linear channels with seamless YouTube programme playout';
 
     public function handle(LinearChannelEngineService $engine): int
     {
-        $this->info('Starting Zoniva 24/7 Linear Playout Engine deployment...');
+        $this->info('Starting Zonita 24/7 Linear Playout Engine deployment...');
 
         $report = $engine->deployLinearChannels();
 

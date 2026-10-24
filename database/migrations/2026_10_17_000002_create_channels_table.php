@@ -22,12 +22,12 @@ return new class extends Migration
             $table->string('country_code', 3)->default('NGA')->index();
             $table->string('language_code', 10)->default('en')->index();
 
-            // Playback mode: direct_stream, embed_player, external_destination, zoniva_original
+            // Playback mode: direct_stream, embed_player, external_destination, zonita_original
             $table->enum('playback_mode', [
                 'direct_stream',
                 'embed_player',
                 'external_destination',
-                'zoniva_original',
+                'zonita_original',
             ])->default('external_destination');
 
             // Editorial flags

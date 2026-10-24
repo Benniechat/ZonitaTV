@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Virtual Broadcasting Network Operations - Zoniva TV')
+@section('title', 'Virtual Broadcasting Network Operations - Zonita TV')
 
 @section('admin_content')
 <div class="space-y-8">

@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Admin User
         $admin = User::updateOrCreate(
-            ['email' => 'admin@zonivatv.com'],
+            ['email' => 'admin@zonitatv.com'],
             [
-                'name' => 'Zoniva Administrator',
+                'name' => 'Zonita Administrator',
                 'password' => Hash::make('password123'),
                 'role' => 'super_admin',
             ]
@@ -71,10 +71,10 @@ class DatabaseSeeder extends Seeder
                 'sort_order' => 5,
             ],
             [
-                'name' => 'Zoniva Originals',
-                'slug' => 'zoniva-originals',
+                'name' => 'Zonita Originals',
+                'slug' => 'zonita-originals',
                 'icon_name' => 'play',
-                'meta_title' => 'Zoniva Originals - Exclusive Productions',
+                'meta_title' => 'Zonita Originals - Exclusive Productions',
                 'description' => 'Original sports discussions and in-depth cultural documentaries.',
                 'sort_order' => 6,
             ],
@@ -90,15 +90,15 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'The Matchroom Africa',
                 'slug' => 'the-matchroom-africa',
-                'tvg_id' => 'MatchroomAfrica.zoniva',
+                'tvg_id' => 'MatchroomAfrica.zonita',
                 'tagline' => 'The stories, rivalries and moments shaping the game.',
-                'description' => 'Zoniva Original flagship in-house sports panel dissecting African football stars, tactical blueprints, and international coverage.',
-                'broadcaster_name' => 'Zoniva Media Studios',
-                'broadcaster_website' => 'https://zonivatv.com',
+                'description' => 'Zonita Original flagship in-house sports panel dissecting African football stars, tactical blueprints, and international coverage.',
+                'broadcaster_name' => 'Zonita Media Studios',
+                'broadcaster_website' => 'https://zonitatv.com',
                 'official_destination_url' => 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
-                'playback_mode' => 'zoniva_original',
+                'playback_mode' => 'zonita_original',
                 'banner_path' => 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1400&q=80',
                 'logo_path' => '/images/logo/zonitatvlogo2.png',
                 'is_featured' => true,
@@ -274,8 +274,8 @@ class DatabaseSeeder extends Seeder
                 'tagline' => 'African Music, Cinema and Lifestyle',
                 'description' => 'Vibrant African culture, Nollywood cinema, festival coverage, and urban entertainment.',
                 'broadcaster_name' => 'Culture Plus Media',
-                'broadcaster_website' => 'https://zonivatv.com',
-                'official_destination_url' => 'https://zonivatv.com',
+                'broadcaster_website' => 'https://zonitatv.com',
+                'official_destination_url' => 'https://zonitatv.com',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
                 'playback_mode' => 'direct_stream',
@@ -346,7 +346,7 @@ class DatabaseSeeder extends Seeder
                     'expires_at' => now()->addYear(),
                     'reviewed_by_user_id' => $admin->id,
                     'reviewed_at' => now(),
-                    'reviewer_notes' => 'Verified in accordance with Zoniva TV Content Rights Policy.',
+                    'reviewer_notes' => 'Verified in accordance with Zonita TV Content Rights Policy.',
                 ]
             );
         }

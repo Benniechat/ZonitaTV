@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Terms of Service - Zoniva TV')
+@section('title', 'Terms of Service - Zonita TV')
 
 @section('content')
 
@@ -14,12 +14,12 @@
     <div class="space-y-6 text-xs sm:text-sm text-gray-300 leading-relaxed">
         <section>
             <h2 class="text-base font-bold text-white mb-2">1. Use of the Service</h2>
-            <p>Zoniva TV functions as an online television discovery directory and authorised streaming portal. By accessing the website, you agree to access content only through permitted and authorised viewing destinations provided by Zoniva TV or its partner broadcasters.</p>
+            <p>Zonita TV functions as an online television discovery directory and authorised streaming portal. By accessing the website, you agree to access content only through permitted and authorised viewing destinations provided by Zonita TV or its partner broadcasters.</p>
         </section>
 
         <section>
             <h2 class="text-base font-bold text-white mb-2">2. Intellectual Property & Third-Party Content</h2>
-            <p>All broadcaster logos, trademarks, and third-party streaming content remain the exclusive property of their respective owners. Zoniva TV indexes content under directory listing permissions or direct licensing agreements. Users must not attempt to intercept, rip, or re-stream third-party broadcast feeds.</p>
+            <p>All broadcaster logos, trademarks, and third-party streaming content remain the exclusive property of their respective owners. Zonita TV indexes content under directory listing permissions or direct licensing agreements. Users must not attempt to intercept, rip, or re-stream third-party broadcast feeds.</p>
         </section>
     </div>
 

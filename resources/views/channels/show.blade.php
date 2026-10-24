@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $channel->name . ' - Watch on Zoniva TV')
+@section('title', $channel->name . ' - Watch on Zonita TV')
 @section('meta_description', $channel->tagline ?? $channel->description)
 
 @section('content')
@@ -48,11 +48,11 @@
 
                     @if($playback['mode'] === 'direct_stream')
                         {{-- Mode A: Authorised Direct Playback via HLS.js --}}
-                        <video id="zoniva-player" autoplay  class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_path ? asset($channel->banner_path) : '' }}" ></video>
+                        <video id="zonita-player" autoplay  class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_path ? asset($channel->banner_path) : '' }}" ></video>
                         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
-                                const video = document.getElementById('zoniva-player');
+                                const video = document.getElementById('zonita-player');
                                 const streamUrl = "{{ $playback['stream']->stream_url }}";
                                 if (Hls.isSupported()) {
                                     const hls = new Hls({ enableWorker: true });
@@ -231,7 +231,7 @@
                                             loading="eager">
                                         </iframe>
 
-                                        <!-- Top-right watermark shield with Zoniva Live badge to maintain clean interface -->
+                                        <!-- Top-right watermark shield with Zonita Live badge to maintain clean interface -->
                                         <div class="absolute top-3 right-3 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-semibold text-white shadow-xl">
                                             <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                                             <span>LIVE BROADCAST</span>
@@ -258,13 +258,13 @@
                             @endif
                         </div>
 
-                    @elseif($playback['mode'] === 'zoniva_original')
-                        {{-- Mode D: Zoniva Originals --}}
-                        <video id="zoniva-player" class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_path ? asset($channel->banner_path) : '' }}"></video>
+                    @elseif($playback['mode'] === 'zonita_original')
+                        {{-- Mode D: Zonita Originals --}}
+                        <video id="zonita-player" class="w-full h-full" controls autoplay playsinline poster="{{ $channel->banner_path ? asset($channel->banner_path) : '' }}"></video>
                         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
-                                const video = document.getElementById('zoniva-player');
+                                const video = document.getElementById('zonita-player');
                                 const streamUrl = "{{ $playback['stream']->stream_url }}";
                                 if (Hls.isSupported()) {
                                     const hls = new Hls({ enableWorker: true });
@@ -356,7 +356,7 @@
                     <!-- Rights & Compliance Disclosure -->
                     <div class="mt-4 p-4 rounded-xl bg-gray-900/50 border border-gray-800/80 text-[11px] text-gray-400 leading-relaxed">
                         <strong class="text-gray-300">Content Rights & Distribution Note:</strong>
-                        This channel listing is indexed by Zoniva TV in compliance with our content verification framework. Zoniva TV does not alter, intercept, or rebroadcast third-party feeds without authorization.
+                        This channel listing is indexed by Zonita TV in compliance with our content verification framework. Zonita TV does not alter, intercept, or rebroadcast third-party feeds without authorization.
                     </div>
                 </div>
             </div>

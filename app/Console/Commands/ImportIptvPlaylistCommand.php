@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ImportIptvPlaylistCommand extends Command
 {
-    protected $signature = 'zoniva:import-iptv 
+    protected $signature = 'zonita:import-iptv
                             {--url=https://iptv-org.github.io/iptv/countries/ng.m3u : URL to the M3U playlist file}
                             {--country= : 2-letter country code filter (e.g. NG)}
                             {--limit=50 : Maximum number of channels to import}';

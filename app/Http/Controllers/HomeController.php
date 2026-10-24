@@ -186,7 +186,7 @@ class HomeController extends Controller
             ],
         ];
 
-        // 8. Right Sidebar: Tonight on Zoniva (Schedule Rows)
+        // 8. Right Sidebar: Tonight on Zonita (Schedule Rows)
         $tonightSchedule = [
             [
                 'time' => '6:00 PM',
@@ -277,7 +277,7 @@ class HomeController extends Controller
             'created_at' => now(),
         ]);
 
-        $officialWhatsAppChannelUrl = config('services.whatsapp.channel_url', 'https://whatsapp.com/channel/zonivatv');
+        $officialWhatsAppChannelUrl = config('services.whatsapp.channel_url', 'https://whatsapp.com/channel/zonitatv');
 
         return redirect()->away($officialWhatsAppChannelUrl);
     }

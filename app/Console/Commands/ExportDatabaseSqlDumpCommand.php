@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\File;
 
 class ExportDatabaseSqlDumpCommand extends Command
 {
-    protected $signature = 'zoniva:export-sql {--target=database/zoniva_master_schema_and_data.sql}';
+    protected $signature = 'zonita:export-sql {--target=database/zonita_master_schema_and_data.sql}';
 
-    protected $description = 'Exports clean, production-ready ANSI SQL schema & data dump of Zoniva TV';
+    protected $description = 'Exports clean, production-ready ANSI SQL schema & data dump of Zonita TV';
 
     public function handle(): int
     {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard - Zoniva TV')</title>
+    <title>@yield('title', 'Admin Dashboard - Zonita TV')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -13,7 +13,7 @@
     <header class="bg-[#10131a] border-b border-gray-800 px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <div class="flex items-center space-x-4">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2">
-                <img src="{{ asset('images/logo/zonivatvLogo.png') }}" alt="Zoniva TV" class="h-8 w-auto">
+                <img src="{{ asset('images/logo/zonitatvLogo.png') }}" alt="Zonita TV" class="h-8 w-auto">
                 <span class="text-xs px-2 py-0.5 rounded bg-red-600/20 text-red-400 font-bold uppercase tracking-wider">Control Hub</span>
             </a>
         </div>

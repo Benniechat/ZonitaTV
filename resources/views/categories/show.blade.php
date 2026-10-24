@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $category->name . ' - Zoniva TV')
+@section('title', $category->name . ' - Zonita TV')
 @section('meta_description', $category->meta_title ?? $category->description)
 
 @section('content')

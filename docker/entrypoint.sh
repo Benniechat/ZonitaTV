@@ -67,7 +67,10 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] || echo "$DB_STATUS" | grep -q "FAI
         if [ ! -f "$DB_PATH" ] || [ ! -s "$DB_PATH" ]; then
             echo "==> Initializing SQLite database at ${DB_PATH}..."
             touch "$DB_PATH"
-            if [ -f "/var/www/html/database/zoniva_master_schema_and_data.sql" ]; then
+            if [ -f "/var/www/html/database/zonita_master_schema_and_data.sql" ]; then
+                echo "==> Populating master catalogue from database/zonita_master_schema_and_data.sql..."
+                sqlite3 "$DB_PATH" < /var/www/html/database/zonita_master_schema_and_data.sql || true
+            elif [ -f "/var/www/html/database/zoniva_master_schema_and_data.sql" ]; then
                 echo "==> Populating master catalogue from database/zoniva_master_schema_and_data.sql..."
                 sqlite3 "$DB_PATH" < /var/www/html/database/zoniva_master_schema_and_data.sql || true
             fi

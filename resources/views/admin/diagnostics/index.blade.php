@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Stream Health Diagnostics - Zoniva TV')
+@section('title', 'Stream Health Diagnostics - Zonita TV')
 
 @section('admin_content')
 

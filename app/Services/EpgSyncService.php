@@ -19,7 +19,7 @@ class EpgSyncService
     {
         $response = Http::timeout(60)
             ->withoutVerifying()
-            ->withHeaders(['User-Agent' => 'ZonivaTV-EpgSync/1.0'])
+            ->withHeaders(['User-Agent' => 'ZonitaTV-EpgSync/1.0'])
             ->get($xmltvUrl);
 
         if (! $response->successful()) {
@@ -165,7 +165,7 @@ class EpgSyncService
                 ['title' => 'Late Night Football Highlights Replay', 'hours' => 3, 'desc' => 'Catch up on all the goals and game-defining moments from today.'],
             ],
             'news' => [
-                ['title' => 'Zoniva Morning Briefing & Headlines', 'hours' => 2, 'desc' => 'Top Nigerian, African and world news stories kickstarting the morning.'],
+                ['title' => 'Zonita Morning Briefing & Headlines', 'hours' => 2, 'desc' => 'Top Nigerian, African and world news stories kickstarting the morning.'],
                 ['title' => 'National Press Review & Discourse', 'hours' => 2, 'desc' => 'Daily analysis of national newspapers, policy decisions, and community reports.'],
                 ['title' => 'Midday Live Newsroom Bulletin', 'hours' => 2, 'desc' => 'Rolling news coverage with live reports from correspondents nationwide.'],
                 ['title' => 'Prime Time News at 7', 'hours' => 2, 'desc' => 'In-depth investigative reports, political analysis, and special broadcasts.'],

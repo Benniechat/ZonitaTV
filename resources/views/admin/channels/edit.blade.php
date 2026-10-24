@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Edit ' . $channel->name . ' - Zoniva TV')
+@section('title', 'Edit ' . $channel->name . ' - Zonita TV')
 
 @section('admin_content')
 
@@ -68,7 +68,7 @@
                     <option value="external_destination" {{ $channel->playback_mode === 'external_destination' ? 'selected' : '' }}>Mode C: Official External Broadcaster Destination</option>
                     <option value="embed_player" {{ $channel->playback_mode === 'embed_player' ? 'selected' : '' }}>Mode B: Official Broadcaster Embed Player (iframe)</option>
                     <option value="direct_stream" {{ $channel->playback_mode === 'direct_stream' ? 'selected' : '' }}>Mode A: Authorised Direct Stream (HLS.js)</option>
-                    <option value="zoniva_original" {{ $channel->playback_mode === 'zoniva_original' ? 'selected' : '' }}>Mode D: Zoniva Originals</option>
+                    <option value="zonita_original" {{ $channel->playback_mode === 'zonita_original' ? 'selected' : '' }}>Mode D: Zonita Originals</option>
                 </select>
             </div>
 

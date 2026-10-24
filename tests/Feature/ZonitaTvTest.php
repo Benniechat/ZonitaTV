@@ -11,7 +11,7 @@ use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ZonivaTvTest extends TestCase
+class ZonitaTvTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -44,7 +44,7 @@ class ZonivaTvTest extends TestCase
         $channelsTv->assertStatus(200);
         $channelsTv->assertSee('Channels Television');
 
-        // Zoniva Original channel (The Matchroom Africa)
+        // Zonita Original channel (The Matchroom Africa)
         $matchroom = $this->get('/channel/the-matchroom-africa');
         $matchroom->assertStatus(200);
         $matchroom->assertSee('The Matchroom Africa');
@@ -75,13 +75,13 @@ class ZonivaTvTest extends TestCase
     public function test_newsletter_subscription(): void
     {
         $response = $this->post('/newsletter/subscribe', [
-            'email' => 'viewer@zonivatv.com',
+            'email' => 'viewer@zonitatv.com',
             'topics' => ['sports', 'news'],
         ]);
 
         $response->assertSessionHas('success');
         $this->assertDatabaseHas('newsletter_subscriptions', [
-            'email' => 'viewer@zonivatv.com',
+            'email' => 'viewer@zonitatv.com',
         ]);
     }
 

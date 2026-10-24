@@ -32,6 +32,6 @@ class NewsletterController extends Controller
             ]);
         }
 
-        return back()->with('success', 'You have been subscribed to the Zoniva TV Viewing Guide!');
+        return back()->with('success', 'You have been subscribed to the Zonita TV Viewing Guide!');
     }
 }

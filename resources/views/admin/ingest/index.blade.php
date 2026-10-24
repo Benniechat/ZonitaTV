@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'IPTV-ORG Ingest & EPG Synchronization - Zoniva TV')
+@section('title', 'IPTV-ORG Ingest & EPG Synchronization - Zonita TV')
 
 @section('admin_content')
 

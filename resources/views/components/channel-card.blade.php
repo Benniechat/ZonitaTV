@@ -5,14 +5,14 @@
     $badgeMode = match($channel->playback_mode) {
         'direct_stream' => ['label' => 'Direct Live', 'color' => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'],
         'embed_player' => ['label' => 'Embedded Player', 'color' => 'bg-blue-500/10 text-blue-400 border-blue-500/20'],
-        'zoniva_original' => ['label' => 'Zoniva Original', 'color' => 'bg-red-500/10 text-red-400 border-red-500/20'],
+        'zonita_original' => ['label' => 'Zonita Original', 'color' => 'bg-red-500/10 text-red-400 border-red-500/20'],
         default => ['label' => 'Official Portal', 'color' => 'bg-purple-500/10 text-purple-400 border-purple-500/20'],
     };
 
     $actionLabel = match($channel->playback_mode) {
         'direct_stream' => 'Watch Live',
         'embed_player' => 'Watch Stream',
-        'zoniva_original' => 'Watch Original',
+        'zonita_original' => 'Watch Original',
         default => 'Visit Official Stream',
     };
 @endphp
@@ -63,7 +63,7 @@
             </h3>
 
             <p class="text-xs text-gray-400 line-clamp-2 mb-3 leading-relaxed">
-                {{ $channel->tagline ?: ($channel->description ?: 'Verified television programming, broadcasts, and streaming discovery on Zoniva TV.') }}
+                {{ $channel->tagline ?: ($channel->description ?: 'Verified television programming, broadcasts, and streaming discovery on Zonita TV.') }}
             </p>
         </div>
 

@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class SyncEpgCommand extends Command
 {
-    protected $signature = 'zoniva:sync-epg 
+    protected $signature = 'zonita:sync-epg
                             {--source= : Remote XMLTV URL or local file path}
                             {--generate : Generate continuous dynamic EPG programming blocks for all channels}';
 

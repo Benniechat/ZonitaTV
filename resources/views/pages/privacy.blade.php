@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy - Zoniva TV')
+@section('title', 'Privacy Policy - Zonita TV')
 
 @section('content')
 
@@ -14,7 +14,7 @@
     <div class="space-y-6 text-xs sm:text-sm text-gray-300 leading-relaxed">
         <section>
             <h2 class="text-base font-bold text-white mb-2">1. Overview and Core Principle</h2>
-            <p>Zoniva TV collects only the minimum personal data required to provide channel discovery, viewing recommendations, and newsletter updates. We do not sell your personal data or viewing habits to third parties.</p>
+            <p>Zonita TV collects only the minimum personal data required to provide channel discovery, viewing recommendations, and newsletter updates. We do not sell your personal data or viewing habits to third parties.</p>
         </section>
 
         <section>

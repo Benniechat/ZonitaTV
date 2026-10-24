@@ -41,7 +41,7 @@ class ZonitaProgrammingEngineTest extends TestCase
             ['slug' => 'zonita-football-test'],
             [
                 'name' => 'Zonita Football Test',
-                'tvg_id' => 'ZonitaFootballTest.zoniva',
+                'tvg_id' => 'ZonitaFootballTest.zonita',
                 'tagline' => 'Football 24/7 Action',
                 'description' => 'Test football channel',
                 'broadcaster_name' => 'Zonita Television Network',

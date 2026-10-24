@@ -6,10 +6,10 @@
 
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --color-zoniva-red: #e50914;
-    --color-zoniva-dark: #0f1115;
-    --color-zoniva-card: #181b20;
-    --color-zoniva-border: #282d37;
+    --color-zonita-red: #e50914;
+    --color-zonita-dark: #0f1115;
+    --color-zonita-card: #181b20;
+    --color-zonita-border: #282d37;
 }
 
 body {

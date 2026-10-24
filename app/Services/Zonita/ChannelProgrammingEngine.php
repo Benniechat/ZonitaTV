@@ -29,7 +29,7 @@ class ChannelProgrammingEngine
             [
                 'name' => 'Zonita Football 24/7',
                 'slug' => 'zonita-football-24-7',
-                'tvg_id' => 'ZonitaFootball.zoniva',
+                'tvg_id' => 'ZonitaFootball.zonita',
                 'category_slug' => 'sports',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -103,7 +103,7 @@ class ChannelProgrammingEngine
             [
                 'name' => 'Zonita Gospel Naija',
                 'slug' => 'zonita-gospel-naija',
-                'tvg_id' => 'ZonitaGospelNaija.zoniva',
+                'tvg_id' => 'ZonitaGospelNaija.zonita',
                 'category_slug' => 'christian-tv',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -177,7 +177,7 @@ class ChannelProgrammingEngine
             [
                 'name' => 'Zonita Music World',
                 'slug' => 'zonita-music-world',
-                'tvg_id' => 'ZonitaMusicWorld.zoniva',
+                'tvg_id' => 'ZonitaMusicWorld.zonita',
                 'category_slug' => 'entertainment',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -251,7 +251,7 @@ class ChannelProgrammingEngine
             [
                 'name' => 'Zonita Documentaries',
                 'slug' => 'zonita-documentaries',
-                'tvg_id' => 'ZonitaDocs.zoniva',
+                'tvg_id' => 'ZonitaDocs.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
@@ -325,7 +325,7 @@ class ChannelProgrammingEngine
             [
                 'name' => 'Zonita Tech Pulse',
                 'slug' => 'zonita-tech-pulse',
-                'tvg_id' => 'ZonitaTechPulse.zoniva',
+                'tvg_id' => 'ZonitaTechPulse.zonita',
                 'category_slug' => 'education',
                 'country_code' => 'NGA',
                 'language_code' => 'en',
