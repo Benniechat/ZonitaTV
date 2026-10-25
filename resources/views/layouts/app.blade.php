@@ -60,6 +60,7 @@
                         </a>
                         <a href="{{ route('categories.show', 'news') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">News</a>
                         <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
+                        <a href="{{ route('categories.show', 'kids') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Kids</a>
                         <a href="{{ route('categories.show', 'education') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Education</a>
                         <a href="{{ route('categories.show', 'entertainment') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Entertainment</a>
                     </nav>
@@ -193,6 +194,7 @@
                         <li><a href="{{ route('categories.show', 'sports') }}" class="hover:text-white transition">Sports Hub</a></li>
                         <li><a href="{{ route('categories.show', 'news') }}" class="hover:text-white transition">Live News Bulletins</a></li>
                         <li><a href="{{ route('categories.show', 'christian-tv') }}" class="hover:text-white transition">Christian Television</a></li>
+                        <li><a href="{{ route('categories.show', 'kids') }}" class="hover:text-white transition">Kids & Cartoons</a></li>
                     </ul>
                 </div>
 

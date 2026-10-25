@@ -66,6 +66,18 @@ class YouTubeDiscoveryService
             return null;
         }
 
+        // 4. Attach to Channel Video Candidate Pool
+        \App\Models\ChannelVideo::updateOrCreate(
+            [
+                'channel_id' => $channel->id,
+                'video_id' => $video->id,
+            ],
+            [
+                'is_approved' => true,
+                'relevance_score' => $video->relevance_score,
+            ]
+        );
+
         return $video;
     }
 

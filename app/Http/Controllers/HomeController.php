@@ -252,6 +252,70 @@ class HomeController extends Controller
 
         $categories = Category::where('is_nav_visible', true)->orderBy('sort_order')->get();
 
+        // 8. Section 3 (2-Col): Gospel Drama & Christian Cinema (Damilola Mike-Bamiloye, Prem TV)
+        $gospelDrama = [
+            [
+                'title' => 'The Train (Mike Bamiloye Story)',
+                'category' => 'Christian',
+                'time_str' => 'Now Playing • Realtime 24/7',
+                'image' => 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'mount-zion-gospel-drama-tv',
+            ],
+            [
+                'title' => 'The Keeper (Prem Films)',
+                'category' => 'Christian',
+                'time_str' => 'Live Playout • Realtime 24/7',
+                'image' => 'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'prem-tv-gospel-movies',
+            ],
+            [
+                'title' => 'Abejoye Season 9',
+                'category' => 'Christian',
+                'time_str' => 'Continuous Schedule',
+                'image' => 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'mount-zion-gospel-drama-tv',
+            ],
+            [
+                'title' => 'Death Sentence (Faith Movie)',
+                'category' => 'Christian',
+                'time_str' => 'Deliverance Cinema',
+                'image' => 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'prem-tv-gospel-movies',
+            ],
+        ];
+
+        // 9. Section 3 (2-Col): Kids, Cartoons & Animated Bible Stories (CoComelon, Folktales, Superbook)
+        $kidsAnimation = [
+            [
+                'title' => 'CoComelon Nursery Rhymes',
+                'category' => 'Kids',
+                'time_str' => 'Now Playing • Realtime 24/7',
+                'image' => 'https://images.unsplash.com/photo-1566140967404-b8b3932483f5?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'cocomelon-kids-tv',
+            ],
+            [
+                'title' => 'Superbook: Bible Stories',
+                'category' => 'Kids',
+                'time_str' => 'Scripture Cartoons',
+                'image' => 'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'christian-cartoons-bible-tv',
+            ],
+            [
+                'title' => 'Tales of Africa (3D Animation)',
+                'category' => 'Kids',
+                'time_str' => 'Moonlight Folktales',
+                'image' => 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'african-folktales-tv',
+            ],
+            [
+                'title' => 'Ten Commandments Animation',
+                'category' => 'Kids',
+                'time_str' => 'Superbook Adventures',
+                'image' => 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80',
+                'slug' => 'christian-cartoons-bible-tv',
+            ],
+        ];
+
         return view('home', compact(
             'heroChannel',
             'liveTrending',
@@ -260,6 +324,8 @@ class HomeController extends Controller
             'newsWorld',
             'faithInspiration',
             'learningDiscovery',
+            'gospelDrama',
+            'kidsAnimation',
             'tonightSchedule',
             'recommendedForYou',
             'categories'

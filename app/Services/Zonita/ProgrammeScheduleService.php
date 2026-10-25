@@ -25,10 +25,21 @@ class ProgrammeScheduleService
 
         $categorySlug = $channel->categories->first()?->slug;
 
-        // Fetch eligible video candidate pool
-        $candidates = Video::eligibleForScheduling()
-            ->when($categorySlug, fn ($q) => $q->where('category_slug', $categorySlug))
-            ->get();
+        // Fetch eligible video candidate pool (prefer channel's curated pool)
+        $channelVideoIds = $channel->channelVideos()->pluck('video_id');
+        $candidates = collect();
+
+        if ($channelVideoIds->isNotEmpty()) {
+            $candidates = Video::eligibleForScheduling()
+                ->whereIn('id', $channelVideoIds)
+                ->get();
+        }
+
+        if ($candidates->isEmpty()) {
+            $candidates = Video::eligibleForScheduling()
+                ->when($categorySlug, fn ($q) => $q->where('category_slug', $categorySlug))
+                ->get();
+        }
 
         if ($candidates->isEmpty()) {
             return [
@@ -139,6 +150,15 @@ class ProgrammeScheduleService
         $timezone = $channel->sourceRule?->timezone ?? 'Africa/Lagos';
         $now = Carbon::now($timezone);
 
+        // Auto-replenish schedule if upcoming entries run low to prevent looping or stale schedules
+        $futureEntriesCount = ScheduleEntry::where('channel_id', $channel->id)
+            ->where('end_time', '>', $now)
+            ->count();
+
+        if ($futureEntriesCount < 10 && $channel->channelVideos()->count() >= 2) {
+            $this->generateRollingSchedule($channel, 7);
+        }
+
         // Currently Playing
         $current = ScheduleEntry::where('channel_id', $channel->id)
             ->where('start_time', '<=', $now)
@@ -146,20 +166,27 @@ class ProgrammeScheduleService
             ->with('video')
             ->first();
 
-        // If gap, take nearest past or next
+        // If no active slot found (e.g. slight schedule gap), pick the next starting entry or latest
         if (! $current) {
             $current = ScheduleEntry::where('channel_id', $channel->id)
-                ->where('start_time', '<=', $now)
-                ->orderByDesc('start_time')
+                ->where('start_time', '>=', $now)
+                ->orderBy('start_time')
                 ->with('video')
                 ->first();
+
+            if (! $current) {
+                $current = ScheduleEntry::where('channel_id', $channel->id)
+                    ->orderByDesc('start_time')
+                    ->with('video')
+                    ->first();
+            }
         }
 
-        // Up Next (next 12 entries)
+        // Up Next (generous 24 upcoming entries to guarantee continuous non-stop linear playback)
         $upcoming = ScheduleEntry::where('channel_id', $channel->id)
             ->where('start_time', '>', $current ? $current->start_time : $now)
             ->orderBy('start_time')
-            ->take(12)
+            ->take(24)
             ->with('video')
             ->get();
 
