@@ -10,6 +10,8 @@ use App\Models\Programme;
 use App\Models\User;
 use App\Services\EpgSyncService;
 use App\Services\Zonita\ChannelProgrammingEngine;
+use App\Services\Zonita\GospelFilmDirectoryService;
+use App\Services\Zonita\IslamicPlayoutSchedulingService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -433,5 +435,9 @@ class DatabaseSeeder extends Seeder
 
         // 6. Deploy Zonita 24/7 Virtual Playout Network & Rolling Schedules
         app(ChannelProgrammingEngine::class)->deployPilotNetwork();
+
+        // 7. Deploy 60 Gospel Film Channels & 36 Islamic Broadcasting Channels
+        app(GospelFilmDirectoryService::class)->syncDirectory();
+        app(IslamicPlayoutSchedulingService::class)->deployIslamicVirtualNetwork(7);
     }
 }

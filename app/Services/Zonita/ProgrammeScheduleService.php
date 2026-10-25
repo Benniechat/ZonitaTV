@@ -223,6 +223,7 @@ class ProgrammeScheduleService
      */
     public function getEpgData(Channel $channel): array
     {
+        $timezone = $channel->sourceRule?->timezone ?? 'Africa/Lagos';
         $now = now('UTC');
 
         // Auto-replenish schedule if upcoming entries run low to prevent looping or stale schedules
