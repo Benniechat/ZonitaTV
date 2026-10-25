@@ -97,6 +97,7 @@
                                                 'islamic' => 'bg-emerald-400',
                                                 'kids' => 'bg-pink-400',
                                                 'education' => 'bg-cyan-400',
+                                                'comedy' => 'bg-yellow-400',
                                                 'entertainment' => 'bg-purple-400',
                                                 'zoniva-originals' => 'bg-orange-500',
                                                 default => 'bg-gray-400'
@@ -114,6 +115,13 @@
                                 </div>
 
                                 <div class="p-2 space-y-1">
+                                    <a href="{{ route('comedy.index') }}" class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-[11px] font-bold text-orange-400 hover:bg-orange-500/20 transition">
+                                        <span class="flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+                                            <span>Comedy TV (10 Channels)</span>
+                                        </span>
+                                        <span class="text-[10px] text-orange-300">Laugh &rarr;</span>
+                                    </a>
                                     <a href="{{ route('nollywood.index') }}" class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] font-bold text-amber-400 hover:bg-amber-500/20 transition">
                                         <span class="flex items-center gap-1.5">
                                             <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
@@ -135,6 +143,10 @@
                         <a href="{{ route('nollywood.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('nollywood.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                             Nollywood
+                        </a>
+                        <a href="{{ route('comedy.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('comedy.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                            Comedy
                         </a>
                         <a href="{{ route('sports.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('sports.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
@@ -266,6 +278,10 @@
         <a href="{{ route('nollywood.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('nollywood.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             Nollywood
+        </a>
+        <a href="{{ route('comedy.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('comedy.*') ? 'bg-orange-500 text-black font-bold' : 'bg-orange-500/10 text-orange-400 border border-orange-500/30' }}">
+            <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+            Comedy
         </a>
         <a href="{{ route('sports.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('sports.*') ? 'bg-red-600 text-white font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Sports</a>
         <a href="{{ route('gospel.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('gospel.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
