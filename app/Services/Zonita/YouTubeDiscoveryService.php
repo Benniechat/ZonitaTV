@@ -3,6 +3,7 @@
 namespace App\Services\Zonita;
 
 use App\Models\Channel;
+use App\Models\ChannelVideo;
 use App\Models\Video;
 use Illuminate\Support\Facades\Log;
 
@@ -67,7 +68,7 @@ class YouTubeDiscoveryService
         }
 
         // 4. Attach to Channel Video Candidate Pool
-        \App\Models\ChannelVideo::updateOrCreate(
+        ChannelVideo::updateOrCreate(
             [
                 'channel_id' => $channel->id,
                 'video_id' => $video->id,

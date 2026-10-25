@@ -52,11 +52,11 @@ class RepairChannelThumbnailsCommand extends Command
 
             // 2. Repair empty or missing logo
             if (empty($channel->logo_path)) {
-                $channel->logo_path = '/' . ltrim($defaultLogo, '/');
+                $channel->logo_path = '/'.ltrim($defaultLogo, '/');
                 $logosRepaired++;
                 $updated = true;
             } elseif ($channel->logo_path === '/images/logo/zonivatvLogo.png') {
-                $channel->logo_path = '/' . ltrim($defaultLogo, '/');
+                $channel->logo_path = '/'.ltrim($defaultLogo, '/');
                 $logosRepaired++;
                 $updated = true;
             }
