@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Zonita TV - Discover More. Watch Smarter.')</title>
     <meta name="description" content="@yield('meta_description', 'Discover verified television channels, live sports, breaking news, Christian worship, and original productions through one organised digital platform.')">
+    <meta name="google-site-verification" content="4m1NYPs5Z60SZPllspbNVhbJmHKV-K0qmBWuPZ1KuIk" />
     <meta name="google-site-verification" content="google98a49cab5be19ce2" />
 
     <!-- Favicon (Using Official Zonita TV Logo) -->

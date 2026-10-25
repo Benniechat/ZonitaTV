@@ -28,6 +28,6 @@ class GoogleSiteVerificationTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('<meta name="google-site-verification" content="google98a49cab5be19ce2" />', false);
+        $response->assertSee('<meta name="google-site-verification" content="4m1NYPs5Z60SZPllspbNVhbJmHKV-K0qmBWuPZ1KuIk" />', false);
     }
 }
