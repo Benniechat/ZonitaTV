@@ -24,7 +24,7 @@ class GoogleAuthController extends Controller
 
         if (empty($clientId)) {
             return redirect()->route('login')
-                ->with('error', 'Google Sign-In is not yet configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your environment.');
+                ->with('error', 'Google Sign-In is not currently configured. Please use your email to sign in or register below.');
         }
 
         $state = Str::random(40);

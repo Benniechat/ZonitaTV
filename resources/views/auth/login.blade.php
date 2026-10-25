@@ -14,6 +14,34 @@
                 <p class="text-xs text-gray-400 mt-1">Sign in to access your personalised channels, favorites, and guide</p>
             </div>
 
+            <!-- Error Banner -->
+            @if (session('error'))
+                <div class="mb-5 p-3.5 rounded-xl bg-red-950/50 border border-red-500/50 text-red-300 text-xs flex items-start gap-2.5">
+                    <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div>{{ session('error') }}</div>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-5 p-3.5 rounded-xl bg-red-950/50 border border-red-500/50 text-red-300 text-xs">
+                    <div class="flex items-center gap-2 font-bold text-white mb-1">
+                        <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Sign in unsuccessful</span>
+                    </div>
+                    <p class="text-red-200/90">{{ $errors->first() }}</p>
+
+                    @if ($errors->has('email') && str_contains(strtolower($errors->first('email')), 'no account found'))
+                        <div class="mt-3 pt-3 border-t border-red-500/30">
+                            <a href="{{ route('register', ['email' => old('email', $initialEmail ?? request('email'))]) }}" 
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs transition shadow">
+                                <span>Create a Free Account with this Email</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             <!-- Google Sign-In Button -->
             <a href="{{ route('auth.google') }}" class="w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-100 text-gray-900 font-semibold text-xs flex items-center justify-center gap-3 transition shadow-md group">
                 <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -39,21 +67,11 @@
             <form action="{{ route('login') }}" method="POST" class="space-y-4">
                 @csrf
 
-                @if ($errors->any())
-                    <div class="p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-xs flex items-start gap-2.5">
-                        <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <div class="space-y-0.5">
-                            <span class="font-bold text-white block">Sign in unsuccessful</span>
-                            <span>{{ $errors->first() }}</span>
-                        </div>
-                    </div>
-                @endif
-
                 <div>
-                    <label for="email" class="block text-xs font-semibold text-gray-300 mb-1.5">Email Address</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
+                    <label for="email" class="block text-xs font-semibold text-gray-300 mb-1.5">Email Address or Username</label>
+                    <input type="text" name="email" id="email" value="{{ old('email', $initialEmail ?? request('email')) }}" required autofocus
                            class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
-                           placeholder="you@example.com">
+                           placeholder="you@example.com or username">
                     @error('email')
                         <p class="text-red-400 text-[11px] mt-1">{{ $message }}</p>
                     @enderror

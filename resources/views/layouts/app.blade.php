@@ -305,6 +305,16 @@
             {{ session('error') }}
         </div>
     @endif
+    @if(session('warning'))
+        <div class="bg-amber-500/10 border-b border-amber-500/30 text-amber-300 text-xs px-4 py-2.5 text-center">
+            {{ session('warning') }}
+        </div>
+    @endif
+    @if(session('status'))
+        <div class="bg-blue-500/10 border-b border-blue-500/30 text-blue-300 text-xs px-4 py-2.5 text-center">
+            {{ session('status') }}
+        </div>
+    @endif
 
     <!-- Main Content -->
     <main class="flex-grow">

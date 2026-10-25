@@ -14,6 +14,28 @@
                 <p class="text-xs text-gray-400 mt-1">Start watching 24/7 channels, curate favourites, and explore the TV guide</p>
             </div>
 
+            <!-- Error Banner -->
+            @if ($errors->any())
+                <div class="mb-5 p-3.5 rounded-xl bg-red-950/50 border border-red-500/50 text-red-300 text-xs">
+                    <div class="flex items-center gap-2 font-bold text-white mb-1.5">
+                        <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Registration could not be completed:</span>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-red-200/90 pl-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="mb-5 p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-300 text-xs flex items-start gap-2.5">
+                    <svg class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div>{{ session('error') }}</div>
+                </div>
+            @endif
+
             <!-- Google Sign-Up Button -->
             <a href="{{ route('auth.google') }}" class="w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-100 text-gray-900 font-semibold text-xs flex items-center justify-center gap-3 transition shadow-md group">
                 <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -51,7 +73,7 @@
 
                 <div>
                     <label for="email" class="block text-xs font-semibold text-gray-300 mb-1.5">Email Address</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                    <input type="email" name="email" id="email" value="{{ old('email', $initialEmail ?? request('email')) }}" required
                            class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
                            placeholder="you@example.com">
                     @error('email')
@@ -64,7 +86,7 @@
                     <div class="relative flex items-center">
                         <input :type="show ? 'text' : 'password'" name="password" id="password" required
                                class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl pl-4 pr-11 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
-                               placeholder="At least 8 characters">
+                               placeholder="At least 6 characters">
                         <button type="button" 
                                 @click="show = !show" 
                                 :aria-label="show ? 'Hide password' : 'Show password'"
@@ -108,6 +130,9 @@
                             </svg>
                         </button>
                     </div>
+                    @error('password_confirmation')
+                        <p class="text-red-400 text-[11px] mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold text-xs tracking-wider uppercase transition shadow-lg shadow-orange-600/20 active:scale-[0.99] mt-2">

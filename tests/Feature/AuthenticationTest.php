@@ -188,4 +188,54 @@ class AuthenticationTest extends TestCase
         $response->assertSee('Sign In');
         $response->assertSee('Register');
     }
+
+    public function test_user_can_login_with_username_instead_of_email(): void
+    {
+        $user = User::create([
+            'name' => 'Barnaby Jones',
+            'email' => 'barnaby@example.com',
+            'password' => Hash::make('securePassword123'),
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'Barnaby Jones',
+            'password' => 'securePassword123',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_registration_requires_password_confirmation(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
+            'password' => 'secret1234',
+            'password_confirmation' => 'mismatchPass',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('users', [
+            'email' => 'testuser@example.com',
+        ]);
+        $this->assertGuest();
+    }
+
+    public function test_registration_lowercases_and_trims_email(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Spacey User',
+            'email' => '  SPACEY@EXAMPLE.COM  ',
+            'password' => 'secret1234',
+            'password_confirmation' => 'secret1234',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', [
+            'email' => 'spacey@example.com',
+            'name' => 'Spacey User',
+        ]);
+    }
 }
