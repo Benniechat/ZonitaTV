@@ -56,14 +56,20 @@ class GospelFilmController extends Controller
             'faith-gospel-movies-tv',
         ])->where('is_active', true)->get()->keyBy('slug');
 
+        $allGospelChannels = Channel::whereHas('categories', fn ($q) => $q->where('slug', 'christian-tv'))
+            ->where('is_active', true)
+            ->get()
+            ->keyBy('slug');
+
         $stats = [
             'total_channels' => GospelFilmProduction::count(),
             'priority_1' => GospelFilmProduction::where('lead_priority', 1)->count(),
             'full_length_count' => GospelFilmProduction::where('has_full_length_movies', true)->count(),
             'english_subtitled_count' => GospelFilmProduction::where('has_english_subtitles', true)->count(),
             'active_syndicated' => GospelFilmProduction::whereIn('licensing_status', ['active_broadcasting', 'agreement_signed'])->count(),
+            'on_air_count' => $allGospelChannels->count(),
         ];
 
-        return view('gospel.index', compact('productions', 'gospelChannels', 'stats'));
+        return view('gospel.index', compact('productions', 'gospelChannels', 'allGospelChannels', 'stats'));
     }
 }

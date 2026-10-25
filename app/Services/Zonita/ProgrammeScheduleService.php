@@ -22,8 +22,7 @@ class ProgrammeScheduleService
      */
     public function generateRollingSchedule(Channel $channel, int $daysAhead = 7): array
     {
-        $timezone = $channel->sourceRule?->timezone ?? 'Africa/Lagos';
-        $now = Carbon::now($timezone);
+        $now = Carbon::now('UTC');
         $timelineEnd = $now->copy()->addDays($daysAhead)->endOfDay();
 
         $categorySlug = $channel->categories->first()?->slug;
@@ -58,7 +57,7 @@ class ProgrammeScheduleService
             ->orderByDesc('end_time')
             ->first();
 
-        $timelinePointer = $lastEntry ? Carbon::parse($lastEntry->end_time, $timezone) : $now->copy()->startOfHour();
+        $timelinePointer = $lastEntry ? Carbon::parse($lastEntry->end_time)->utc() : $now->copy()->subHours(2);
         $order = $lastEntry ? $lastEntry->play_order + 1 : 1;
         $createdCount = 0;
 
@@ -112,8 +111,8 @@ class ProgrammeScheduleService
                 'title' => $selectedVideo->title,
                 'description' => $selectedVideo->description,
                 'format_type' => $selectedVideo->format_type ?: 'feature',
-                'start_time' => $startTime->toDateTimeString(),
-                'end_time' => $endTime->toDateTimeString(),
+                'start_time' => $startTime->utc()->toDateTimeString(),
+                'end_time' => $endTime->utc()->toDateTimeString(),
                 'duration_seconds' => $durationSeconds,
                 'play_order' => $order++,
                 'status' => $status,
@@ -224,8 +223,7 @@ class ProgrammeScheduleService
      */
     public function getEpgData(Channel $channel): array
     {
-        $timezone = $channel->sourceRule?->timezone ?? 'Africa/Lagos';
-        $now = Carbon::now($timezone);
+        $now = now('UTC');
 
         // Auto-replenish schedule if upcoming entries run low to prevent looping or stale schedules
         $futureEntriesCount = ScheduleEntry::where('channel_id', $channel->id)

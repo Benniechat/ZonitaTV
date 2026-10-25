@@ -335,22 +335,30 @@
                                 </span>
                             </div>
 
-                            <div class="flex items-center justify-between gap-2">
-                                @if($provider->youtube_channel_url)
-                                    <a href="{{ $provider->youtube_channel_url }}" target="_blank" rel="noopener noreferrer" 
-                                        class="flex-1 text-center py-2 px-3 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-800 text-xs font-bold text-gray-300 hover:text-white transition flex items-center justify-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                                        Inspect Source
-                                    </a>
-                                @endif
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <a href="{{ route('channels.show', $provider->slug) }}" 
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs transition shadow-md shadow-emerald-500/20">
+                                    <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
+                                    Watch Live &rarr;
+                                </a>
 
-                                @if($provider->contact_email)
-                                    <a href="mailto:{{ $provider->contact_email }}?subject=Zonita%20TV%20Broadcast%20Licensing%20Inquiry%20-%20{{ urlencode($provider->name) }}" 
-                                        class="py-2 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-xs font-bold text-emerald-400 transition flex items-center justify-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                        Rights Inquiry
-                                    </a>
-                                @endif
+                                <div class="flex items-center gap-1.5">
+                                    @if($provider->youtube_channel_url)
+                                        <a href="{{ $provider->youtube_channel_url }}" target="_blank" rel="noopener noreferrer" 
+                                            class="py-2 px-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-800 text-xs font-bold text-gray-300 hover:text-white transition flex items-center justify-center gap-1">
+                                            <svg class="w-3.5 h-3.5 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                            Source
+                                        </a>
+                                    @endif
+
+                                    @if($provider->contact_email)
+                                        <a href="mailto:{{ $provider->contact_email }}?subject=Zonita%20TV%20Broadcast%20Licensing%20Inquiry%20-%20{{ urlencode($provider->name) }}" 
+                                            class="py-2 px-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-xs font-bold text-emerald-400 transition flex items-center justify-center gap-1">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                            Rights
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
