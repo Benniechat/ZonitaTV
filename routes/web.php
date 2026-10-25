@@ -28,6 +28,12 @@ use App\Http\Controllers\SportsController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
+// --- Google Site Verification ---
+Route::get('/google98a49cab5be19ce2.html', function () {
+    return response('google-site-verification: google98a49cab5be19ce2.html', 200)
+        ->header('Content-Type', 'text/html');
+});
+
 // --- Public Discovery Experience ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/channels', [ChannelController::class, 'index'])->name('channels.index');
