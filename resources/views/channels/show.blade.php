@@ -54,6 +54,24 @@
                             <!-- Transparent Interaction Shield to Block Scrubbing -->
                             <div class="absolute inset-0 z-10 cursor-pointer" id="hls-click-shield"></div>
 
+                            <!-- Stream Offline / Error Fallback Overlay -->
+                            <div id="hls-error-overlay" class="hidden absolute inset-0 z-30 bg-gray-950/95 flex flex-col items-center justify-center p-6 text-center">
+                                <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-3 shadow-inner">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                </div>
+                                <h3 class="text-base sm:text-lg font-bold text-white mb-1">Direct Transmission Feed Offline</h3>
+                                <p class="text-xs text-gray-400 max-w-sm mb-5 leading-relaxed">
+                                    The upstream source feed for {{ $channel->name }} is temporarily undergoing maintenance or network reconnection.
+                                </p>
+                                @if($channel->official_destination_url)
+                                    <a href="{{ $channel->official_destination_url }}" target="_blank" rel="noopener noreferrer" 
+                                       class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition transform hover:-translate-y-0.5">
+                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
+                                        Launch Broadcaster Official Destination
+                                    </a>
+                                @endif
+                            </div>
+
                             <!-- Top-Left: Linear Realtime Broadcast Watermark & Lock Indicator -->
                             <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
                                 <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
@@ -81,14 +99,43 @@
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 const video = document.getElementById('zoniva-player');
+                                const errorOverlay = document.getElementById('hls-error-overlay');
                                 const streamUrl = "{{ $playback['stream']->stream_url }}";
                                 let hls = null;
+                                let retryCount = 0;
+
                                 if (Hls.isSupported()) {
                                     hls = new Hls({ enableWorker: true, liveSyncDurationCount: 3 });
                                     hls.loadSource(streamUrl);
                                     hls.attachMedia(video);
+
+                                    hls.on(Hls.Events.ERROR, function (event, data) {
+                                        if (data.fatal) {
+                                            switch (data.type) {
+                                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                                    if (retryCount < 2) {
+                                                        retryCount++;
+                                                        console.warn('HLS Network error, attempting reconnect...', retryCount);
+                                                        hls.startLoad();
+                                                    } else {
+                                                        errorOverlay?.classList.remove('hidden');
+                                                    }
+                                                    break;
+                                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                                    hls.recoverMediaError();
+                                                    break;
+                                                default:
+                                                    hls.destroy();
+                                                    errorOverlay?.classList.remove('hidden');
+                                                    break;
+                                            }
+                                        }
+                                    });
                                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                                     video.src = streamUrl;
+                                    video.addEventListener('error', function () {
+                                        errorOverlay?.classList.remove('hidden');
+                                    });
                                 }
 
                                 // Lock to live realtime edge - strictly prevent fast forward or rewind
