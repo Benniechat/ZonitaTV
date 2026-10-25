@@ -17,6 +17,7 @@ use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalComplianceController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SportsController;
@@ -30,6 +31,8 @@ Route::get('/channel/{slug}', [ChannelController::class, 'show'])->name('channel
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/guide', [GuideController::class, 'index'])->name('guide.index');
+Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
+Route::get('/movies/{movie:slug}', [MovieController::class, 'show'])->name('movies.show');
 
 // --- Automated Live Sports Broadcasting & Discovery Engine ---
 Route::prefix('sports')->name('sports.')->group(function () {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Channel;
+use App\Models\Movie;
 use App\Models\Programme;
 use App\Models\ViewingEvent;
 use App\Services\ChannelCatalogueService;
@@ -316,6 +317,12 @@ class HomeController extends Controller
             ],
         ];
 
+        // 10. Featured Movies & Cinema
+        $featuredMovies = Movie::where('verification_status', 'verified')
+            ->orderByDesc('release_year')
+            ->take(4)
+            ->get();
+
         return view('home', compact(
             'heroChannel',
             'liveTrending',
@@ -326,6 +333,7 @@ class HomeController extends Controller
             'learningDiscovery',
             'gospelDrama',
             'kidsAnimation',
+            'featuredMovies',
             'tonightSchedule',
             'recommendedForYou',
             'categories'

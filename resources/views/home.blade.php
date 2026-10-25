@@ -462,6 +462,42 @@
 
             </div>
 
+            <!-- SECTION 6: 24/7 Verified Movie & Archival Cinema Showcase -->
+            @if(isset($featuredMovies) && $featuredMovies->isNotEmpty())
+                <section class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <a href="{{ route('movies.index') }}" class="flex items-center gap-2 group">
+                            <span class="text-amber-500 font-bold text-xs">&#9658;</span>
+                            <h2 class="text-base font-bold text-white group-hover:text-amber-400 transition">24/7 Movie Channels &amp; Verified Cinema</h2>
+                            <svg class="w-4 h-4 text-gray-500 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                        <a href="{{ route('movies.index') }}" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition">Explore Film Directory &rarr;</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        @foreach($featuredMovies as $movie)
+                            <a href="{{ route('movies.show', $movie->slug) }}" class="group rounded-2xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-amber-500/50 transition flex flex-col shadow-lg">
+                                <div class="relative aspect-video w-full overflow-hidden bg-gray-950">
+                                    <img src="{{ $movie->poster_url }}" alt="{{ $movie->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-black/40"></div>
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider border {{ $movie->rights_badge_color }} backdrop-blur-md">
+                                        {{ str_replace('_', ' ', $movie->rights_classification) }}
+                                    </span>
+                                    <span class="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[9px] font-bold text-white backdrop-blur-md border border-gray-800">
+                                        {{ $movie->release_year }} • {{ $movie->runtime_minutes }}m
+                                    </span>
+                                </div>
+                                <div class="p-3">
+                                    <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">{{ $movie->genre }}</span>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-amber-400 transition truncate mt-0.5">{{ $movie->title }}</h4>
+                                    <p class="text-[10px] text-gray-400 mt-1 line-clamp-1">{{ $movie->synopsis }}</p>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
         </div>
 
         <!-- Right Column: Sidebar Widgets (1 Column - Exact Reference Match) -->
