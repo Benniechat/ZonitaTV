@@ -9,6 +9,18 @@
     <meta name="google-site-verification" content="4m1NYPs5Z60SZPllspbNVhbJmHKV-K0qmBWuPZ1KuIk" />
     <meta name="google-site-verification" content="google98a49cab5be19ce2" />
 
+    <!-- Google Analytics (gtag.js) -->
+    @if(config('services.google.analytics_id'))
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google.analytics_id') }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '{{ config('services.google.analytics_id') }}');
+        </script>
+    @endif
+
     <!-- Favicon (Using Official Zonita TV Logo) -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo/zonitatvlogo2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo/zonitatvlogo2.png') }}">

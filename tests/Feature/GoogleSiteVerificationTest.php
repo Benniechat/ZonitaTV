@@ -30,4 +30,15 @@ class GoogleSiteVerificationTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('<meta name="google-site-verification" content="4m1NYPs5Z60SZPllspbNVhbJmHKV-K0qmBWuPZ1KuIk" />', false);
     }
+
+    public function test_google_analytics_gtag_renders_when_configured(): void
+    {
+        config(['services.google.analytics_id' => 'G-TESTMEASUREMENTID']);
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('https://www.googletagmanager.com/gtag/js?id=G-TESTMEASUREMENTID', false);
+        $response->assertSee("gtag('config', 'G-TESTMEASUREMENTID')", false);
+    }
 }
