@@ -61,7 +61,7 @@
             @forelse($virtualChannels as $vChannel)
                 @php
                     $currentEntry = $vChannel->scheduleEntries->first();
-                    $currentTitle = $currentEntry?->programme?->title ?? '24/7 Non-Stop Comedy Broadcast';
+                    $currentTitle = $currentEntry?->title ?? '24/7 Non-Stop Comedy Broadcast';
                 @endphp
                 <div class="bg-[#121620] border border-gray-800/80 hover:border-amber-500/50 rounded-2xl overflow-hidden transition-all duration-200 flex flex-col justify-between group shadow-lg hover:shadow-amber-500/10">
                     <div class="relative aspect-video bg-gray-900 overflow-hidden">

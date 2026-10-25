@@ -65,10 +65,9 @@ class ComedyController extends Controller
         ];
 
         $virtualChannels = Channel::whereIn('slug', $virtualSlugs)
-            ->with(['currentStream', 'scheduleEntries' => function ($q) {
+            ->with(['primaryStream', 'scheduleEntries' => function ($q) {
                 $q->where('start_time', '<=', now('UTC'))
-                    ->where('end_time', '>=', now('UTC'))
-                    ->with('programme');
+                    ->where('end_time', '>=', now('UTC'));
             }])
             ->get()
             ->sortBy(function ($ch) use ($virtualSlugs) {
