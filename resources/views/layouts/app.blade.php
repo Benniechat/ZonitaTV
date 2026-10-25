@@ -113,9 +113,16 @@
                                     @endforeach
                                 </div>
 
-                                <div class="p-2">
+                                <div class="p-2 space-y-1">
+                                    <a href="{{ route('nollywood.index') }}" class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] font-bold text-amber-400 hover:bg-amber-500/20 transition">
+                                        <span class="flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                                            <span>Nollywood Cinema (60 Channels)</span>
+                                        </span>
+                                        <span class="text-[10px] text-amber-300">Explore &rarr;</span>
+                                    </a>
                                     <a href="{{ route('channels.index') }}" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-[11px] font-bold text-gray-300 hover:text-white transition">
-                                        <span>View All Channels (84)</span>
+                                        <span>View All Channels</span>
                                     </a>
                                 </div>
                             </div>
@@ -124,6 +131,10 @@
                         <a href="{{ route('movies.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('movies.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                             Movies
+                        </a>
+                        <a href="{{ route('nollywood.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('nollywood.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                            Nollywood
                         </a>
                         <a href="{{ route('sports.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('sports.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
@@ -252,6 +263,10 @@
         </div>
 
         <a href="{{ route('movies.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('movies.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Movies</a>
+        <a href="{{ route('nollywood.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('nollywood.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            Nollywood
+        </a>
         <a href="{{ route('sports.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('sports.*') ? 'bg-red-600 text-white font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Sports</a>
         <a href="{{ route('gospel.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('gospel.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>

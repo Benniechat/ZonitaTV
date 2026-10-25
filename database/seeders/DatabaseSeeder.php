@@ -436,8 +436,9 @@ class DatabaseSeeder extends Seeder
         // 6. Deploy Zonita 24/7 Virtual Playout Network & Rolling Schedules
         app(ChannelProgrammingEngine::class)->deployPilotNetwork();
 
-        // 7. Deploy 60 Gospel Film Channels & 36 Islamic Broadcasting Channels
+        // 7. Deploy 60 Gospel Film Channels, 36 Islamic Broadcasting Channels & 60 Nollywood Channels
         app(GospelFilmDirectoryService::class)->syncDirectory();
         app(IslamicPlayoutSchedulingService::class)->deployIslamicVirtualNetwork(7);
+        app(\App\Services\Zonita\NollywoodDirectoryService::class)->syncDirectory();
     }
 }

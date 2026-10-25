@@ -21,6 +21,7 @@ use App\Http\Controllers\IslamicChannelController;
 use App\Http\Controllers\LegalComplianceController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\NollywoodController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SportsController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -37,6 +38,8 @@ Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 Route::get('/movies/{movie:slug}', [MovieController::class, 'show'])->name('movies.show');
 Route::get('/gospel-cinema', [GospelFilmController::class, 'index'])->name('gospel.index');
 Route::get('/islamic', [IslamicChannelController::class, 'index'])->name('islamic.index');
+Route::get('/nollywood', [NollywoodController::class, 'index'])->name('nollywood.index');
+Route::get('/nollywood-cinema', [NollywoodController::class, 'index']);
 
 // --- Automated Live Sports Broadcasting & Discovery Engine ---
 Route::prefix('sports')->name('sports.')->group(function () {
