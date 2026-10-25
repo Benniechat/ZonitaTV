@@ -51,13 +51,31 @@ class HomeController extends Controller
             return $prog;
         });
 
-        // 3. Popular Channels
+        // 3. Popular Channels across Sports, News, Gospel, Islamic, and Cinema
         $popularChannels = Channel::with(['categories'])
             ->where('is_active', true)
             ->where('is_published', true)
-            ->where('slug', '!=', 'the-matchroom-africa')
-            ->take(6)
+            ->whereIn('slug', [
+                'channels-tv',
+                'african-gospel-cinema-tv',
+                'zonita-islamic-cinema',
+                'mount-zion-gospel-drama-tv',
+                'zonita-arewa-movies',
+                'sports-central',
+                'cocomelon-kids-tv',
+                'zonita-quran',
+            ])
+            ->orderBy('display_order', 'asc')
             ->get();
+
+        if ($popularChannels->count() < 6) {
+            $popularChannels = Channel::with(['categories'])
+                ->where('is_active', true)
+                ->where('is_published', true)
+                ->orderBy('display_order', 'asc')
+                ->take(8)
+                ->get();
+        }
 
         // 4. Section 1 (2-Col): Football & Sports Showcase
         $footballSports = [
@@ -323,7 +341,15 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
-        // 11. 24/7 Islamic Television & Cinema Channels
+        // 11. 24/7 Gospel Linear Channels
+        $gospelChannels = Channel::whereIn('slug', [
+            'african-gospel-cinema-tv',
+            'mount-zion-gospel-drama-tv',
+            'prem-tv-gospel-movies',
+            'faith-gospel-movies-tv',
+        ])->where('is_active', true)->get();
+
+        // 12. 24/7 Islamic Television & Cinema Channels
         $islamicChannels = Channel::whereIn('slug', [
             'zonita-islamic-cinema',
             'zonita-arewa-movies',
@@ -342,6 +368,7 @@ class HomeController extends Controller
             'gospelDrama',
             'kidsAnimation',
             'featuredMovies',
+            'gospelChannels',
             'islamicChannels',
             'tonightSchedule',
             'recommendedForYou',
