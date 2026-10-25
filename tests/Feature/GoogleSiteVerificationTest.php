@@ -41,4 +41,16 @@ class GoogleSiteVerificationTest extends TestCase
         $response->assertSee('https://www.googletagmanager.com/gtag/js?id=G-TESTMEASUREMENTID', false);
         $response->assertSee("gtag('config', 'G-TESTMEASUREMENTID')", false);
     }
+
+    public function test_google_tag_manager_container_renders_when_configured(): void
+    {
+        config(['services.google.gtm_id' => 'GTM-TESTCONTAINER']);
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee("https://www.googletagmanager.com/gtm.js?id='+i+dl", false);
+        $response->assertSee("'GTM-TESTCONTAINER'", false);
+        $response->assertSee('<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TESTCONTAINER"', false);
+    }
 }
