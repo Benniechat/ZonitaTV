@@ -64,7 +64,14 @@ class IslamicChannelController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        // 8 Islamic Virtual Channels
+        // All active Islamic Channels (Core virtual networks + verified provider broadcast channels)
+        $islamicChannels = Channel::whereHas('categories', fn ($q) => $q->where('slug', 'islamic'))
+            ->where('is_active', true)
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get()
+            ->keyBy('slug');
+
         $islamicSlugs = [
             'zonita-islamic-cinema',
             'zonita-arewa-movies',
@@ -76,20 +83,10 @@ class IslamicChannelController extends Controller
             'zonita-islamic-family',
         ];
 
-        $islamicChannels = Channel::whereIn('slug', $islamicSlugs)
-            ->where('is_active', true)
-            ->get()
-            ->keyBy('slug');
-
         // Fetch Now Playing and Next Up for each channel
         $now = now('Africa/Lagos');
         $channelSchedules = [];
-        foreach ($islamicSlugs as $slug) {
-            $channel = $islamicChannels->get($slug);
-            if (! $channel) {
-                continue;
-            }
-
+        foreach ($islamicChannels as $slug => $channel) {
             $current = ScheduleEntry::where('channel_id', $channel->id)
                 ->where('start_time', '<=', $now)
                 ->where('end_time', '>=', $now)
