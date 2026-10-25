@@ -63,11 +63,15 @@
                             Sports
                         </a>
                         <a href="{{ route('categories.show', 'news') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">News</a>
-                        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
+                        <a href="{{ route('gospel.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('gospel.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            Gospel TV
+                        </a>
                         <a href="{{ route('islamic.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('islamic.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            Islamic
+                            Islamic TV
                         </a>
+                        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
                         <a href="{{ route('categories.show', 'kids') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Kids</a>
                         <a href="{{ route('categories.show', 'education') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Education</a>
                         <a href="{{ route('categories.show', 'entertainment') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Entertainment</a>
@@ -154,6 +158,25 @@
             </div>
         </div>
     </header>
+
+    <!-- Mobile / Tablet Quick Navigation Bar -->
+    <div class="lg:hidden bg-[#0c0e14] border-b border-gray-800/80 px-4 py-2.5 overflow-x-auto flex items-center gap-2 text-xs font-semibold whitespace-nowrap z-40 sticky top-20 shadow-md">
+        <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('home') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Home</a>
+        <a href="{{ route('guide.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('guide.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Live TV</a>
+        <a href="{{ route('gospel.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('gospel.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            Gospel TV
+        </a>
+        <a href="{{ route('islamic.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('islamic.*') ? 'bg-emerald-500 text-black font-bold' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' }}">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Islamic TV
+        </a>
+        <a href="{{ route('channels.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('channels.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Channels</a>
+        <a href="{{ route('movies.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('movies.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Movies</a>
+        <a href="{{ route('sports.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('sports.*') ? 'bg-red-600 text-white font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Sports</a>
+        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->is('category/christian-tv') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Christian</a>
+        <a href="{{ route('categories.show', 'kids') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->is('category/kids') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Kids</a>
+    </div>
 
     <!-- Flash Notifications -->
     @if(session('success'))

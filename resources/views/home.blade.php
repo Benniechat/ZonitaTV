@@ -398,34 +398,53 @@
             <!-- SECTION 5: 2-Column Split (Gospel Drama 24/7 | Kids, Cartoons & Folktales 24/7) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
-                <!-- Gospel Drama 24/7 Column (Damilola Mike-Bamiloye, Prem TV) -->
+                <!-- Gospel Drama 24/7 Column (Damilola Mike-Bamiloye, Prem TV, AGFN) -->
                 <section>
                     <div class="flex items-center justify-between mb-4">
-                        <a href="{{ route('categories.show', 'christian-tv') }}" class="flex items-center gap-2 group">
+                        <a href="{{ route('gospel.index') }}" class="flex items-center gap-2 group">
                             <span class="text-amber-500 font-bold text-xs">&#9658;</span>
                             <h2 class="text-base font-bold text-white group-hover:text-amber-400 transition">Gospel Drama TV &bull; 24/7 Realtime</h2>
                             <svg class="w-4 h-4 text-gray-500 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
-                        <a href="{{ route('categories.show', 'christian-tv') }}" class="text-xs text-gray-400 hover:text-white transition">View All</a>
+                        <a href="{{ route('gospel.index') }}" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition">Explore 60 Ministries &rarr;</a>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        @foreach($gospelDrama as $item)
-                            <a href="{{ route('channels.show', $item['slug']) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col shadow">
-                                <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=400&q=80';">
-                                    <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-amber-900/80 text-[8px] font-bold text-amber-300 uppercase tracking-wider">Faith Drama</span>
-                                    <span class="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded bg-red-600/90 text-[8px] font-black text-white uppercase flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span>
-                                        LIVE
-                                    </span>
-                                </div>
-                                <div class="p-2.5">
-                                    <h4 class="text-[11px] font-bold text-white group-hover:text-amber-400 transition truncate">{{ $item['title'] }}</h4>
-                                    <span class="text-[9px] text-gray-400 mt-0.5 block truncate">{{ $item['time_str'] }}</span>
-                                </div>
-                            </a>
-                        @endforeach
+                        @if(isset($gospelChannels) && $gospelChannels->isNotEmpty())
+                            @foreach($gospelChannels as $gChannel)
+                                <a href="{{ route('channels.show', $gChannel->slug) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-amber-500/50 transition flex flex-col shadow">
+                                    <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
+                                        <img src="{{ $gChannel->banner_url }}" alt="{{ $gChannel->name }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" loading="lazy">
+                                        <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-amber-900/80 text-[8px] font-bold text-amber-300 uppercase tracking-wider">Faith Drama</span>
+                                        <span class="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded bg-red-600/90 text-[8px] font-black text-white uppercase flex items-center gap-1">
+                                            <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span>
+                                            LIVE
+                                        </span>
+                                    </div>
+                                    <div class="p-2.5">
+                                        <h4 class="text-[11px] font-bold text-white group-hover:text-amber-400 transition truncate">{{ $gChannel->name }}</h4>
+                                        <span class="text-[9px] text-gray-400 mt-0.5 block truncate">24/7 Continuous Playout</span>
+                                    </div>
+                                </a>
+                            @endforeach
+                        @else
+                            @foreach($gospelDrama as $item)
+                                <a href="{{ route('channels.show', $item['slug']) }}" class="group rounded-xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col shadow">
+                                    <div class="relative aspect-video w-full overflow-hidden bg-gray-900">
+                                        <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover transition-transform group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=400&q=80';">
+                                        <span class="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-amber-900/80 text-[8px] font-bold text-amber-300 uppercase tracking-wider">Faith Drama</span>
+                                        <span class="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded bg-red-600/90 text-[8px] font-black text-white uppercase flex items-center gap-1">
+                                            <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span>
+                                            LIVE
+                                        </span>
+                                    </div>
+                                    <div class="p-2.5">
+                                        <h4 class="text-[11px] font-bold text-white group-hover:text-amber-400 transition truncate">{{ $item['title'] }}</h4>
+                                        <span class="text-[9px] text-gray-400 mt-0.5 block truncate">{{ $item['time_str'] }}</span>
+                                    </div>
+                                </a>
+                            @endforeach
+                        @endif
                     </div>
                 </section>
 
