@@ -2,10 +2,13 @@
 
 namespace App\Services\Zonita;
 
+use App\Models\Category;
 use App\Models\Channel;
+use App\Models\Programme;
 use App\Models\ScheduleEntry;
 use App\Models\Video;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class ProgrammeScheduleService
 {
@@ -135,11 +138,85 @@ class ProgrammeScheduleService
             ScheduleEntry::insert($entriesToInsert);
         }
 
+        // Keep core Programme records synced so that /guide, /my-guide, and homepage widgets reflect real-time live playout
+        $this->syncProgrammesForChannel($channel);
+
         return [
             'channel' => $channel->slug,
             'entries_created' => $createdCount,
             'status' => 'ok',
         ];
+    }
+
+    /**
+     * Synchronizes upcoming ScheduleEntry records into core Programme models for EPG and homepage visibility.
+     */
+    public function syncProgrammesForChannel(Channel $channel): int
+    {
+        $now = now();
+        $entries = ScheduleEntry::where('channel_id', $channel->id)
+            ->where('end_time', '>=', $now->copy()->subHours(2))
+            ->where('start_time', '<=', $now->copy()->addDays(7))
+            ->orderBy('start_time')
+            ->get();
+
+        if ($entries->isEmpty()) {
+            return 0;
+        }
+
+        $category = $channel->categories->first() ?? Category::where('slug', $channel->category_slug)->first();
+        $categoryId = $category?->id;
+        $fallbackVideoId = $channel->fallback_video_id;
+        $synced = 0;
+
+        foreach ($entries as $entry) {
+            $video = $entry->video;
+            $videoId = $video?->youtube_id ?: $fallbackVideoId;
+            $startTime = Carbon::parse($entry->start_time);
+            $endTime = Carbon::parse($entry->end_time);
+            $durationMinutes = max(1, (int) round($entry->duration_seconds / 60));
+            $isLive = $now->between($startTime, $endTime);
+
+            Programme::updateOrCreate(
+                [
+                    'channel_id' => $channel->id,
+                    'start_time' => $startTime,
+                ],
+                [
+                    'category_id' => $categoryId,
+                    'title' => $entry->title,
+                    'slug' => Str::slug($entry->title).'-'.$channel->id.'-'.$startTime->format('YmdHi'),
+                    'description' => $entry->description ?: ($video?->description ?: $channel->description),
+                    'presenter_or_artist' => $channel->broadcaster_name,
+                    'poster_image' => $channel->banner_path,
+                    'video_source' => 'youtube',
+                    'video_id' => $videoId,
+                    'video_url' => $videoId ? "https://www.youtube.com/watch?v={$videoId}" : null,
+                    'duration_minutes' => $durationMinutes,
+                    'play_order' => $entry->play_order,
+                    'end_time' => $endTime,
+                    'is_live' => $isLive,
+                ]
+            );
+
+            $synced++;
+        }
+
+        return $synced;
+    }
+
+    /**
+     * Bulk synchronizes all channels that have linear schedule entries into Programme records.
+     */
+    public function syncAllChannelsToProgrammes(): int
+    {
+        $channels = Channel::whereHas('scheduleEntries')->get();
+        $total = 0;
+        foreach ($channels as $channel) {
+            $total += $this->syncProgrammesForChannel($channel);
+        }
+
+        return $total;
     }
 
     /**
