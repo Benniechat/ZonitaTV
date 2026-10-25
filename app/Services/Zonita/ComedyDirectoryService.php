@@ -11,12 +11,8 @@ use App\Models\ChannelStream;
 use App\Models\ChannelVideo;
 use App\Models\ComedyChannel;
 use App\Models\ContentRight;
-use App\Models\Programme;
-use App\Models\ScheduleEntry;
 use App\Models\User;
 use App\Models\Video;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ComedyDirectoryService
@@ -24,6 +20,7 @@ class ComedyDirectoryService
     public function __construct(
         protected ProgrammeScheduleService $scheduleService
     ) {}
+
     /**
      * Master registry of all 70 Nigerian and African Comedy Creators, Stand-Up Performers, and Studios.
      *
@@ -1741,12 +1738,12 @@ class ComedyDirectoryService
                 ['slug' => $slug],
                 [
                     'name' => $vChannel['name'],
-                    'tvg_id' => Str::studly($slug) . '.comedy.zoniva',
+                    'tvg_id' => Str::studly($slug).'.comedy.zoniva',
                     'tagline' => $vChannel['tagline'],
                     'description' => $vChannel['description'],
                     'broadcaster_name' => 'Zonita Comedy Playout Network',
                     'broadcaster_website' => 'https://zonivatv.com/comedy',
-                    'official_destination_url' => config('app.url') . '/channel/' . $slug,
+                    'official_destination_url' => config('app.url').'/channel/'.$slug,
                     'country_code' => 'NGA',
                     'language_code' => 'en',
                     'playback_mode' => 'embed_player',
@@ -1789,7 +1786,7 @@ class ComedyDirectoryService
                 ['channel_id' => $channel->id],
                 [
                     'rights_holder_name' => $vChannel['name'],
-                    'contract_reference' => 'ZONITA-COMEDY-' . strtoupper(Str::random(6)),
+                    'contract_reference' => 'ZONITA-COMEDY-'.strtoupper(Str::random(6)),
                     'status' => 'directory_approved',
                     'allow_directory_listing' => true,
                     'allow_web_embedding' => true,

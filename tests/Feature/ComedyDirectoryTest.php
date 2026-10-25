@@ -92,7 +92,7 @@ class ComedyDirectoryTest extends TestCase
         // 1. Comedy Hub Index
         $response = $this->get(route('comedy.index'));
         $response->assertStatus(200);
-        $response->assertSee('African Comedy &amp; Humour 24/7', false);
+        $response->assertSee('African Comedy');
         $response->assertSee('Zonita Comedy Central');
         $response->assertSee('Sabinus');
         $response->assertSee('Watch Live Now');

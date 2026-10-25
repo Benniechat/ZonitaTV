@@ -10,6 +10,7 @@ use App\Models\Programme;
 use App\Models\User;
 use App\Services\EpgSyncService;
 use App\Services\Zonita\ChannelProgrammingEngine;
+use App\Services\Zonita\ComedyDirectoryService;
 use App\Services\Zonita\GospelFilmDirectoryService;
 use App\Services\Zonita\IslamicPlayoutSchedulingService;
 use App\Services\Zonita\NollywoodDirectoryService;
@@ -441,6 +442,6 @@ class DatabaseSeeder extends Seeder
         app(GospelFilmDirectoryService::class)->syncDirectory();
         app(IslamicPlayoutSchedulingService::class)->deployIslamicVirtualNetwork(7);
         app(NollywoodDirectoryService::class)->syncDirectory();
-        app(\App\Services\Zonita\ComedyDirectoryService::class)->syncDirectory();
+        app(ComedyDirectoryService::class)->syncDirectory();
     }
 }

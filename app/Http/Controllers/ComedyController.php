@@ -41,7 +41,7 @@ class ComedyController extends Controller
 
         // 4. Filter by Language
         if ($request->filled('lang')) {
-            $query->where('primary_language', 'like', '%' . $request->query('lang') . '%');
+            $query->where('primary_language', 'like', '%'.$request->query('lang').'%');
         }
 
         // Order: Priority 1 first, then name
