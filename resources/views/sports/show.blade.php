@@ -116,7 +116,7 @@
                         <div class="flex items-center justify-around py-4">
                             <!-- Home -->
                             <div class="flex flex-col items-center text-center max-w-[140px]">
-                                <img src="{{ $fixture->homeTeam?->logo }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-xl mb-3" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-20 h-20 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-xl font-black text-gray-400 mb-3\'>{{ substr($fixture->homeTeam?->name ?? \'HT\', 0, 3) }}</div><h3 class=\'text-sm sm:text-base font-extrabold text-white\'>{{ $fixture->homeTeam?->name }}</h3>';">
+                                <img src="{{ $fixture->homeTeam?->logo }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-xl mb-3" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-20 h-20 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-xl font-black text-gray-400 mb-3\'>{{ substr($fixture->homeTeam?->name ?? 'HT', 0, 3) }}</div><h3 class=\'text-sm sm:text-base font-extrabold text-white\'>{{ $fixture->homeTeam?->name }}</h3>';">
                                 <h3 class="text-sm sm:text-base font-extrabold text-white">{{ $fixture->homeTeam?->name }}</h3>
                             </div>
 
@@ -135,7 +135,7 @@
 
                             <!-- Away -->
                             <div class="flex flex-col items-center text-center max-w-[140px]">
-                                <img src="{{ $fixture->awayTeam?->logo }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-xl mb-3" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-20 h-20 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-xl font-black text-gray-400 mb-3\'>{{ substr($fixture->awayTeam?->name ?? \'AT\', 0, 3) }}</div><h3 class=\'text-sm sm:text-base font-extrabold text-white\'>{{ $fixture->awayTeam?->name }}</h3>';">
+                                <img src="{{ $fixture->awayTeam?->logo }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-xl mb-3" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-20 h-20 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-xl font-black text-gray-400 mb-3\'>{{ substr($fixture->awayTeam?->name ?? 'AT', 0, 3) }}</div><h3 class=\'text-sm sm:text-base font-extrabold text-white\'>{{ $fixture->awayTeam?->name }}</h3>';">
                                 <h3 class="text-sm sm:text-base font-extrabold text-white">{{ $fixture->awayTeam?->name }}</h3>
                             </div>
                         </div>
