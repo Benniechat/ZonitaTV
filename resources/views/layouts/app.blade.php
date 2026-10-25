@@ -48,12 +48,79 @@
 
                     <!-- Navigation Links with Amber active pill indicator -->
                     <nav class="hidden lg:flex items-center space-x-0.5 xl:space-x-1 text-xs xl:text-sm font-medium">
-                        <a href="{{ route('home') }}" class="relative px-2.5 xl:px-3.5 py-2 text-white font-semibold transition group shrink-0">
+                        <a href="{{ route('home') }}" class="relative px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('home') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition group shrink-0">
                             Home
-                            <span class="absolute bottom-0 left-2.5 right-2.5 xl:left-3 xl:right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                            @if(request()->routeIs('home'))
+                                <span class="absolute bottom-0 left-2.5 right-2.5 xl:left-3 xl:right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                            @endif
                         </a>
-                        <a href="{{ route('guide.index') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Live TV</a>
-                        <a href="{{ route('channels.index') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Channels</a>
+                        <a href="{{ route('guide.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('guide.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0">Live TV</a>
+                        <a href="{{ route('channels.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('channels.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0">Channels</a>
+
+                        <!-- Categories Dropdown Menu -->
+                        @php
+                            $dropdownCategories = $navCategories ?? \App\Models\Category::where('is_nav_visible', true)->orderBy('sort_order')->get();
+                        @endphp
+                        <div class="relative" x-data="{ catOpen: false }" @click.away="catOpen = false">
+                            <button @click="catOpen = !catOpen" 
+                                    type="button" 
+                                    class="px-2.5 xl:px-3.5 py-2 {{ request()->is('category*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5 focus:outline-none group">
+                                <span>Categories</span>
+                                <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-white transition-transform duration-200" 
+                                     :class="{ 'rotate-180': catOpen }" 
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div x-show="catOpen" 
+                                 x-cloak 
+                                 x-transition:enter="transition ease-out duration-150"
+                                 x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+                                 x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-100"
+                                 x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+                                 class="absolute left-0 mt-2 w-64 rounded-2xl bg-[#121622] border border-gray-800 shadow-2xl py-2 z-50 divide-y divide-gray-800/80">
+                                
+                                <div class="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                                    Explore Categories
+                                </div>
+
+                                <div class="py-1">
+                                    @foreach($dropdownCategories as $cat)
+                                        @php
+                                            $catColor = match($cat->slug) {
+                                                'sports' => 'bg-red-500',
+                                                'news' => 'bg-blue-400',
+                                                'christian-tv' => 'bg-amber-400',
+                                                'islamic' => 'bg-emerald-400',
+                                                'kids' => 'bg-pink-400',
+                                                'education' => 'bg-cyan-400',
+                                                'entertainment' => 'bg-purple-400',
+                                                'zoniva-originals' => 'bg-orange-500',
+                                                default => 'bg-gray-400'
+                                            };
+                                        @endphp
+                                        <a href="{{ route('categories.show', $cat->slug) }}" 
+                                           class="flex items-center justify-between px-3.5 py-2 text-xs font-semibold {{ request()->is('category/' . $cat->slug) ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/60' }} rounded-xl mx-1.5 transition group">
+                                            <span class="flex items-center gap-2.5">
+                                                <span class="w-2 h-2 rounded-full {{ $catColor }}"></span>
+                                                <span>{{ $cat->name }}</span>
+                                            </span>
+                                            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Browse &rarr;</span>
+                                        </a>
+                                    @endforeach
+                                </div>
+
+                                <div class="p-2">
+                                    <a href="{{ route('channels.index') }}" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-[11px] font-bold text-gray-300 hover:text-white transition">
+                                        <span>View All Channels (84)</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <a href="{{ route('movies.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('movies.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                             Movies
@@ -62,7 +129,6 @@
                             <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                             Sports
                         </a>
-                        <a href="{{ route('categories.show', 'news') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">News</a>
                         <a href="{{ route('gospel.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('gospel.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                             Gospel TV
@@ -71,10 +137,6 @@
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             Islamic TV
                         </a>
-                        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
-                        <a href="{{ route('categories.show', 'kids') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Kids</a>
-                        <a href="{{ route('categories.show', 'education') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Education</a>
-                        <a href="{{ route('categories.show', 'entertainment') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Entertainment</a>
                     </nav>
                 </div>
 
@@ -163,6 +225,34 @@
     <div class="lg:hidden bg-[#0c0e14] border-b border-gray-800/80 px-4 py-2.5 overflow-x-auto flex items-center gap-2 text-xs font-semibold whitespace-nowrap z-40 sticky top-20 shadow-md">
         <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('home') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Home</a>
         <a href="{{ route('guide.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('guide.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Live TV</a>
+        <a href="{{ route('channels.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('channels.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Channels</a>
+
+        <!-- Mobile Categories Dropdown -->
+        <div class="relative" x-data="{ mCatOpen: false }" @click.away="mCatOpen = false">
+            <button @click="mCatOpen = !mCatOpen" type="button" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->is('category*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">
+                <span>Categories</span>
+                <svg class="w-3 h-3 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="mCatOpen" x-cloak 
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 class="absolute left-0 mt-2 w-56 rounded-2xl bg-[#121622] border border-gray-800 shadow-2xl py-2 z-50 divide-y divide-gray-800/80">
+                <div class="py-1">
+                    @foreach($dropdownCategories as $cat)
+                        <a href="{{ route('categories.show', $cat->slug) }}" class="block px-3.5 py-2 text-xs {{ request()->is('category/' . $cat->slug) ? 'text-amber-400 font-bold bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/60' }} transition">
+                            {{ $cat->name }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ route('movies.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('movies.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Movies</a>
+        <a href="{{ route('sports.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('sports.*') ? 'bg-red-600 text-white font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Sports</a>
         <a href="{{ route('gospel.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('gospel.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             Gospel TV
@@ -171,11 +261,6 @@
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             Islamic TV
         </a>
-        <a href="{{ route('channels.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('channels.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Channels</a>
-        <a href="{{ route('movies.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('movies.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Movies</a>
-        <a href="{{ route('sports.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('sports.*') ? 'bg-red-600 text-white font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Sports</a>
-        <a href="{{ route('categories.show', 'christian-tv') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->is('category/christian-tv') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Christian</a>
-        <a href="{{ route('categories.show', 'kids') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->is('category/kids') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Kids</a>
     </div>
 
     <!-- Flash Notifications -->
