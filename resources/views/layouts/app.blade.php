@@ -65,264 +65,760 @@
     @endif
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- Top Navigation Bar matching Reference Layout -->
-    <header class="sticky top-0 z-50 bg-[#0b0d13]/95 backdrop-blur-md border-b border-gray-800/60">
-        <div class="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                
-                <!-- Logo & Nav Links -->
-                <div class="flex items-center space-x-4 xl:space-x-8">
-                    <a href="{{ route('home') }}" class="flex items-center group shrink-0">
-                        <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-9 sm:h-10 xl:h-11 w-auto object-contain transition-transform group-hover:scale-105">
-                    </a>
+    <!-- Redesigned Two-Tier Navigation Architecture -->
+    <header class="sticky top-0 z-50 bg-[#0b0d13]/95 backdrop-blur-md border-b border-gray-800/80"
+            role="banner"
+            x-data="{ 
+                mobileNavOpen: false, 
+                megaMenuOpen: false, 
+                searchFilter: 'all',
+                searchFilterOpen: false,
+                userDropdownOpen: false,
+                notificationsOpen: false,
+                mobileCatExpanded: {
+                    format: false,
+                    genre: true,
+                    faith: false
+                }
+            }"
+            @keydown.escape.window="megaMenuOpen = false; userDropdownOpen = false; notificationsOpen = false; searchFilterOpen = false; mobileNavOpen = false"
+            x-effect="document.body.style.overflow = mobileNavOpen ? 'hidden' : ''">
 
-                    <!-- Navigation Links with Amber active pill indicator -->
-                    <nav class="hidden lg:flex items-center space-x-0.5 xl:space-x-1 text-xs xl:text-sm font-medium">
-                        <a href="{{ route('home') }}" class="relative px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('home') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition group shrink-0">
-                            Home
-                            @if(request()->routeIs('home'))
-                                <span class="absolute bottom-0 left-2.5 right-2.5 xl:left-3 xl:right-3 h-0.5 bg-amber-400 rounded-full"></span>
-                            @endif
+        @php
+            $dropdownCategories = $navCategories ?? \App\Models\Category::where('is_nav_visible', true)->orderBy('sort_order')->get();
+        @endphp
+
+        <!-- ========================================================================= -->
+        <!-- TIER 1: GLOBAL UTILITY HEADER (Brand, Global Search & System Actions)   -->
+        <!-- ========================================================================= -->
+        <div class="border-b border-gray-800/60 bg-[#0c0e14]">
+            <div class="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 sm:h-18 gap-3 sm:gap-6">
+                    
+                    <!-- 1. Brand Logo Anchor -->
+                    <div class="flex items-center gap-3 shrink-0">
+                        <a href="{{ route('home') }}" class="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-lg p-1" aria-label="Zonita TV Homepage">
+                            <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-9 sm:h-10 xl:h-11 w-auto object-contain transition-transform duration-200 group-hover:scale-105">
+                            <span class="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                Discovery Platform
+                            </span>
                         </a>
-                        <a href="{{ route('guide.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('guide.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0">Live TV</a>
-                        <a href="{{ route('channels.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('channels.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0">Channels</a>
+                    </div>
 
-                        <!-- Categories Dropdown Menu -->
-                        @php
-                            $dropdownCategories = $navCategories ?? \App\Models\Category::where('is_nav_visible', true)->orderBy('sort_order')->get();
-                        @endphp
-                        <div class="relative" x-data="{ catOpen: false }" @click.away="catOpen = false">
-                            <button @click="catOpen = !catOpen" 
-                                    type="button" 
-                                    class="px-2.5 xl:px-3.5 py-2 {{ request()->is('category*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5 focus:outline-none group">
-                                <span>Categories</span>
-                                <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-white transition-transform duration-200" 
-                                     :class="{ 'rotate-180': catOpen }" 
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    <!-- 2. Global Predictive Search Bar with Filter Shortcut -->
+                    <div class="hidden md:flex flex-1 max-w-xl mx-auto px-2">
+                        <form action="{{ route('search') }}" method="GET" class="w-full relative flex items-center" role="search">
+                            <div class="relative w-full group">
+                                <div class="flex items-center w-full bg-[#131722] hover:bg-[#161b28] focus-within:bg-[#161b28] border border-gray-700/70 focus-within:border-amber-500/80 rounded-full transition-all duration-200 shadow-inner">
+                                    
+                                    <!-- Search Icon -->
+                                    <div class="pl-3.5 pr-2 text-gray-400 group-focus-within:text-amber-400 transition-colors pointer-events-none">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Search Input Field -->
+                                    <input type="text" 
+                                           name="q" 
+                                           id="global-search-input"
+                                           value="{{ request('q') }}" 
+                                           placeholder="Search channels, live football, movies, gospel..." 
+                                           autocomplete="off"
+                                           class="w-full bg-transparent py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none pr-2">
+
+                                    <!-- Filter Shortcut Dropdown -->
+                                    <div class="relative shrink-0 border-l border-gray-700/60 my-1" @click.away="searchFilterOpen = false">
+                                        <button type="button" 
+                                                @click="searchFilterOpen = !searchFilterOpen" 
+                                                class="flex items-center gap-1.5 px-3 py-1 text-[11px] font-medium text-gray-400 hover:text-white transition focus:outline-none"
+                                                aria-label="Filter search results by type">
+                                            <span x-text="searchFilter === 'all' ? 'All' : (searchFilter === 'channels' ? 'Channels' : (searchFilter === 'sports' ? 'Sports' : 'Movies'))">All</span>
+                                            <svg class="w-3 h-3 text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': searchFilterOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        
+                                        <!-- Filter Options Popup -->
+                                        <div x-show="searchFilterOpen" 
+                                             x-cloak
+                                             x-transition:enter="transition ease-out duration-100"
+                                             x-transition:enter-start="opacity-0 scale-95"
+                                             x-transition:enter-end="opacity-100 scale-100"
+                                             x-transition:leave="transition ease-in duration-75"
+                                             x-transition:leave-start="opacity-100 scale-100"
+                                             x-transition:leave-end="opacity-0 scale-95"
+                                             class="absolute right-0 mt-2 w-32 bg-[#121622] border border-gray-700 rounded-xl shadow-xl py-1 z-50 text-xs divide-y divide-gray-800">
+                                            <button type="button" @click="searchFilter = 'all'; searchFilterOpen = false" class="w-full text-left px-3 py-1.5 hover:bg-gray-800 text-gray-300 hover:text-white flex items-center justify-between">
+                                                <span>All Formats</span>
+                                                <span x-show="searchFilter === 'all'" class="text-amber-400 font-bold">✓</span>
+                                            </button>
+                                            <button type="button" @click="searchFilter = 'channels'; searchFilterOpen = false" class="w-full text-left px-3 py-1.5 hover:bg-gray-800 text-gray-300 hover:text-white flex items-center justify-between">
+                                                <span>Channels</span>
+                                                <span x-show="searchFilter === 'channels'" class="text-amber-400 font-bold">✓</span>
+                                            </button>
+                                            <button type="button" @click="searchFilter = 'sports'; searchFilterOpen = false" class="w-full text-left px-3 py-1.5 hover:bg-gray-800 text-gray-300 hover:text-white flex items-center justify-between">
+                                                <span>Live Sports</span>
+                                                <span x-show="searchFilter === 'sports'" class="text-amber-400 font-bold">✓</span>
+                                            </button>
+                                            <button type="button" @click="searchFilter = 'movies'; searchFilterOpen = false" class="w-full text-left px-3 py-1.5 hover:bg-gray-800 text-gray-300 hover:text-white flex items-center justify-between">
+                                                <span>Movies</span>
+                                                <span x-show="searchFilter === 'movies'" class="text-amber-400 font-bold">✓</span>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="type" :value="searchFilter !== 'all' ? searchFilter : ''">
+                                    </div>
+
+                                    <!-- Keyboard Shortcut Badge -->
+                                    <div class="hidden lg:flex items-center pr-3 pointer-events-none">
+                                        <kbd class="px-1.5 py-0.5 text-[10px] font-mono font-medium text-gray-400 bg-gray-800/80 border border-gray-700 rounded shadow-sm">⌘K</kbd>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 3. System Utility Actions -->
+                    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                        
+                        <!-- Mobile Search Toggle -->
+                        <a href="{{ route('search') }}" 
+                           class="md:hidden p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition" 
+                           aria-label="Search channels and movies">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </a>
+
+                        <!-- Notifications Bell with Red Indicator Badge -->
+                        <div class="relative" @click.away="notificationsOpen = false">
+                            <button type="button" 
+                                    @click="notificationsOpen = !notificationsOpen" 
+                                    class="relative p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                                    aria-label="View system notifications"
+                                    :aria-expanded="notificationsOpen.toString()">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                                 </svg>
+                                <span class="absolute top-1.5 right-1.5 flex h-4 w-4">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-red-600 text-[9px] font-extrabold text-white items-center justify-center">1</span>
+                                </span>
                             </button>
 
-                            <div x-show="catOpen" 
-                                 x-cloak 
+                            <!-- Notifications Popover -->
+                            <div x-show="notificationsOpen" 
+                                 x-cloak
                                  x-transition:enter="transition ease-out duration-150"
-                                 x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
-                                 x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                                  x-transition:leave="transition ease-in duration-100"
-                                 x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
-                                 x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
-                                 class="absolute left-0 mt-2 w-64 rounded-2xl bg-[#121622] border border-gray-800 shadow-2xl py-2 z-50 divide-y divide-gray-800/80">
-                                
-                                <div class="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                                    Explore Categories
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                                 class="absolute right-0 mt-2 w-80 rounded-2xl bg-[#121622] border border-gray-800 shadow-2xl py-3 z-50 divide-y divide-gray-800/80">
+                                <div class="px-4 pb-2 flex items-center justify-between">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Notifications</h3>
+                                    <span class="text-[10px] font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">New Update</span>
                                 </div>
-
-                                <div class="py-1">
-                                    @foreach($dropdownCategories as $cat)
-                                        @php
-                                            $catColor = match($cat->slug) {
-                                                'sports' => 'bg-red-500',
-                                                'news' => 'bg-blue-400',
-                                                'christian-tv' => 'bg-amber-400',
-                                                'islamic' => 'bg-emerald-400',
-                                                'kids' => 'bg-pink-400',
-                                                'education' => 'bg-cyan-400',
-                                                'comedy' => 'bg-yellow-400',
-                                                'entertainment' => 'bg-purple-400',
-                                                'zoniva-originals' => 'bg-orange-500',
-                                                default => 'bg-gray-400'
-                                            };
-                                        @endphp
-                                        <a href="{{ route('categories.show', $cat->slug) }}" 
-                                           class="flex items-center justify-between px-3.5 py-2 text-xs font-semibold {{ request()->is('category/' . $cat->slug) ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/60' }} rounded-xl mx-1.5 transition group">
-                                            <span class="flex items-center gap-2.5">
-                                                <span class="w-2 h-2 rounded-full {{ $catColor }}"></span>
-                                                <span>{{ $cat->name }}</span>
-                                            </span>
-                                            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Browse &rarr;</span>
-                                        </a>
-                                    @endforeach
+                                <div class="py-2 px-3">
+                                    <a href="{{ route('guide.index') }}" class="flex items-start gap-3 p-2 rounded-xl hover:bg-gray-800/60 transition group">
+                                        <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        </div>
+                                        <div class="text-xs">
+                                            <p class="font-semibold text-gray-200 group-hover:text-white">Live Broadcast Scheduled</p>
+                                            <p class="text-[11px] text-gray-400 mt-0.5">Premier League & African Cup matchday coverage is now live on SportyTV.</p>
+                                            <span class="text-[10px] text-gray-500 mt-1 block">10 mins ago</span>
+                                        </div>
+                                    </a>
                                 </div>
-
-                                <div class="p-2 space-y-1">
-                                    <a href="{{ route('comedy.index') }}" class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-[11px] font-bold text-orange-400 hover:bg-orange-500/20 transition">
-                                        <span class="flex items-center gap-1.5">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-                                            <span>Comedy TV (10 Channels)</span>
-                                        </span>
-                                        <span class="text-[10px] text-orange-300">Laugh &rarr;</span>
-                                    </a>
-                                    <a href="{{ route('nollywood.index') }}" class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] font-bold text-amber-400 hover:bg-amber-500/20 transition">
-                                        <span class="flex items-center gap-1.5">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                                            <span>Nollywood Cinema (60 Channels)</span>
-                                        </span>
-                                        <span class="text-[10px] text-amber-300">Explore &rarr;</span>
-                                    </a>
-                                    <a href="{{ route('channels.index') }}" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-[11px] font-bold text-gray-300 hover:text-white transition">
-                                        <span>View All Channels</span>
-                                    </a>
+                                <div class="pt-2 px-4 text-center">
+                                    <a href="{{ route('guide.index') }}" class="text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition">View Live TV Guide &rarr;</a>
                                 </div>
                             </div>
                         </div>
 
-                        <a href="{{ route('movies.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('movies.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                            Movies
+                        <!-- WhatsApp Community CTA Pill -->
+                        <a href="{{ route('wa.join') }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-full transition shadow-sm"
+                           title="Join Zonita TV WhatsApp Channel">
+                            <svg class="w-3.5 h-3.5 fill-current text-emerald-400 shrink-0" viewBox="0 0 24 24">
+                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/>
+                            </svg>
+                            <span>WhatsApp</span>
                         </a>
-                        <a href="{{ route('nollywood.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('nollywood.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                            Nollywood
-                        </a>
-                        <a href="{{ route('comedy.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('comedy.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                            Comedy
-                        </a>
-                        <a href="{{ route('sports.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('sports.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                            Sports
-                        </a>
-                        <a href="{{ route('gospel.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('gospel.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                            Gospel TV
-                        </a>
-                        <a href="{{ route('islamic.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('islamic.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            Islamic TV
-                        </a>
-                    </nav>
-                </div>
 
-                <!-- Search & Profile Controls -->
-                <div class="flex items-center space-x-2 sm:space-x-3 xl:space-x-4 shrink-0">
-                    <form action="{{ route('search') }}" method="GET" class="relative hidden sm:block w-36 md:w-44 lg:w-48 xl:w-56 focus-within:w-52 lg:focus-within:w-60 xl:focus-within:w-68 transition-all duration-200">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search channels..." 
-                               class="w-full bg-[#151922] text-xs text-gray-200 placeholder-gray-500 pl-9 pr-3 py-2 rounded-full border border-gray-700/80 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition">
-                        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <!-- User Profile Dropdown (BE ⌵) / Guest Authentication -->
+                        @guest
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('login') }}" class="text-xs font-semibold text-gray-300 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-gray-800/60 transition">
+                                    Sign In
+                                </a>
+                                <a href="{{ route('register') }}" class="inline-flex items-center text-xs font-bold text-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 px-3.5 py-1.5 rounded-full shadow-md shadow-orange-500/20 transition">
+                                    Register
+                                </a>
+                            </div>
+                        @else
+                            <div class="relative" @click.away="userDropdownOpen = false">
+                                <button @click="userDropdownOpen = !userDropdownOpen" 
+                                        type="button" 
+                                        class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-800/80 transition focus:outline-none focus:ring-2 focus:ring-amber-500 group"
+                                        aria-label="User Account Menu"
+                                        :aria-expanded="userDropdownOpen.toString()">
+                                    <div class="w-8 h-8 rounded-full ring-2 ring-amber-500/40 group-hover:ring-amber-400 overflow-hidden bg-gray-800 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                                        @if(auth()->user()->avatar_url)
+                                            <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span>{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="hidden md:inline-flex items-center gap-1 text-xs font-semibold text-gray-300 group-hover:text-white">
+                                        <span class="max-w-[90px] truncate">{{ auth()->user()->name }}</span>
+                                        <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-white transition-transform duration-200" :class="{ 'rotate-180': userDropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <!-- Authenticated Dropdown Menu -->
+                                <div x-show="userDropdownOpen" 
+                                     x-cloak 
+                                     x-transition:enter="transition ease-out duration-150"
+                                     x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+                                     x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                                     x-transition:leave="transition ease-in duration-100"
+                                     x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                                     x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+                                     class="absolute right-0 mt-2 w-60 rounded-2xl bg-[#121622] border border-gray-800 shadow-2xl py-2 z-50 text-xs divide-y divide-gray-800/80">
+                                    <div class="px-4 py-2.5">
+                                        <p class="font-bold text-white truncate">{{ auth()->user()->name }}</p>
+                                        <p class="text-[11px] text-gray-400 truncate">{{ auth()->user()->email }}</p>
+                                        <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-800 text-amber-400 border border-gray-700">
+                                            {{ ucfirst(str_replace('_', ' ', auth()->user()->role ?? 'Member')) }}
+                                        </span>
+                                    </div>
+
+                                    <div class="py-1">
+                                        <a href="{{ route('guide.personalized') }}" class="flex items-center gap-2.5 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/60 transition">
+                                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                                            <span>My Personalised Guide</span>
+                                        </a>
+
+                                        @if(auth()->user()->isSuperAdmin() || auth()->user()->isContentManager())
+                                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/60 transition">
+                                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                <span>Control Hub (Admin)</span>
+                                            </a>
+                                        @endif
+                                    </div>
+
+                                    <div class="py-1">
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-full flex items-center gap-2.5 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition text-left">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                                <span>Sign Out</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endguest
+
+                        <!-- Mobile Hamburger Drawer Trigger (lg:hidden) -->
+                        <button type="button" 
+                                @click="mobileNavOpen = true" 
+                                class="lg:hidden p-2 rounded-xl text-gray-300 hover:text-white hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                aria-label="Open mobile navigation menu"
+                                :aria-expanded="mobileNavOpen.toString()">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TIER 2: PRIMARY NAVIGATION BAR (Lean, Scalable & High-Level Architecture) -->
+        <!-- ========================================================================= -->
+        <div class="hidden lg:block bg-[#0e111a]/95 border-b border-gray-800/40 shadow-sm relative">
+            <div class="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-11">
+                    
+                    <!-- Strictly 4–5 Primary Nav Sections -->
+                    <nav class="flex items-center space-x-1" aria-label="Platform Main Menu">
+                        <ul class="flex items-center space-x-1" role="menubar">
+                            
+                            <!-- 1. Home -->
+                            <li role="none">
+                                <a href="{{ route('home') }}" 
+                                   role="menuitem"
+                                   class="relative inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold transition group {{ request()->routeIs('home') ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/50' }}">
+                                    <span>Home</span>
+                                    @if(request()->routeIs('home'))
+                                        <span class="absolute bottom-0 left-3 right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                                    @endif
+                                </a>
+                            </li>
+
+                            <!-- 2. Live TV (Channel Guide / EPG) -->
+                            <li role="none">
+                                <a href="{{ route('guide.index') }}" 
+                                   role="menuitem"
+                                   class="relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition group {{ request()->routeIs('guide.*') ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/50' }}">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                    </span>
+                                    <span>Live TV</span>
+                                    @if(request()->routeIs('guide.*'))
+                                        <span class="absolute bottom-0 left-3 right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                                    @endif
+                                </a>
+                            </li>
+
+                            <!-- 3. Channels (Directory of 120+ Verified Stations) -->
+                            <li role="none">
+                                <a href="{{ route('channels.index') }}" 
+                                   role="menuitem"
+                                   class="relative inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold transition group {{ request()->routeIs('channels.*') ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/50' }}">
+                                    <span>Channels</span>
+                                    @if(request()->routeIs('channels.*'))
+                                        <span class="absolute bottom-0 left-3 right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                                    @endif
+                                </a>
+                            </li>
+
+                            <!-- 4. Movies (Cinema & On-Demand Library) -->
+                            <li role="none">
+                                <a href="{{ route('movies.index') }}" 
+                                   role="menuitem"
+                                   class="relative inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold transition group {{ request()->routeIs('movies.*') ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/50' }}">
+                                    <span>Movies</span>
+                                    @if(request()->routeIs('movies.*'))
+                                        <span class="absolute bottom-0 left-3 right-3 h-0.5 bg-amber-400 rounded-full"></span>
+                                    @endif
+                                </a>
+                            </li>
+
+                            <!-- 5. Categories ⌵ (Consolidated Mega-Menu Trigger) -->
+                            <li role="none" class="relative" @click.away="megaMenuOpen = false">
+                                <button @click="megaMenuOpen = !megaMenuOpen"
+                                        type="button"
+                                        role="menuitem"
+                                        aria-haspopup="menu"
+                                        :aria-expanded="megaMenuOpen.toString()"
+                                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition focus:outline-none"
+                                        :class="megaMenuOpen || {{ (request()->is('category*') || request()->routeIs('nollywood.*') || request()->routeIs('comedy.*') || request()->routeIs('sports.*') || request()->routeIs('gospel.*') || request()->routeIs('islamic.*')) ? 'true' : 'false' }} ? 'text-amber-400 bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/50'">
+                                    <span>Categories</span>
+                                    <svg class="w-3.5 h-3.5 text-gray-400 transition-transform duration-200"
+                                         :class="{ 'rotate-180 text-amber-400': megaMenuOpen }"
+                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                <!-- ========================================================================= -->
+                                <!-- MEGA MENU DROPDOWN PANEL (Consolidated Content Taxonomies)               -->
+                                <!-- ========================================================================= -->
+                                <div x-show="megaMenuOpen"
+                                     x-cloak
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 translate-y-2 scale-98"
+                                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                     x-transition:leave="transition ease-in duration-150"
+                                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                                     x-transition:leave-end="opacity-0 translate-y-2 scale-98"
+                                     role="menu"
+                                     aria-label="Content Categories and Discovery Hubs"
+                                     class="absolute left-0 mt-2 w-[880px] xl:w-[1040px] rounded-2xl bg-[#10141e]/98 backdrop-blur-xl border border-gray-800/90 shadow-2xl p-6 z-50">
+                                    
+                                    <div class="grid grid-cols-12 gap-6">
+                                        
+                                        <!-- Column 1: By Format & Playout (3 cols) -->
+                                        <div class="col-span-3 space-y-3">
+                                            <div class="flex items-center gap-2 pb-1 border-b border-gray-800/60">
+                                                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">By Format</span>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <a href="{{ route('channels.index') }}" role="menuitem" class="group flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-800/60 transition">
+                                                    <div class="w-6 h-6 rounded-lg bg-gray-800 flex items-center justify-center text-gray-300 group-hover:text-amber-400 shrink-0 mt-0.5">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-semibold text-gray-200 group-hover:text-amber-400 transition">All Channels</p>
+                                                        <p class="text-[10px] text-gray-500">120+ verified live stations</p>
+                                                    </div>
+                                                </a>
+
+                                                <a href="{{ route('guide.index') }}" role="menuitem" class="group flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-800/60 transition">
+                                                    <div class="w-6 h-6 rounded-lg bg-gray-800 flex items-center justify-center text-gray-300 group-hover:text-red-400 shrink-0 mt-0.5">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-semibold text-gray-200 group-hover:text-red-400 transition">Live EPG Guide</p>
+                                                        <p class="text-[10px] text-gray-500">Real-time programme schedules</p>
+                                                    </div>
+                                                </a>
+
+                                                <a href="{{ route('movies.index') }}" role="menuitem" class="group flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-800/60 transition">
+                                                    <div class="w-6 h-6 rounded-lg bg-gray-800 flex items-center justify-center text-gray-300 group-hover:text-amber-400 shrink-0 mt-0.5">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-semibold text-gray-200 group-hover:text-amber-400 transition">On-Demand Movies</p>
+                                                        <p class="text-[10px] text-gray-500">Full-length African cinema</p>
+                                                    </div>
+                                                </a>
+
+                                                <a href="{{ route('categories.show', 'zoniva-originals') }}" role="menuitem" class="group flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-800/60 transition">
+                                                    <div class="w-6 h-6 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-semibold text-gray-200 group-hover:text-orange-400 transition">Zoniva Originals</p>
+                                                        <p class="text-[10px] text-gray-500">Exclusive sports & documentaries</p>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <!-- Column 2: By Genre & Entertainment (3 cols) -->
+                                        <div class="col-span-3 space-y-3">
+                                            <div class="flex items-center gap-2 pb-1 border-b border-gray-800/60">
+                                                <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">By Genre</span>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <a href="{{ route('nollywood.index') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-amber-500/10 transition border border-transparent hover:border-amber-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-amber-400">Nollywood Cinema</span>
+                                                    </div>
+                                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">60 Ch</span>
+                                                </a>
+
+                                                <a href="{{ route('comedy.index') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-orange-500/10 transition border border-transparent hover:border-orange-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-orange-400">Comedy Central</span>
+                                                    </div>
+                                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/30">10 Ch</span>
+                                                </a>
+
+                                                <a href="{{ route('sports.index') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-red-500/10 transition border border-transparent hover:border-red-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-red-400">Sports Broadcasting</span>
+                                                    </div>
+                                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30 uppercase">Live</span>
+                                                </a>
+
+                                                <a href="{{ route('categories.show', 'entertainment') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-purple-500/10 transition border border-transparent hover:border-purple-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-purple-300">Entertainment & Lifestyle</span>
+                                                    </div>
+                                                    <span class="text-[10px] text-gray-500 group-hover:text-gray-300">&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <!-- Column 3: By Faith, Family & Culture (3 cols) -->
+                                        <div class="col-span-3 space-y-3">
+                                            <div class="flex items-center gap-2 pb-1 border-b border-gray-800/60">
+                                                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Faith & Culture</span>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <a href="{{ route('gospel.index') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-amber-500/10 transition border border-transparent hover:border-amber-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-amber-400">Gospel TV & Ministry</span>
+                                                    </div>
+                                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">Worship</span>
+                                                </a>
+
+                                                <a href="{{ route('islamic.index') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-emerald-500/10 transition border border-transparent hover:border-emerald-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-emerald-400">Islamic TV & Cinema</span>
+                                                    </div>
+                                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">8 Ch</span>
+                                                </a>
+
+                                                <a href="{{ route('categories.show', 'news') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-blue-500/10 transition border border-transparent hover:border-blue-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-blue-300">News & Current Affairs</span>
+                                                    </div>
+                                                    <span class="text-[10px] text-gray-500 group-hover:text-gray-300">&rarr;</span>
+                                                </a>
+
+                                                <a href="{{ route('categories.show', 'education') }}" role="menuitem" class="group flex items-center justify-between p-2 rounded-xl hover:bg-cyan-500/10 transition border border-transparent hover:border-cyan-500/20">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                                                        <span class="text-xs font-semibold text-gray-200 group-hover:text-cyan-300">Kids & Education</span>
+                                                    </div>
+                                                    <span class="text-[10px] text-gray-500 group-hover:text-gray-300">&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <!-- Column 4: Curated Live Feature Hub / Spotlight Card (3 cols) -->
+                                        <div class="col-span-3">
+                                            <div class="h-full rounded-2xl bg-gradient-to-br from-gray-900/90 to-[#151a26] border border-gray-800 p-4 flex flex-col justify-between shadow-inner">
+                                                <div>
+                                                    <div class="flex items-center justify-between mb-3">
+                                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/20 border border-red-500/30 text-red-400 text-[10px] font-bold uppercase">
+                                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                                            Spotlight
+                                                        </span>
+                                                        <span class="text-[10px] font-semibold text-gray-500">Free Stream</span>
+                                                    </div>
+                                                    <h4 class="text-xs font-bold text-white leading-snug">The Matchroom Africa</h4>
+                                                    <p class="text-[11px] text-gray-400 mt-1 line-clamp-2">Exclusive studio sports panel dissecting African football stars and international fixtures.</p>
+                                                </div>
+
+                                                <div class="mt-4 pt-3 border-t border-gray-800/80">
+                                                    <a href="{{ route('sports.index') }}" class="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black text-xs font-bold shadow-md transition">
+                                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                                        <span>Watch Sports Hub</span>
+                                                    </a>
+                                                    <div class="flex items-center justify-between text-[10px] text-gray-500 mt-2 px-1">
+                                                        <span>120+ Verified Streams</span>
+                                                        <span>100% Free Access</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                    <!-- Auxiliary Secondary Discovery Action (Desktop Right) -->
+                    <div class="hidden xl:flex items-center gap-3 text-xs">
+                        <a href="{{ route('sports.live') }}" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition font-medium text-[11px]">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            <span>Live Matchday Stream Active</span>
+                        </a>
+                        <span class="text-gray-700">|</span>
+                        <a href="{{ route('channels.index') }}" class="text-[11px] text-gray-400 hover:text-amber-400 transition font-medium">
+                            Explore 120+ Channels &rarr;
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- MOBILE / TABLET OFF-CANVAS RESPONSIVE DRAWER                              -->
+        <!-- ========================================================================= -->
+        <div x-show="mobileNavOpen" 
+             x-cloak
+             class="fixed inset-0 z-50 lg:hidden"
+             role="dialog" 
+             aria-modal="true"
+             aria-label="Mobile Navigation Menu">
+            
+            <!-- Backdrop Overlay with blur -->
+            <div x-show="mobileNavOpen"
+                 x-transition:enter="transition-opacity ease-linear duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition-opacity ease-linear duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-black/80 backdrop-blur-sm"
+                 @click="mobileNavOpen = false"></div>
+
+            <!-- Slide-in Drawer Container -->
+            <div x-show="mobileNavOpen"
+                 x-transition:enter="transition ease-out duration-300 transform"
+                 x-transition:enter-start="translate-x-full"
+                 x-transition:enter-end="translate-x-0"
+                 x-transition:leave="transition ease-in duration-200 transform"
+                 x-transition:leave-start="translate-x-0"
+                 x-transition:leave-end="translate-x-full"
+                 class="fixed inset-y-0 right-0 max-w-xs sm:max-w-sm w-full bg-[#0c0f17] border-l border-gray-800 shadow-2xl p-5 overflow-y-auto flex flex-col justify-between">
+                
+                <div class="space-y-6">
+                    <!-- Drawer Header: Brand + Close Button -->
+                    <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                        <a href="{{ route('home') }}" @click="mobileNavOpen = false" class="flex items-center gap-2">
+                            <img src="{{ asset('images/logo/zonitatvlogo2.png') }}" alt="Zonita TV" class="h-8 w-auto">
+                        </a>
+                        <button type="button" 
+                                @click="mobileNavOpen = false" 
+                                class="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition"
+                                aria-label="Close navigation menu">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Search Input in Drawer -->
+                    <form action="{{ route('search') }}" method="GET" class="relative">
+                        <input type="text" name="q" placeholder="Search channels, movies..." 
+                               class="w-full bg-[#131722] text-xs text-gray-200 placeholder-gray-500 pl-9 pr-3 py-2.5 rounded-xl border border-gray-700/80 focus:outline-none focus:border-amber-500 transition">
+                        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </form>
 
-                    <!-- Notifications Bell with Red Badge -->
-                    <button type="button" class="relative p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                        <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-red-600 text-[10px] font-bold text-white rounded-full flex items-center justify-center">1</span>
-                    </button>
+                    <!-- Primary High-Level Navigation -->
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 px-3">Main Navigation</p>
+                        <a href="{{ route('home') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold {{ request()->routeIs('home') ? 'bg-amber-500 text-black font-bold' : 'text-gray-200 hover:bg-gray-800/60' }} transition">
+                            <span>Home</span>
+                            <span class="text-[10px] text-gray-400">&rarr;</span>
+                        </a>
+                        <a href="{{ route('guide.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold {{ request()->routeIs('guide.*') ? 'bg-amber-500 text-black font-bold' : 'text-gray-200 hover:bg-gray-800/60' }} transition">
+                            <span class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                <span>Live TV Guide</span>
+                            </span>
+                            <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-red-600/20 text-red-400">Live</span>
+                        </a>
+                        <a href="{{ route('channels.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold {{ request()->routeIs('channels.*') ? 'bg-amber-500 text-black font-bold' : 'text-gray-200 hover:bg-gray-800/60' }} transition">
+                            <span>Channels (120+)</span>
+                            <span class="text-[10px] text-gray-400">&rarr;</span>
+                        </a>
+                        <a href="{{ route('movies.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold {{ request()->routeIs('movies.*') ? 'bg-amber-500 text-black font-bold' : 'text-gray-200 hover:bg-gray-800/60' }} transition">
+                            <span>Movies Library</span>
+                            <span class="text-[10px] text-gray-400">&rarr;</span>
+                        </a>
+                    </div>
 
-                    <!-- WhatsApp Channel Pill -->
-                    <a href="{{ route('wa.join') }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg transition">
-                        <svg class="w-3.5 h-3.5 fill-current text-emerald-400" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/></svg>
-                        WhatsApp
+                    <!-- Categorized Content Verticals (Accordion Grouping) -->
+                    <div class="space-y-2 pt-2 border-t border-gray-800">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 px-3">Browse Verticals</p>
+                        
+                        <!-- Accordion: Entertainment & Genres -->
+                        <div class="rounded-xl border border-gray-800/80 bg-gray-900/30 overflow-hidden">
+                            <button type="button" 
+                                    @click="mobileCatExpanded.genre = !mobileCatExpanded.genre"
+                                    class="w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold text-gray-200 hover:text-white transition">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                                    <span>Genre Verticals</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': mobileCatExpanded.genre }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div x-show="mobileCatExpanded.genre" class="px-3 pb-2.5 space-y-1">
+                                <a href="{{ route('nollywood.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-amber-400 hover:bg-gray-800/50 transition">
+                                    <span>Nollywood Cinema</span>
+                                    <span class="text-[10px] text-amber-400 font-bold">60 Ch</span>
+                                </a>
+                                <a href="{{ route('comedy.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-orange-400 hover:bg-gray-800/50 transition">
+                                    <span>Comedy Central</span>
+                                    <span class="text-[10px] text-orange-400 font-bold">10 Ch</span>
+                                </a>
+                                <a href="{{ route('sports.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800/50 transition">
+                                    <span>Sports Broadcasting</span>
+                                    <span class="text-[10px] text-red-400 font-bold uppercase">Live</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Accordion: Faith & Family -->
+                        <div class="rounded-xl border border-gray-800/80 bg-gray-900/30 overflow-hidden">
+                            <button type="button" 
+                                    @click="mobileCatExpanded.faith = !mobileCatExpanded.faith"
+                                    class="w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold text-gray-200 hover:text-white transition">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    <span>Faith & Family</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': mobileCatExpanded.faith }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div x-show="mobileCatExpanded.faith" class="px-3 pb-2.5 space-y-1">
+                                <a href="{{ route('gospel.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-amber-400 hover:bg-gray-800/50 transition">
+                                    <span>Gospel TV & Ministry</span>
+                                    <span class="text-[10px] text-amber-400">Worship</span>
+                                </a>
+                                <a href="{{ route('islamic.index') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-emerald-400 hover:bg-gray-800/50 transition">
+                                    <span>Islamic TV & Cinema</span>
+                                    <span class="text-[10px] text-emerald-400 font-bold">8 Ch</span>
+                                </a>
+                                <a href="{{ route('categories.show', 'news') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-blue-300 hover:bg-gray-800/50 transition">
+                                    <span>News & Current Affairs</span>
+                                    <span class="text-[10px] text-gray-500">&rarr;</span>
+                                </a>
+                                <a href="{{ route('categories.show', 'education') }}" @click="mobileNavOpen = false" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:text-cyan-300 hover:bg-gray-800/50 transition">
+                                    <span>Kids & Education</span>
+                                    <span class="text-[10px] text-gray-500">&rarr;</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Drawer Footer: WhatsApp Community & User Profile / Login -->
+                <div class="pt-6 border-t border-gray-800 space-y-3">
+                    <a href="{{ route('wa.join') }}" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl transition">
+                        <svg class="w-4 h-4 fill-current text-emerald-400" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.181-.077.355.101.173.45 1.745 1.547 2.721 1.407 1.252 2.593 1.639 2.96 1.783.367.144.583.12.799-.129.217-.249.925-1.077 1.17-1.446.246-.369.491-.308.824-.184.332.124 2.107.994 2.468 1.173.361.179.602.268.69.418.086.15.086.87-.058 1.275z"/></svg>
+                        <span>Join WhatsApp Community</span>
                     </a>
 
                     @guest
-                        <a href="{{ route('login') }}" class="text-xs font-semibold text-gray-300 hover:text-white px-2 sm:px-3 py-1.5 transition">
-                            Sign In
-                        </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center text-xs font-bold text-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 px-3 sm:px-4 py-1.5 rounded-full shadow-md shadow-orange-500/20 transition">
-                            Register
-                        </a>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="{{ route('login') }}" class="w-full text-center py-2 px-3 rounded-xl border border-gray-700 text-xs font-semibold text-gray-300 hover:text-white hover:bg-gray-800 transition">
+                                Sign In
+                            </a>
+                            <a href="{{ route('register') }}" class="w-full text-center py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-bold shadow-md transition">
+                                Register
+                            </a>
+                        </div>
                     @else
-                        <!-- Authenticated User Dropdown -->
-                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                            <button @click="open = !open" type="button" class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-800 transition focus:outline-none">
-                                <div class="w-8 h-8 rounded-full ring-2 ring-amber-500/40 overflow-hidden bg-gray-800 flex items-center justify-center">
-                                    <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                        <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-8 h-8 rounded-full ring-2 ring-amber-500/40 overflow-hidden bg-gray-800 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                                    @if(auth()->user()->avatar_url)
+                                        <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span>{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</span>
+                                    @endif
                                 </div>
-                                <svg class="w-3.5 h-3.5 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-
-                            <div x-show="open" x-cloak 
-                                 x-transition:enter="transition ease-out duration-100"
-                                 x-transition:enter-start="transform opacity-0 scale-95"
-                                 x-transition:enter-end="transform opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-75"
-                                 x-transition:leave-start="transform opacity-100 scale-100"
-                                 x-transition:leave-end="transform opacity-0 scale-95"
-                                 class="absolute right-0 mt-2 w-56 rounded-xl bg-[#121620] border border-gray-800 shadow-2xl py-2 z-50 text-xs">
-                                <div class="px-4 py-2 border-b border-gray-800/80">
-                                    <p class="font-bold text-white truncate">{{ auth()->user()->name }}</p>
-                                    <p class="text-[11px] text-gray-400 truncate">{{ auth()->user()->email }}</p>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-bold text-white truncate">{{ auth()->user()->name }}</p>
+                                    <p class="text-[10px] text-gray-400 truncate">{{ auth()->user()->email }}</p>
                                 </div>
-
-                                <a href="{{ route('guide.personalized') }}" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/60 transition">
-                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-                                    My Personalised Guide
-                                </a>
-
-                                @if(auth()->user()->isSuperAdmin() || auth()->user()->isContentManager())
-                                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/60 transition">
-                                        <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                        Control Hub (Admin)
-                                    </a>
-                                @endif
-
-                                <div class="border-t border-gray-800/80 my-1"></div>
-
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition text-left">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                        Sign Out
-                                    </button>
-                                </form>
                             </div>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="p-1.5 rounded-lg text-red-400 hover:bg-red-500/10 transition" title="Sign Out">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                </button>
+                            </form>
                         </div>
                     @endguest
                 </div>
+
             </div>
         </div>
+
     </header>
-
-    <!-- Mobile / Tablet Quick Navigation Bar -->
-    <div class="lg:hidden bg-[#0c0e14] border-b border-gray-800/80 px-4 py-2.5 overflow-x-auto flex items-center gap-2 text-xs font-semibold whitespace-nowrap z-40 sticky top-20 shadow-md">
-        <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('home') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Home</a>
-        <a href="{{ route('guide.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('guide.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Live TV</a>
-        <a href="{{ route('channels.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('channels.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Channels</a>
-
-        <!-- Mobile Categories Dropdown -->
-        <div class="relative" x-data="{ mCatOpen: false }" @click.away="mCatOpen = false">
-            <button @click="mCatOpen = !mCatOpen" type="button" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->is('category*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">
-                <span>Categories</span>
-                <svg class="w-3 h-3 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div x-show="mCatOpen" x-cloak 
-                 x-transition:enter="transition ease-out duration-100"
-                 x-transition:enter-start="transform opacity-0 scale-95"
-                 x-transition:enter-end="transform opacity-100 scale-100"
-                 x-transition:leave="transition ease-in duration-75"
-                 x-transition:leave-start="transform opacity-100 scale-100"
-                 x-transition:leave-end="transform opacity-0 scale-95"
-                 class="absolute left-0 mt-2 w-56 rounded-2xl bg-[#121622] border border-gray-800 shadow-2xl py-2 z-50 divide-y divide-gray-800/80">
-                <div class="py-1">
-                    @foreach($dropdownCategories as $cat)
-                        <a href="{{ route('categories.show', $cat->slug) }}" class="block px-3.5 py-2 text-xs {{ request()->is('category/' . $cat->slug) ? 'text-amber-400 font-bold bg-amber-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800/60' }} transition">
-                            {{ $cat->name }}
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <a href="{{ route('movies.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('movies.*') ? 'bg-amber-500 text-black font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Movies</a>
-        <a href="{{ route('nollywood.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('nollywood.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            Nollywood
-        </a>
-        <a href="{{ route('comedy.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('comedy.*') ? 'bg-orange-500 text-black font-bold' : 'bg-orange-500/10 text-orange-400 border border-orange-500/30' }}">
-            <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-            Comedy
-        </a>
-        <a href="{{ route('sports.index') }}" class="px-3 py-1.5 rounded-lg transition {{ request()->routeIs('sports.*') ? 'bg-red-600 text-white font-bold' : 'bg-gray-900 text-gray-300 hover:text-white' }}">Sports</a>
-        <a href="{{ route('gospel.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('gospel.*') ? 'bg-amber-500 text-black font-bold' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30' }}">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            Gospel TV
-        </a>
-        <a href="{{ route('islamic.index') }}" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 {{ request()->routeIs('islamic.*') ? 'bg-emerald-500 text-black font-bold' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' }}">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            Islamic TV
-        </a>
-    </div>
 
     <!-- Flash Notifications -->
     @if(session('success'))
