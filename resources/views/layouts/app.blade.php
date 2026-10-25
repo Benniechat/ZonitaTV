@@ -64,6 +64,10 @@
                         </a>
                         <a href="{{ route('categories.show', 'news') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">News</a>
                         <a href="{{ route('categories.show', 'christian-tv') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Christian</a>
+                        <a href="{{ route('islamic.index') }}" class="px-2.5 xl:px-3.5 py-2 {{ request()->routeIs('islamic.*') ? 'text-white font-semibold' : 'text-gray-400 hover:text-white' }} transition shrink-0 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            Islamic
+                        </a>
                         <a href="{{ route('categories.show', 'kids') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Kids</a>
                         <a href="{{ route('categories.show', 'education') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Education</a>
                         <a href="{{ route('categories.show', 'entertainment') }}" class="px-2.5 xl:px-3.5 py-2 text-gray-400 hover:text-white transition shrink-0">Entertainment</a>
@@ -197,6 +201,7 @@
                         <li><a href="{{ route('channels.index') }}" class="hover:text-white transition">Channels Directory</a></li>
                         <li><a href="{{ route('movies.index') }}" class="hover:text-amber-400 transition font-medium">Movies & Cinema Directory</a></li>
                         <li><a href="{{ route('gospel.index') }}" class="hover:text-amber-400 transition font-medium">Gospel Film Directory (60)</a></li>
+                        <li><a href="{{ route('islamic.index') }}" class="hover:text-emerald-400 transition font-medium">Islamic TV &amp; Cinema (8 Channels)</a></li>
                         <li><a href="{{ route('categories.show', 'sports') }}" class="hover:text-white transition">Sports Hub</a></li>
                         <li><a href="{{ route('categories.show', 'news') }}" class="hover:text-white transition">Live News Bulletins</a></li>
                         <li><a href="{{ route('categories.show', 'christian-tv') }}" class="hover:text-white transition">Christian Television</a></li>

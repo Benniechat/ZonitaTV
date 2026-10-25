@@ -17,6 +17,7 @@ use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\GospelFilmController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IslamicChannelController;
 use App\Http\Controllers\LegalComplianceController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NewsletterController;
@@ -35,6 +36,7 @@ Route::get('/guide', [GuideController::class, 'index'])->name('guide.index');
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 Route::get('/movies/{movie:slug}', [MovieController::class, 'show'])->name('movies.show');
 Route::get('/gospel-cinema', [GospelFilmController::class, 'index'])->name('gospel.index');
+Route::get('/islamic', [IslamicChannelController::class, 'index'])->name('islamic.index');
 
 // --- Automated Live Sports Broadcasting & Discovery Engine ---
 Route::prefix('sports')->name('sports.')->group(function () {

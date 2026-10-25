@@ -323,6 +323,14 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        // 11. 24/7 Islamic Television & Cinema Channels
+        $islamicChannels = Channel::whereIn('slug', [
+            'zonita-islamic-cinema',
+            'zonita-arewa-movies',
+            'zonita-yoruba-islamic',
+            'zonita-quran',
+        ])->where('is_active', true)->get();
+
         return view('home', compact(
             'heroChannel',
             'liveTrending',
@@ -334,6 +342,7 @@ class HomeController extends Controller
             'gospelDrama',
             'kidsAnimation',
             'featuredMovies',
+            'islamicChannels',
             'tonightSchedule',
             'recommendedForYou',
             'categories'

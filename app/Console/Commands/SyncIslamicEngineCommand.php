@@ -46,20 +46,20 @@ class SyncIslamicEngineCommand extends Command
         $results = $schedulingService->deployIslamicVirtualNetwork($days);
 
         $this->table(
-            ['Slug', 'Channel Name', 'Language', 'Status', 'Schedules Count'],
+            ['Slug', 'Channel Name', 'Language', 'Status', 'Active Upcoming Schedules'],
             collect($results['channels'])->map(function (array $item) {
                 return [
                     $item['slug'],
                     $item['name'],
                     $item['language'],
                     $item['status'],
-                    $item['schedules_generated'],
+                    $item['active_schedules_count'].' programmes',
                 ];
             })->all()
         );
 
-        $totalSchedules = $results['total_schedule_entries'];
-        $this->info("✓ Deployed {$results['channels_deployed']} channels with {$totalSchedules} total scheduled broadcast events.");
+        $totalActive = collect($results['channels'])->sum('active_schedules_count');
+        $this->info("✓ Deployed {$results['channels_deployed']} channels with {$totalActive} active upcoming scheduled broadcast events.");
         $this->info('Islamic Broadcasting Engine synchronized successfully.');
 
         return self::SUCCESS;

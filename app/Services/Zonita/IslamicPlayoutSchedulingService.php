@@ -8,6 +8,7 @@ use App\Models\ChannelSourceRule;
 use App\Models\ChannelStream;
 use App\Models\ChannelVideo;
 use App\Models\ContentRight;
+use App\Models\ScheduleEntry;
 use App\Models\User;
 use App\Models\Video;
 use Illuminate\Support\Str;
@@ -402,12 +403,17 @@ class IslamicPlayoutSchedulingService
             $totalScheduleEntries += $schedResult['entries_created'];
             $channelsDeployed++;
 
+            $activeCount = ScheduleEntry::where('channel_id', $channel->id)
+                ->where('end_time', '>', now())
+                ->count();
+
             $channelSummaries[] = [
                 'slug' => $channel->slug,
                 'name' => $channel->name,
                 'language' => $def['language'] ?? 'Multilingual',
                 'status' => 'LIVE 24/7',
                 'schedules_generated' => $schedResult['entries_created'],
+                'active_schedules_count' => $activeCount,
             ];
         }
 

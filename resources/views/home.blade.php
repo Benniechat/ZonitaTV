@@ -498,6 +498,38 @@
                 </section>
             @endif
 
+            <!-- SECTION 7: 24/7 Islamic Television & Cinema Showcase -->
+            @if(isset($islamicChannels) && $islamicChannels->isNotEmpty())
+                <section class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <a href="{{ route('islamic.index') }}" class="flex items-center gap-2 group">
+                            <span class="text-emerald-500 font-bold text-xs">&#9658;</span>
+                            <h2 class="text-base font-bold text-white group-hover:text-emerald-400 transition">Islamic Cinema, Hausa Kannywood &amp; 24/7 Channels</h2>
+                            <svg class="w-4 h-4 text-gray-500 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                        <a href="{{ route('islamic.index') }}" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold transition">Explore 8 Channels &rarr;</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        @foreach($islamicChannels as $iChannel)
+                            <a href="{{ route('channels.show', $iChannel->slug) }}" class="group rounded-2xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-emerald-500/50 transition flex flex-col shadow-lg">
+                                <div class="relative aspect-video w-full overflow-hidden bg-gray-950">
+                                    <img src="{{ $iChannel->banner_url }}" alt="{{ $iChannel->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-emerald-500/90 text-black text-[9px] font-black uppercase tracking-wider shadow">
+                                        24/7 LIVE
+                                    </span>
+                                </div>
+                                <div class="p-3.5 flex flex-col justify-between flex-grow space-y-1">
+                                    <h4 class="text-xs font-bold text-white group-hover:text-emerald-400 transition truncate">{{ $iChannel->name }}</h4>
+                                    <p class="text-[10px] text-gray-400 line-clamp-1">{{ $iChannel->tagline ?? $iChannel->description }}</p>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
         </div>
 
         <!-- Right Column: Sidebar Widgets (1 Column - Exact Reference Match) -->
