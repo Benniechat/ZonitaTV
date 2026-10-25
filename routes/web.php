@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\ComedyController;
 use App\Http\Controllers\GospelFilmController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\HomeController;
@@ -40,6 +41,8 @@ Route::get('/gospel-cinema', [GospelFilmController::class, 'index'])->name('gosp
 Route::get('/islamic', [IslamicChannelController::class, 'index'])->name('islamic.index');
 Route::get('/nollywood', [NollywoodController::class, 'index'])->name('nollywood.index');
 Route::get('/nollywood-cinema', [NollywoodController::class, 'index']);
+Route::get('/comedy', [ComedyController::class, 'index'])->name('comedy.index');
+Route::get('/comedy-central', [ComedyController::class, 'index']);
 
 // --- Automated Live Sports Broadcasting & Discovery Engine ---
 Route::prefix('sports')->name('sports.')->group(function () {
