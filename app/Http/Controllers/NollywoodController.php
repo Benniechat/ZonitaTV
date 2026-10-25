@@ -41,7 +41,7 @@ class NollywoodController extends Controller
 
         // 4. Filter by Language
         if ($request->filled('lang')) {
-            $query->where('primary_language', 'like', '%' . $request->query('lang') . '%');
+            $query->where('primary_language', 'like', '%'.$request->query('lang').'%');
         }
 
         // 5. Filter by Licensing Status

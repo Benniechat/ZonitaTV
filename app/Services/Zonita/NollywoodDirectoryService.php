@@ -13,7 +13,6 @@ use App\Models\ContentRight;
 use App\Models\NollywoodChannel;
 use App\Models\User;
 use App\Models\Video;
-use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class NollywoodDirectoryService
@@ -1376,13 +1375,13 @@ class NollywoodDirectoryService
             $channel = Channel::updateOrCreate(
                 ['slug' => $slug],
                 [
-                    'name' => $nolly->name . (str_ends_with($nolly->name, 'TV') || str_ends_with($nolly->name, '+') || str_ends_with($nolly->name, '247') || str_ends_with($nolly->name, 'flix') ? '' : ' TV'),
-                    'tvg_id' => Str::studly($slug) . '.nollywood.zoniva',
+                    'name' => $nolly->name.(str_ends_with($nolly->name, 'TV') || str_ends_with($nolly->name, '+') || str_ends_with($nolly->name, '247') || str_ends_with($nolly->name, 'flix') ? '' : ' TV'),
+                    'tvg_id' => Str::studly($slug).'.nollywood.zoniva',
                     'tagline' => '24/7 Blockbuster Nollywood & African Cinema',
                     'description' => $nolly->notes ?: "24/7 continuous linear broadcasting of blockbuster Nollywood movies, full-length Nigerian dramas, and romance features by {$nolly->name}.",
                     'broadcaster_name' => $nolly->name,
                     'broadcaster_website' => $nolly->website_url ?: $nolly->youtube_channel_url,
-                    'official_destination_url' => config('app.url') . '/channel/' . $slug,
+                    'official_destination_url' => config('app.url').'/channel/'.$slug,
                     'country_code' => $nolly->country_code ?: 'NGA',
                     'language_code' => str_contains(strtolower($nolly->primary_language), 'yoruba') ? 'yo' : (str_contains(strtolower($nolly->primary_language), 'igbo') ? 'ig' : 'en'),
                     'playback_mode' => 'embed_player',
@@ -1425,7 +1424,7 @@ class NollywoodDirectoryService
                 ['channel_id' => $channel->id],
                 [
                     'rights_holder_name' => $nolly->name,
-                    'contract_reference' => 'ZONITA-NOLLY-' . strtoupper(Str::random(6)),
+                    'contract_reference' => 'ZONITA-NOLLY-'.strtoupper(Str::random(6)),
                     'status' => 'directory_approved',
                     'allow_directory_listing' => true,
                     'allow_web_embedding' => true,

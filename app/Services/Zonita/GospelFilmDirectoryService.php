@@ -1150,12 +1150,12 @@ class GospelFilmDirectoryService
                 ['slug' => $slug],
                 [
                     'name' => $prod->name,
-                    'tvg_id' => Str::studly($slug) . '.gospel.zoniva',
+                    'tvg_id' => Str::studly($slug).'.gospel.zoniva',
                     'tagline' => '24/7 Gospel Movies & Christian Drama Ministry',
                     'description' => $prod->notes ?: "24/7 continuous linear broadcasting of anointed, full-length African gospel blockbuster movies, biblical dramas, and deliverance features by {$prod->name}.",
                     'broadcaster_name' => $prod->name,
                     'broadcaster_website' => $prod->website_url ?: $prod->youtube_channel_url,
-                    'official_destination_url' => config('app.url') . '/channel/' . $slug,
+                    'official_destination_url' => config('app.url').'/channel/'.$slug,
                     'country_code' => $prod->country_code ?: 'NGA',
                     'language_code' => str_contains(strtolower($prod->primary_language), 'yoruba') ? 'yo' : 'en',
                     'playback_mode' => 'embed_player',
@@ -1191,7 +1191,7 @@ class GospelFilmDirectoryService
                 ['channel_id' => $channel->id],
                 [
                     'rights_holder_name' => $prod->name,
-                    'contract_reference' => 'ZONITA-GOSPEL-' . strtoupper(Str::random(6)),
+                    'contract_reference' => 'ZONITA-GOSPEL-'.strtoupper(Str::random(6)),
                     'status' => 'directory_approved',
                     'allow_directory_listing' => true,
                     'allow_web_embedding' => true,

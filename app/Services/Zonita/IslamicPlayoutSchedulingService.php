@@ -499,13 +499,13 @@ class IslamicPlayoutSchedulingService
             $channel = Channel::updateOrCreate(
                 ['slug' => $slug],
                 [
-                    'name' => $provider->name . (str_ends_with($provider->name, 'TV') ? '' : ' TV'),
-                    'tvg_id' => Str::studly($slug) . '.islamic.zoniva',
+                    'name' => $provider->name.(str_ends_with($provider->name, 'TV') ? '' : ' TV'),
+                    'tvg_id' => Str::studly($slug).'.islamic.zoniva',
                     'tagline' => '24/7 Islamic Movies, Hausa/Kannywood Cinema & Religious Programming',
                     'description' => $provider->notes ?: "24/7 continuous linear broadcasting of verified Islamic cinema, Hausa Kannywood films, Yoruba Islamic dramas, Qur\'an recitations, and scholarly lectures by {$provider->name}.",
                     'broadcaster_name' => $provider->name,
                     'broadcaster_website' => $provider->official_website ?: $provider->youtube_channel_url,
-                    'official_destination_url' => config('app.url') . '/channel/' . $slug,
+                    'official_destination_url' => config('app.url').'/channel/'.$slug,
                     'country_code' => $provider->country_code ?: 'NGA',
                     'language_code' => strtolower((string) $provider->primary_language) === 'hausa' ? 'ha' : (strtolower((string) $provider->primary_language) === 'yoruba' ? 'yo' : (strtolower((string) $provider->primary_language) === 'arabic' ? 'ar' : 'en')),
                     'playback_mode' => 'embed_player',
@@ -541,7 +541,7 @@ class IslamicPlayoutSchedulingService
                 ['channel_id' => $channel->id],
                 [
                     'rights_holder_name' => $provider->name,
-                    'contract_reference' => 'ZONITA-ISLAMIC-' . strtoupper(Str::random(6)),
+                    'contract_reference' => 'ZONITA-ISLAMIC-'.strtoupper(Str::random(6)),
                     'status' => 'directory_approved',
                     'allow_directory_listing' => true,
                     'allow_web_embedding' => true,

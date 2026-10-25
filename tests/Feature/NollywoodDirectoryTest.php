@@ -46,35 +46,35 @@ class NollywoodDirectoryTest extends TestCase
         $this->assertEquals(60, NollywoodChannel::count());
 
         // 2. Verify Priority 1 Channels
-        $this->assertEquals(20, NollywoodChannel::where('priority', 1)->count());
+        $this->assertEquals(20, NollywoodChannel::where('lead_priority', 1)->count());
 
         // 3. Verify Specific Filmmakers & Channels
-        $ruth = NollywoodChannel::where('slug', 'ruthkadiri247')->first();
+        $ruth = NollywoodChannel::where('slug', 'ruth-kadiri-247')->first();
         $this->assertNotNull($ruth);
         $this->assertEquals('RuthKadiri247', $ruth->name);
-        $this->assertEquals(1, $ruth->priority);
-        $this->assertEquals('popular_nollywood', $ruth->category);
+        $this->assertEquals(1, $ruth->lead_priority);
+        $this->assertEquals('popular_nollywood', $ruth->channel_category);
         $this->assertTrue($ruth->has_full_length_movies);
 
-        $apata = NollywoodChannel::where('slug', 'apatatv')->first();
+        $apata = NollywoodChannel::where('slug', 'apatatv-plus')->first();
         $this->assertNotNull($apata);
-        $this->assertEquals('yoruba_movies', $apata->category);
-        $this->assertEquals('Yoruba', $apata->language);
+        $this->assertEquals('yoruba_movies', $apata->channel_category);
+        $this->assertStringContainsString('Yoruba', $apata->primary_language);
 
         $ibaka = NollywoodChannel::where('slug', 'ibakatv-nollywood')->first();
         $this->assertNotNull($ibaka);
-        $this->assertEquals('aggregators_libraries', $ibaka->category);
+        $this->assertEquals('aggregator_library', $ibaka->channel_category);
 
-        $faan = NollywoodChannel::where('slug', 'faan-tv')->first();
+        $faan = NollywoodChannel::where('slug', 'faan-tv-funke-akindele')->first();
         $this->assertNotNull($faan);
-        $this->assertEquals('studios_producers', $faan->category);
+        $this->assertEquals('producer_studio', $faan->channel_category);
 
         // 4. Verify Linear Broadcast Playout Channels Deployed
-        $ruthBroadcast = Channel::where('slug', 'ruthkadiri247')->first();
+        $ruthBroadcast = Channel::where('slug', 'ruth-kadiri-247')->first();
         $this->assertNotNull($ruthBroadcast);
         $this->assertTrue($ruthBroadcast->is_active);
         $this->assertEquals('embed_player', $ruthBroadcast->playback_mode);
-        $this->assertNotNull($ruthBroadcast->currentStream);
+        $this->assertNotNull($ruthBroadcast->primaryStream);
 
         // 5. Verify rolling schedule entries exist
         $this->assertGreaterThan(0, $ruthBroadcast->scheduleEntries()->count());

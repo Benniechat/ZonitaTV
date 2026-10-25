@@ -12,6 +12,7 @@ use App\Services\EpgSyncService;
 use App\Services\Zonita\ChannelProgrammingEngine;
 use App\Services\Zonita\GospelFilmDirectoryService;
 use App\Services\Zonita\IslamicPlayoutSchedulingService;
+use App\Services\Zonita\NollywoodDirectoryService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -439,6 +440,6 @@ class DatabaseSeeder extends Seeder
         // 7. Deploy 60 Gospel Film Channels, 36 Islamic Broadcasting Channels & 60 Nollywood Channels
         app(GospelFilmDirectoryService::class)->syncDirectory();
         app(IslamicPlayoutSchedulingService::class)->deployIslamicVirtualNetwork(7);
-        app(\App\Services\Zonita\NollywoodDirectoryService::class)->syncDirectory();
+        app(NollywoodDirectoryService::class)->syncDirectory();
     }
 }
