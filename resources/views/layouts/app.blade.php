@@ -196,6 +196,7 @@
                         <li><a href="{{ route('guide.index') }}" class="hover:text-white transition">24/7 Live TV Playout</a></li>
                         <li><a href="{{ route('channels.index') }}" class="hover:text-white transition">Channels Directory</a></li>
                         <li><a href="{{ route('movies.index') }}" class="hover:text-amber-400 transition font-medium">Movies & Cinema Directory</a></li>
+                        <li><a href="{{ route('gospel.index') }}" class="hover:text-amber-400 transition font-medium">Gospel Film Directory (60)</a></li>
                         <li><a href="{{ route('categories.show', 'sports') }}" class="hover:text-white transition">Sports Hub</a></li>
                         <li><a href="{{ route('categories.show', 'news') }}" class="hover:text-white transition">Live News Bulletins</a></li>
                         <li><a href="{{ route('categories.show', 'christian-tv') }}" class="hover:text-white transition">Christian Television</a></li>
