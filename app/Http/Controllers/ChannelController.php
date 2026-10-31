@@ -34,7 +34,7 @@ class ChannelController extends Controller
 
     public function show(Request $request, string $slug)
     {
-        $channel = Channel::with(['categories', 'latestRights', 'streams', 'programmes' => function ($q) {
+        $channel = Channel::with(['categories', 'latestRights', 'streams', 'fallbackVideo', 'stationIdentVideo', 'programmes' => function ($q) {
             $q->where('end_time', '>=', now())->orderBy('start_time')->take(5);
         }])
             ->where('slug', $slug)
@@ -82,6 +82,27 @@ class ChannelController extends Controller
             }
         } elseif ($channel->curation_type === 'linear_streamer' || $channel->programmes()->whereNotNull('video_id')->exists()) {
             $linearPlayout = $this->linearEngine->getActivePlayout($channel);
+        } elseif ($channel->is_virtual || $channel->playback_mode === 'zoniva_original') {
+            $fallback = $channel->fallbackVideo ?? $channel->stationIdentVideo;
+            if ($fallback) {
+                $linearPlayout = [
+                    'channel' => $channel,
+                    'current_programme' => [
+                        'title' => $fallback->title,
+                        'description' => $fallback->description,
+                        'video_id' => $fallback->youtube_id,
+                        'duration_seconds' => $fallback->duration_seconds,
+                    ],
+                    'upcoming_programmes' => [],
+                    'playlist_queue' => [[
+                        'video_id' => $fallback->youtube_id,
+                        'title' => $fallback->title,
+                        'duration_seconds' => $fallback->duration_seconds,
+                        'start_seconds' => 0,
+                    ]],
+                    'is_linear' => true,
+                ];
+            }
         }
 
         return view('channels.show', compact('channel', 'playback', 'relatedChannels', 'isFavourited', 'linearPlayout', 'zonitaEpg'));

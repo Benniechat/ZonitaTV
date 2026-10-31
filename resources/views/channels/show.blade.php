@@ -43,7 +43,8 @@
         <div class="lg:col-span-2 space-y-6">
             
             <!-- Video Stage Area -->
-            <div id="player-stage-container" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
+            <div id="player-stage-container" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800"
+                 @if($channel->brand_color) style="border-color: {{ $channel->brand_color }}44;" @endif>
                 @if($playback['allowed'])
 
                     @if($playback['mode'] === 'direct_stream')
@@ -172,8 +173,8 @@
                             });
                         </script>
 
-                    @elseif($playback['mode'] === 'embed_player')
-                        {{-- Mode B: Official Broadcaster Embed Player & 24/7 Real-Time Linear Playout Engine --}}
+                    @elseif($playback['mode'] === 'embed_player' || $playback['mode'] === 'zoniva_original')
+                        {{-- Mode B / D: Official Broadcaster Embed Player & 24/7 Real-Time Linear Playout Engine --}}
                         <div class="relative w-full h-full overflow-hidden bg-black flex items-center justify-center group/embed">
                             @if(isset($linearPlayout) && !empty($linearPlayout['playlist_queue']))
                                 {{-- 24/7 Continuous Automated Real-Time Playout Engine (No Fast Forward, No Rewind) --}}
@@ -374,6 +375,12 @@
 
                                     <!-- Top-Left Live Station Bug & Real-Time Lock Indicator -->
                                     <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
+                                        @if($channel->channel_number)
+                                            <span class="px-2 py-0.5 rounded text-[11px] font-black uppercase text-white shadow"
+                                                  style="background-color: {{ $channel->brand_color ?: '#dc2626' }};">
+                                                CH {{ $channel->channel_number }}
+                                            </span>
+                                        @endif
                                         <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
                                             <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                                             <span>24/7 REAL-TIME BROADCAST</span>
@@ -383,6 +390,13 @@
                                             <span>Seeking Locked</span>
                                         </div>
                                     </div>
+
+                                    @if($channel->watermark_logo_path)
+                                        <!-- Top-Right Channel Watermark Bug -->
+                                        <div class="absolute top-3 right-28 pointer-events-none z-20 hidden sm:block">
+                                            <img src="{{ asset($channel->watermark_logo_path) }}" alt="{{ $channel->name }}" class="h-6 w-auto opacity-75 object-contain drop-shadow">
+                                        </div>
+                                    @endif
 
                                     <!-- Top-Right TV Controls (Audio Mute / Fullscreen) -->
                                     <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
@@ -472,65 +486,29 @@
                                             </div>
                                         @endif
                                     </div>
-                                @elseif($playback['stream']->embed_code)
+                                @elseif(isset($playback['stream']) && $playback['stream'] && $playback['stream']->embed_code)
                                     <div class="w-full h-full">
                                         {!! $playback['stream']->embed_code !!}
                                     </div>
-                                @elseif($playback['stream']->stream_url)
+                                @elseif(isset($playback['stream']) && $playback['stream'] && $playback['stream']->stream_url)
                                     <iframe src="{{ $playback['stream']->stream_url }}" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                                @else
+                                    {{-- Branded Standby Transmission Slate --}}
+                                    <div class="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-gray-950 via-[#0e1118] to-black">
+                                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-xl border border-gray-800"
+                                             style="background-color: {{ $channel->brand_color ? $channel->brand_color . '22' : 'rgba(239, 68, 68, 0.15)' }}; border-color: {{ $channel->brand_color ?? '#ef4444' }};">
+                                            <span class="text-lg font-black text-white">CH {{ $channel->channel_number ?? 'TV' }}</span>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-white mb-2">{{ $channel->name }} - Standby Transmission</h3>
+                                        <p class="text-xs text-gray-400 max-w-md mb-4">Transmission standby in progress. Playout will resume automatically when next scheduled transmission commences.</p>
+                                        <div class="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                            <span>Playout Engine Active</span>
+                                        </div>
+                                    </div>
                                 @endif
                             @endif
                         </div>
-
-                    @elseif($playback['mode'] === 'zoniva_original')
-                        {{-- Mode D: Zoniva Originals (Realtime Lock) --}}
-                        <div class="relative w-full h-full bg-black flex items-center justify-center group" id="originals-player-wrapper">
-                            <video id="zoniva-player" autoplay playsinline poster="{{ $channel->banner_url ?? '' }}" class="w-full h-full object-contain pointer-events-none"></video>
-                            
-                            <!-- Transparent Shield -->
-                            <div class="absolute inset-0 z-10 cursor-pointer" id="originals-click-shield"></div>
-
-                            <div class="absolute top-3 left-3 pointer-events-none z-20 flex items-center gap-2">
-                                <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-gray-800 text-[11px] font-bold text-white shadow-xl">
-                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                                    <span>ZONITA ORIGINAL &bull; REAL-TIME</span>
-                                </div>
-                                <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-gray-800/80 text-[10px] font-semibold text-gray-300 shadow-lg">
-                                    <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                    <span>Seeking Locked</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                const video = document.getElementById('zoniva-player');
-                                const streamUrl = "{{ $playback['stream']->stream_url }}";
-                                let hls = null;
-                                if (Hls.isSupported()) {
-                                    hls = new Hls({ enableWorker: true, liveSyncDurationCount: 3 });
-                                    hls.loadSource(streamUrl);
-                                    hls.attachMedia(video);
-                                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                                    video.src = streamUrl;
-                                }
-
-                                video.addEventListener('seeking', function () {
-                                    if (hls && hls.liveSyncPosition) {
-                                        video.currentTime = hls.liveSyncPosition;
-                                    }
-                                });
-
-                                const shield = document.getElementById('originals-click-shield');
-                                shield?.addEventListener('click', () => { video.muted = !video.muted; });
-                                shield?.addEventListener('dblclick', () => {
-                                    const container = document.getElementById('player-stage-container');
-                                    if (!document.fullscreenElement) { container?.requestFullscreen?.(); }
-                                    else { document.exitFullscreen?.(); }
-                                });
-                            });
-                        </script>
 
                     @else
                         {{-- Mode C: Authorised External Broadcaster Destination --}}

@@ -87,6 +87,7 @@ Route::get('/my-guide', [GuideController::class, 'personalized'])->name('guide.p
 Route::prefix('api/playback')->group(function () {
     Route::post('/report-failure', [PlaybackController::class, 'reportFailure'])->withoutMiddleware([ValidateCsrfToken::class]);
     Route::get('/epg/{slug}', [PlaybackController::class, 'getEpg']);
+    Route::get('/status/{slug}', [PlaybackController::class, 'getLiveStatus'])->name('api.playback.status');
 });
 
 // Legal Disclaimer & Platform Compliance Framework

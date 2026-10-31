@@ -14,8 +14,8 @@
 | **9** | **Content Acquisition & Partner Mgmt** | Content partner CRM, distribution agreements, contract tracking | Batch 8 | ✅ **Completed** |
 | **10** | **Virtual Channels & Channel Management** | 24/7 channel creator, station branding, playout priority rules | Batch 9 | ✅ **Completed** |
 | **11** | **Scheduler & Electronic Programme Guide (EPG)**| 7-to-30 day rolling EPG generator, conflict resolver, timezone support | Batch 10 | ✅ **Completed** |
-| **12** | **Playback Engine & Viewer Player** | Seamless YouTube embed player, state machine, automatic fallback | Batch 11 | ⏳ **Next Up** |
-| **13** | **Continuous Channel Playout Automation** | Playout progression worker, dead-stream auto-recovery, health heartbeats | Batch 12 | 📋 Planned |
+| **12** | **Playback Engine & Viewer Player** | Seamless YouTube embed player, state machine, automatic fallback | Batch 11 | ✅ **Completed** |
+| **13** | **Continuous Channel Playout Automation** | Playout progression worker, dead-stream auto-recovery, health heartbeats | Batch 12 | ⏳ **Next Up** |
 | **14** | **Live Events & Sports Programming** | Matchday fixtures, broadcast rights territory gates, live score hooks | Batch 13 | 📋 Planned |
 | **15** | **Vertical Portals (Comedy, Nollywood, Faith)**| Curated channel landing pages, genre tags, festival showcases | Batch 14 | 📋 Planned |
 | **16** | **AI Recommendations & Personalisation** | Similar channel matching, personalized watch guides, explainable picks | Batch 15 | 📋 Planned |

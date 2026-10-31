@@ -59,7 +59,10 @@ class ChannelReserveService
 
         // 3. Fallback to channel's designated fallback_video_id
         if (! $fallback && $channel->fallback_video_id) {
-            $fallback = Video::where('youtube_id', $channel->fallback_video_id)
+            $fallback = Video::where(function ($q) use ($channel) {
+                $q->where('id', $channel->fallback_video_id)
+                    ->orWhere('youtube_id', $channel->fallback_video_id);
+            })
                 ->where('is_embeddable', true)
                 ->first();
         }

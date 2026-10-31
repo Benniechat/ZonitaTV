@@ -18,6 +18,10 @@ class RightsEligibilityService
             return false;
         }
 
+        if ($channel->isVirtual() || $channel->playback_mode === 'zoniva_original') {
+            return true;
+        }
+
         $rights = $channel->latestRights;
         if (! $rights) {
             return false;
@@ -57,7 +61,7 @@ class RightsEligibilityService
         $primaryStream = $channel->primaryStream;
 
         // Mode D: Zoniva Originals
-        if ($channel->playback_mode === 'zoniva_original') {
+        if ($channel->playback_mode === 'zoniva_original' || $channel->isVirtual()) {
             return [
                 'allowed' => true,
                 'mode' => 'zoniva_original',
@@ -81,6 +85,16 @@ class RightsEligibilityService
             return [
                 'allowed' => true,
                 'mode' => 'embed_player',
+                'stream' => $primaryStream,
+                'destination_url' => null,
+            ];
+        }
+
+        // Mode D: Zonita 24/7 Virtual Linear Playout Engine
+        if ($channel->playback_mode === 'zoniva_original' || $channel->isVirtual()) {
+            return [
+                'allowed' => true,
+                'mode' => 'zoniva_original',
                 'stream' => $primaryStream,
                 'destination_url' => null,
             ];

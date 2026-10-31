@@ -171,6 +171,16 @@ class Channel extends Model
         return $query->where('is_active', true)->where('is_published', true);
     }
 
+    public function fallbackVideo(): BelongsTo
+    {
+        return $this->belongsTo(Video::class, 'fallback_video_id');
+    }
+
+    public function stationIdentVideo(): BelongsTo
+    {
+        return $this->belongsTo(Video::class, 'station_ident_video_id');
+    }
+
     public function streams(): HasMany
     {
         return $this->hasMany(ChannelStream::class);
