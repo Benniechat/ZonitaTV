@@ -43,6 +43,16 @@ class RightsEligibilityService
     }
 
     /**
+     * Determines whether a viewer from a specific country can watch playback of this channel.
+     */
+    public function canWatch(Channel $channel, ?string $clientCountry = 'NGA'): bool
+    {
+        $playback = $this->resolvePermittedPlayback($channel, $clientCountry);
+
+        return $playback['allowed'] ?? false;
+    }
+
+    /**
      * Determines the exact playback mode permissible for this viewer.
      */
     public function resolvePermittedPlayback(Channel $channel, ?string $clientCountry = 'NGA'): array

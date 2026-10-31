@@ -275,6 +275,11 @@ class Channel extends Model
         return $this->hasMany(ChannelVideo::class);
     }
 
+    public function videos(): BelongsToMany
+    {
+        return $this->belongsToMany(Video::class, 'channel_videos');
+    }
+
     public function broadcastHistory(): HasMany
     {
         return $this->hasMany(BroadcastHistory::class);
