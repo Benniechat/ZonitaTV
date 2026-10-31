@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +21,7 @@ class Video extends Model
         'media_url',
         'cloudinary_public_id',
         'channel_title',
+        'content_partner_id',
         'published_at',
         'duration_seconds',
         'aspect_ratio',
@@ -75,6 +77,11 @@ class Video extends Model
     public function complaints(): HasMany
     {
         return $this->hasMany(ContentComplaint::class);
+    }
+
+    public function contentPartner(): BelongsTo
+    {
+        return $this->belongsTo(ContentPartner::class, 'content_partner_id');
     }
 
     public function episodes(): HasMany

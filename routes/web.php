@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
 use App\Http\Controllers\Admin\DiscoveryWorkbenchController;
 use App\Http\Controllers\Admin\IngestAdminController;
+use App\Http\Controllers\Admin\PartnerAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
 use App\Http\Controllers\Admin\SportsAdminController;
 use App\Http\Controllers\Api\PlaybackController;
@@ -142,6 +143,18 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
         Route::get('/{id}', [DiscoveryWorkbenchController::class, 'show'])->name('show');
         Route::post('/{id}/approve', [DiscoveryWorkbenchController::class, 'approve'])->name('approve');
         Route::post('/{id}/reject', [DiscoveryWorkbenchController::class, 'reject'])->name('reject');
+    });
+
+    // Content Acquisition & Partner CRM
+    Route::prefix('partners')->name('partners.')->group(function () {
+        Route::get('/', [PartnerAdminController::class, 'index'])->name('index');
+        Route::get('/create', [PartnerAdminController::class, 'create'])->name('create');
+        Route::post('/', [PartnerAdminController::class, 'store'])->name('store');
+        Route::get('/{id}', [PartnerAdminController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [PartnerAdminController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [PartnerAdminController::class, 'update'])->name('update');
+        Route::post('/{id}/stage', [PartnerAdminController::class, 'updateStage'])->name('stage');
+        Route::post('/{id}/agreements', [PartnerAdminController::class, 'storeAgreement'])->name('agreements.store');
     });
 
     // 24/7 Virtual Broadcasting Engine

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -23,6 +24,7 @@ class Channel extends Model
         'banner_path',
         'broadcaster_name',
         'broadcaster_website',
+        'content_partner_id',
         'official_destination_url',
         'country_code',
         'language_code',
@@ -122,6 +124,11 @@ class Channel extends Model
             ->whereNotNull('stream_url')
             ->where('stream_url', '!=', '')
             ->latest('id');
+    }
+
+    public function contentPartner(): BelongsTo
+    {
+        return $this->belongsTo(ContentPartner::class, 'content_partner_id');
     }
 
     public function contentRights(): HasMany
