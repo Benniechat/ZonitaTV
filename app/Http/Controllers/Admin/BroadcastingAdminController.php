@@ -148,6 +148,8 @@ class BroadcastingAdminController extends Controller
             'repeat_cooldown_hours' => 'required|integer|min:1',
             'min_reserve_count' => 'required|integer|min:1',
             'scheduling_mode' => 'required|in:continuous,blocks,hybrid',
+            'priority_level' => 'nullable|in:premier_heavy,balanced,deep_catalog',
+            'interstitial_ident_interval' => 'nullable|integer|min:1',
             'timezone' => 'required|string',
         ]);
 
@@ -170,6 +172,8 @@ class BroadcastingAdminController extends Controller
                 'repeat_cooldown_hours' => $validated['repeat_cooldown_hours'],
                 'min_reserve_count' => $validated['min_reserve_count'],
                 'scheduling_mode' => $validated['scheduling_mode'],
+                'priority_level' => $validated['priority_level'] ?? 'balanced',
+                'interstitial_ident_interval' => $validated['interstitial_ident_interval'] ?? 4,
                 'timezone' => $validated['timezone'],
             ]
         );

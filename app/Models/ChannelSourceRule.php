@@ -23,6 +23,8 @@ class ChannelSourceRule extends Model
         'min_reserve_count',
         'allow_evergreen',
         'scheduling_mode',
+        'priority_level',
+        'interstitial_ident_interval',
         'timezone',
     ];
 
@@ -36,6 +38,7 @@ class ChannelSourceRule extends Model
         'max_duration_minutes' => 'integer',
         'repeat_cooldown_hours' => 'integer',
         'min_reserve_count' => 'integer',
+        'interstitial_ident_interval' => 'integer',
     ];
 
     public function channel(): BelongsTo

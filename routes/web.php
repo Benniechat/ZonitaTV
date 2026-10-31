@@ -118,7 +118,8 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Channels
+    // Channels & Virtual Playout Management
+    Route::post('channels/{channel}/toggle-status', [ChannelAdminController::class, 'toggleStatus'])->name('channels.toggle-status');
     Route::resource('channels', ChannelAdminController::class);
 
     // Content Database & Unified Catalogue Management

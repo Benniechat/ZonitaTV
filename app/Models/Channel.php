@@ -17,11 +17,14 @@ class Channel extends Model
     protected $fillable = [
         'name',
         'slug',
+        'channel_number',
         'tvg_id',
         'description',
         'tagline',
         'logo_path',
         'banner_path',
+        'brand_color',
+        'watermark_logo_path',
         'broadcaster_name',
         'broadcaster_website',
         'content_partner_id',
@@ -29,9 +32,11 @@ class Channel extends Model
         'country_code',
         'language_code',
         'playback_mode',
+        'is_virtual',
         'curation_type',
         'curation_keywords',
         'fallback_video_id',
+        'station_ident_video_id',
         'is_featured',
         'is_active',
         'is_published',
@@ -41,6 +46,7 @@ class Channel extends Model
     ];
 
     protected $casts = [
+        'is_virtual' => 'boolean',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'is_published' => 'boolean',
@@ -109,6 +115,60 @@ class Channel extends Model
         }
 
         return mb_strtoupper(mb_substr($this->name, 0, 2));
+    }
+
+    /**
+     * Get the formatted channel dial number (e.g. "101").
+     */
+    public function getDisplayNumberAttribute(): string
+    {
+        return $this->channel_number ?: strval(100 + ($this->id ?? 0));
+    }
+
+    /**
+     * Station accent brand color (fallback: default Zonita crimson #E50914).
+     */
+    public function getAccentColorAttribute(): string
+    {
+        return $this->brand_color ?: '#E50914';
+    }
+
+    /**
+     * Resolve watermark logo URL.
+     */
+    public function getWatermarkUrlAttribute(): ?string
+    {
+        if (empty($this->watermark_logo_path)) {
+            return $this->logo_url;
+        }
+
+        if (str_starts_with($this->watermark_logo_path, 'http://') || str_starts_with($this->watermark_logo_path, 'https://')) {
+            return $this->watermark_logo_path;
+        }
+
+        return asset(ltrim($this->watermark_logo_path, '/'));
+    }
+
+    /**
+     * Whether this channel is a 24/7 automated virtual channel.
+     */
+    public function isVirtual(): bool
+    {
+        return (bool) ($this->is_virtual || $this->playback_mode === 'zoniva_original' || $this->sourceRule()->exists());
+    }
+
+    public function scopeVirtual($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('is_virtual', true)
+                ->orWhere('playback_mode', 'zoniva_original')
+                ->orWhereHas('sourceRule');
+        });
+    }
+
+    public function scopeOnAir($query)
+    {
+        return $query->where('is_active', true)->where('is_published', true);
     }
 
     public function streams(): HasMany
