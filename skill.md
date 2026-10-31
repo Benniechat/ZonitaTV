@@ -68,8 +68,8 @@
 
 ## 6. Implementation Batch Status & Roadmap
 - **Batch 0 (Audit & Planning):** ✅ Completed. Full audit, architecture, risk register, and QA plan established.
-- **Batch 1 (Foundation & Standards):** Pending user approval.
-- **Batch 2 (Authentication & User Persistence):** Pending.
+- **Batch 1 (Foundation & Standards):** ✅ Completed. Linting rules, environment templates, standardized API responses, and health test harness deployed.
+- **Batch 2 (Authentication & User Persistence):** ⏳ Next Up.
 - **Batch 3 (Profiles & Role Permissions):** Pending.
 - **Batch 4 (UI/UX Design System & Layout):** Pending.
 - **Batch 5 through 21:** Sequenced per master specification.
