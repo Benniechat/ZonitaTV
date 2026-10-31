@@ -70,8 +70,9 @@
 - **Batch 0 (Audit & Planning):** ✅ Completed. Full audit, architecture, risk register, and QA plan established.
 - **Batch 1 (Foundation & Standards):** ✅ Completed. Linting rules, environment templates, standardized API responses, and health test harness deployed.
 - **Batch 2 (Authentication & User Persistence):** ✅ Completed. Resilient dual login, profile preference isolation, Google OAuth, and Supabase connection verified across 18 tests.
-- **Batch 3 (Profiles & Role Permissions):** ⏳ Next Up.
-- **Batch 4 (UI/UX Design System & Layout):** Pending.
+- **Batch 3 (Profiles & Role Permissions):** ✅ Completed. Profile updates, secure password changes, preference editing, account deactivation, and role middleware authorization.
+- **Batch 4 (UI/UX Design System & Layout):** ⏳ Next Up.
+- **Batch 5 through 21:** Sequenced per master specification.
 - **Batch 5 through 21:** Sequenced per master specification.
 
 ---

@@ -23,6 +23,7 @@ use App\Http\Controllers\LegalComplianceController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NollywoodController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SportsController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -36,6 +37,15 @@ Route::get('/google98a49cab5be19ce2.html', function () {
 
 // --- Public Discovery Experience ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// --- User Profile & Account Settings (Authenticated) ---
+Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'show'])->name('show');
+    Route::patch('/details', [ProfileController::class, 'updateProfile'])->name('update');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password');
+    Route::patch('/preferences', [ProfileController::class, 'updatePreferences'])->name('preferences');
+    Route::delete('/delete', [ProfileController::class, 'destroy'])->name('destroy');
+});
 Route::get('/channels', [ChannelController::class, 'index'])->name('channels.index');
 Route::get('/channel/{slug}', [ChannelController::class, 'show'])->name('channels.show');
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
@@ -101,7 +111,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // --- Administration Operations ---
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
