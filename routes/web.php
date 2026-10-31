@@ -25,6 +25,7 @@ use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ComedyController;
 use App\Http\Controllers\GospelFilmController;
 use App\Http\Controllers\GuideController;
+use App\Http\Controllers\HealthCheckController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IslamicChannelController;
 use App\Http\Controllers\LegalComplianceController;
@@ -42,6 +43,12 @@ Route::get('/google98a49cab5be19ce2.html', function () {
     return response('google-site-verification: google98a49cab5be19ce2.html', 200)
         ->header('Content-Type', 'text/html');
 });
+
+// --- Production Health Check & Monitoring Probes ---
+Route::get('/health', [HealthCheckController::class, 'check'])->name('health.check');
+Route::get('/ping', [HealthCheckController::class, 'ping'])->name('health.ping');
+Route::get('/api/health', [HealthCheckController::class, 'check'])->name('api.health');
+Route::get('/api/ping', [HealthCheckController::class, 'ping'])->name('api.ping');
 
 // --- Public Discovery Experience ---
 Route::get('/', [HomeController::class, 'index'])->name('home');

@@ -41,6 +41,12 @@ Schedule::call(function () {
     GenerateChannelReports::dispatch(lookbackHours: 24);
 })->dailyAt('00:05')->name('zonita:daily-broadcast-reports');
 
+// 5. Daily Content Rights Expiration Monitor & Auto-Delist
+Schedule::command('rights:monitor-expirations')->dailyAt('01:00')->name('zonita:monitor-rights-expirations');
+
+// 6. Automated Master Database Backup SQL Export
+Schedule::command('zoniva:export-sql')->dailyAt('02:00')->name('zonita:daily-backup-export');
+
 // --- Zonita Sports Autonomous MCR Live Engine ---
 Schedule::command('sports:sync-fixtures')->everyThirtyMinutes()->name('sports:sync-fixtures');
 Schedule::command('sports:verify-broadcasts')->everyFifteenMinutes()->name('sports:verify-broadcasts');
