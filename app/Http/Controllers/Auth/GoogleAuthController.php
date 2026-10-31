@@ -131,6 +131,9 @@ class GoogleAuthController extends Controller
                 ]);
             }
 
+            // Ensure preferences/profile are initialized idempotently
+            $user->getOrCreatePreferences();
+
             Auth::login($user, remember: true);
             $request->session()->regenerate();
 

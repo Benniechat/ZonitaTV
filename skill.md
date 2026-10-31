@@ -69,8 +69,8 @@
 ## 6. Implementation Batch Status & Roadmap
 - **Batch 0 (Audit & Planning):** ✅ Completed. Full audit, architecture, risk register, and QA plan established.
 - **Batch 1 (Foundation & Standards):** ✅ Completed. Linting rules, environment templates, standardized API responses, and health test harness deployed.
-- **Batch 2 (Authentication & User Persistence):** ⏳ Next Up.
-- **Batch 3 (Profiles & Role Permissions):** Pending.
+- **Batch 2 (Authentication & User Persistence):** ✅ Completed. Resilient dual login, profile preference isolation, Google OAuth, and Supabase connection verified across 18 tests.
+- **Batch 3 (Profiles & Role Permissions):** ⏳ Next Up.
 - **Batch 4 (UI/UX Design System & Layout):** Pending.
 - **Batch 5 through 21:** Sequenced per master specification.
 

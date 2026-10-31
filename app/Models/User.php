@@ -22,6 +22,7 @@ class User extends Authenticatable
         'role',
         'google_id',
         'avatar',
+        'email_verified_at',
     ];
 
     public function getAvatarUrlAttribute(): string
@@ -57,6 +58,26 @@ class User extends Authenticatable
     public function preferences(): HasOne
     {
         return $this->hasOne(UserPreference::class);
+    }
+
+    /**
+     * Retrieve or idempotently initialize user preferences.
+     */
+    public function getOrCreatePreferences(): UserPreference
+    {
+        if ($this->relationLoaded('preferences') && $this->preferences) {
+            return $this->preferences;
+        }
+
+        $existing = $this->preferences()->first();
+        if ($existing) {
+            return $existing;
+        }
+
+        return $this->preferences()->create([
+            'country_code' => 'NGA',
+            'enable_recommendations' => true,
+        ]);
     }
 
     public function favourites(): HasMany

@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,10 +49,14 @@ class AuthController extends Controller
         try {
             $input = strtolower(trim($credentials['email']));
 
-            // Case-insensitive lookup by email OR by username/name
-            $user = User::whereRaw('LOWER(TRIM(email)) = ?', [$input])
-                ->orWhereRaw('LOWER(TRIM(name)) = ?', [$input])
-                ->first();
+            // Case-insensitive lookup: match email or name/username
+            if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
+                $user = User::whereRaw('LOWER(TRIM(email)) = ?', [$input])->first();
+            } else {
+                $user = User::whereRaw('LOWER(TRIM(name)) = ?', [$input])
+                    ->orWhereRaw('LOWER(TRIM(email)) = ?', [$input])
+                    ->first();
+            }
 
             if (! $user) {
                 return back()->withErrors([
@@ -65,6 +70,9 @@ class AuthController extends Controller
                 ])->onlyInput('email');
             }
 
+            // Ensure associated profile/preferences exist idempotently
+            $user->getOrCreatePreferences();
+
             Auth::login($user, $remember);
             $request->session()->regenerate();
 
@@ -72,14 +80,24 @@ class AuthController extends Controller
 
             return redirect()->intended(route('home'))
                 ->with('success', 'Welcome back, '.$user->name.'!');
-        } catch (\Throwable $e) {
-            Log::error('Authentication login error: '.$e->getMessage(), [
-                'email' => $credentials['email'] ?? null,
-                'exception' => $e->getMessage(),
+        } catch (QueryException $e) {
+            Log::error('Database error during user login lookup', [
+                'operation' => 'login_lookup',
+                'sqlstate' => $e->getCode(),
+                'message' => $e->getMessage(),
             ]);
 
             return back()->withErrors([
-                'email' => 'Authentication service error: '.$e->getMessage(),
+                'email' => 'A database service error occurred. Please try again in a moment.',
+            ])->onlyInput('email');
+        } catch (\Throwable $e) {
+            Log::error('Unexpected error during user login', [
+                'operation' => 'login_auth',
+                'message' => $e->getMessage(),
+            ]);
+
+            return back()->withErrors([
+                'email' => 'An authentication service error occurred. Please try again.',
             ])->onlyInput('email');
         }
     }
@@ -142,6 +160,9 @@ class AuthController extends Controller
                 throw new \RuntimeException('Failed to save account to database.');
             }
 
+            // Idempotently create associated user profile / preferences
+            $user->getOrCreatePreferences();
+
             Log::info("User account created and saved to database: ID {$user->id}, Email {$user->email}");
 
             // Auto-login registered user and regenerate session
@@ -150,14 +171,31 @@ class AuthController extends Controller
 
             return redirect()->intended(route('home'))
                 ->with('success', "Welcome to Zonita TV, {$user->name}! Your account has been registered and activated successfully.");
+        } catch (QueryException $e) {
+            Log::error('Database error during user registration', [
+                'operation' => 'register_persistence',
+                'sqlstate' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ]);
+
+            // Detect duplicate key / unique constraint violation
+            if (str_contains($e->getMessage(), 'UNIQUE') || str_contains($e->getMessage(), 'unique') || $e->getCode() === '23505') {
+                return back()->withErrors([
+                    'email' => 'An account with this email address already exists. Please sign in instead.',
+                ])->withInput($request->except('password', 'password_confirmation'));
+            }
+
+            return back()->withErrors([
+                'email' => 'A database error occurred while creating your account. Please try again in a few moments.',
+            ])->withInput($request->except('password', 'password_confirmation'));
         } catch (\Throwable $e) {
-            Log::error('Authentication registration error: '.$e->getMessage(), [
-                'email' => $validated['email'] ?? null,
-                'exception' => $e->getMessage(),
+            Log::error('Unexpected error during user registration', [
+                'operation' => 'register_auth',
+                'message' => $e->getMessage(),
             ]);
 
             return back()->withErrors([
-                'email' => 'Registration error: '.$e->getMessage(),
+                'email' => 'An unexpected registration error occurred. Please try again.',
             ])->withInput($request->except('password', 'password_confirmation'));
         }
     }

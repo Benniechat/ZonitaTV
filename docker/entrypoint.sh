@@ -30,6 +30,14 @@ fi
 # Ensure storage symlink exists
 php artisan storage:link --no-interaction || true
 
+# Detect Supabase configuration or DATABASE_URL
+if [ -n "$DATABASE_URL" ] || echo "${DB_HOST:-}" | grep -q "supabase.com"; then
+    export DB_CONNECTION="${DB_CONNECTION:-pgsql}"
+    if [ "${DB_DATABASE:-}" = "/var/www/html/database/database.sqlite" ] || [ -z "${DB_DATABASE:-}" ]; then
+        export DB_DATABASE=postgres
+    fi
+fi
+
 # Test database connection
 echo "==> Testing database connection (${DB_CONNECTION:-sqlite})..."
 DB_STATUS=$(php -r '
@@ -98,10 +106,16 @@ APP_URL="${APP_URL}"
 LOG_CHANNEL=stderr
 LOG_LEVEL=info
 
+if [ "${DB_CONNECTION}" = "pgsql" ]; then
+    DB_DATABASE_DEFAULT="postgres"
+else
+    DB_DATABASE_DEFAULT="/var/www/html/database/database.sqlite"
+fi
+
 DB_CONNECTION="${DB_CONNECTION:-sqlite}"
 DB_HOST="${DB_HOST:-}"
 DB_PORT="${DB_PORT:-}"
-DB_DATABASE="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
+DB_DATABASE="${DB_DATABASE:-$DB_DATABASE_DEFAULT}"
 DB_USERNAME="${DB_USERNAME:-}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 DB_SSLMODE="${DB_SSLMODE:-require}"

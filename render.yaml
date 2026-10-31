@@ -22,12 +22,20 @@ services:
           name: zonitatv
           property: host
       - key: DB_CONNECTION
-        value: sqlite
+        value: pgsql
+      - key: DB_PORT
+        value: "5432"
       - key: DB_DATABASE
-        value: /var/www/html/database/database.sqlite
+        value: postgres
+      - key: DB_USERNAME
+        value: postgres.ueacqckeqnunrnqipjpa
+      - key: DB_HOST
+        value: aws-0-eu-central-1.pooler.supabase.com
+      - key: DB_SSLMODE
+        value: require
       - key: SESSION_DRIVER
-        value: cookie
+        value: database
       - key: QUEUE_CONNECTION
         value: sync
       - key: CACHE_STORE
-        value: file
+        value: database
