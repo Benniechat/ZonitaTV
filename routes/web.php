@@ -54,6 +54,8 @@ Route::get('/channel/{slug}', [ChannelController::class, 'show'])->name('channel
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/guide', [GuideController::class, 'index'])->name('guide.index');
+Route::get('/epg/export.xml', [GuideController::class, 'exportXmltv'])->name('guide.xmltv.export');
+Route::get('/api/epg/xmltv', [GuideController::class, 'xmltv'])->name('api.epg.xmltv');
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 Route::get('/movies/{movie:slug}', [MovieController::class, 'show'])->name('movies.show');
 Route::get('/gospel-cinema', [GospelFilmController::class, 'index'])->name('gospel.index');

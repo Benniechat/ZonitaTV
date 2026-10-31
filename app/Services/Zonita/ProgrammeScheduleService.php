@@ -18,10 +18,11 @@ class ProgrammeScheduleService
     ) {}
 
     /**
-     * Generates a continuous rolling schedule for a channel.
+     * Generates a continuous rolling schedule for a channel (1 to 30 days horizon).
      */
     public function generateRollingSchedule(Channel $channel, int $daysAhead = 7): array
     {
+        $daysAhead = max(1, min(30, $daysAhead));
         $now = Carbon::now('UTC');
         $timelineEnd = $now->copy()->addDays($daysAhead)->endOfDay();
 
@@ -145,6 +146,129 @@ class ProgrammeScheduleService
             'entries_created' => $createdCount,
             'status' => 'ok',
         ];
+    }
+
+    /**
+     * Resolves schedule overlaps, aligns timeline sequence, and fills unintended gaps.
+     */
+    public function resolveScheduleConflicts(Channel $channel, ?Carbon $fromTime = null, ?Carbon $toTime = null): array
+    {
+        $from = $fromTime ?: now('UTC')->subHours(2);
+        $to = $toTime ?: now('UTC')->addDays(30);
+
+        $entries = ScheduleEntry::where('channel_id', $channel->id)
+            ->where('end_time', '>=', $from)
+            ->where('start_time', '<=', $to)
+            ->orderBy('start_time')
+            ->orderBy('id')
+            ->get();
+
+        if ($entries->isEmpty()) {
+            return [
+                'overlaps_resolved' => 0,
+                'gaps_filled' => 0,
+                'entries_realigned' => 0,
+            ];
+        }
+
+        $overlapsResolved = 0;
+        $gapsFilled = 0;
+        $entriesRealigned = 0;
+        $previousEnd = null;
+        $currentOrder = 1;
+
+        foreach ($entries as $entry) {
+            $start = Carbon::parse($entry->start_time)->utc();
+            $duration = max(60, $entry->duration_seconds ?: 1800);
+
+            if ($previousEnd !== null) {
+                // Case 1: Overlap (current starts before previous ends)
+                if ($start->lessThan($previousEnd)) {
+                    $start = $previousEnd->copy();
+                    $entry->start_time = $start->toDateTimeString();
+                    $entry->end_time = $start->copy()->addSeconds($duration)->toDateTimeString();
+                    $entry->duration_seconds = $duration;
+                    $entry->play_order = $currentOrder++;
+                    $entry->save();
+                    $overlapsResolved++;
+                    $entriesRealigned++;
+                }
+                // Case 2: Gap (current starts more than 60s after previous ends)
+                elseif ($start->greaterThan($previousEnd) && $previousEnd->diffInSeconds($start) > 60) {
+                    $gapSeconds = $previousEnd->diffInSeconds($start);
+                    ScheduleEntry::create([
+                        'channel_id' => $channel->id,
+                        'video_id' => null,
+                        'title' => 'Zonita TV Station Interstitial & Continuity',
+                        'description' => 'Automated linear continuity gap filler.',
+                        'format_type' => 'interstitial',
+                        'start_time' => $previousEnd->toDateTimeString(),
+                        'end_time' => $start->toDateTimeString(),
+                        'duration_seconds' => $gapSeconds,
+                        'play_order' => $currentOrder++,
+                        'status' => 'scheduled',
+                        'is_fallback' => true,
+                    ]);
+                    $gapsFilled++;
+                    $currentOrder++;
+                } else {
+                    // Slight gap under 60s: align seamlessly
+                    if (! $start->equalTo($previousEnd)) {
+                        $start = $previousEnd->copy();
+                        $entry->start_time = $start->toDateTimeString();
+                        $entry->end_time = $start->copy()->addSeconds($duration)->toDateTimeString();
+                        $entry->save();
+                        $entriesRealigned++;
+                    }
+                    $currentOrder++;
+                }
+            } else {
+                $currentOrder++;
+            }
+
+            $previousEnd = Carbon::parse($entry->end_time)->utc();
+        }
+
+        $this->syncProgrammesForChannel($channel);
+
+        return [
+            'overlaps_resolved' => $overlapsResolved,
+            'gaps_filled' => $gapsFilled,
+            'entries_realigned' => $entriesRealigned,
+        ];
+    }
+
+    /**
+     * Automatic rolling schedule replenishment for all active channels.
+     */
+    public function replenishAllChannels(int $minHoursAhead = 48, int $targetDays = 7): array
+    {
+        $channels = Channel::where('is_active', true)->get();
+        $replenished = [];
+        $now = now('UTC');
+
+        foreach ($channels as $channel) {
+            $maxEnd = ScheduleEntry::where('channel_id', $channel->id)
+                ->where('end_time', '>', $now)
+                ->max('end_time');
+
+            $hoursAhead = $maxEnd
+                ? round($now->diffInMinutes(Carbon::parse($maxEnd, 'UTC')) / 60, 1)
+                : 0;
+
+            if ($hoursAhead < $minHoursAhead) {
+                $result = $this->generateRollingSchedule($channel, $targetDays);
+                $conflictResult = $this->resolveScheduleConflicts($channel);
+                $replenished[] = [
+                    'channel' => $channel->slug,
+                    'previous_hours' => $hoursAhead,
+                    'entries_created' => $result['entries_created'] ?? 0,
+                    'conflicts' => $conflictResult,
+                ];
+            }
+        }
+
+        return $replenished;
     }
 
     /**
