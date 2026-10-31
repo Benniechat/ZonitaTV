@@ -15,6 +15,9 @@ Artisan::command('inspire', function () {
 
 // --- Zonita TV 24/7 Virtual Broadcasting Engine Scheduled Tasks ---
 
+// 0. Continuous Playout Progression & Dead-Stream Watchdog: Run every minute
+Schedule::command('playout:advance --replenish')->everyMinute()->name('zonita:continuous-playout-advance');
+
 // 1. Health & Queue Monitoring: Run every 15 minutes to guarantee no channel schedule runs dry
 Schedule::call(function () {
     MonitorScheduleHealth::dispatch();
