@@ -59,6 +59,7 @@ Route::get('/api/epg/xmltv', [GuideController::class, 'xmltv'])->name('api.epg.x
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 Route::get('/movies/{movie:slug}', [MovieController::class, 'show'])->name('movies.show');
 Route::get('/gospel-cinema', [GospelFilmController::class, 'index'])->name('gospel.index');
+Route::get('/faith', [GospelFilmController::class, 'index'])->name('faith.index');
 Route::get('/islamic', [IslamicChannelController::class, 'index'])->name('islamic.index');
 Route::get('/nollywood', [NollywoodController::class, 'index'])->name('nollywood.index');
 Route::get('/nollywood-cinema', [NollywoodController::class, 'index']);

@@ -84,7 +84,7 @@ class IslamicChannelController extends Controller
         ];
 
         // Fetch Now Playing and Next Up for each channel
-        $now = now('Africa/Lagos');
+        $now = now();
         $channelSchedules = [];
         foreach ($islamicChannels as $slug => $channel) {
             $current = ScheduleEntry::where('channel_id', $channel->id)

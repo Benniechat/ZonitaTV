@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ComedyChannel extends Model
 {
@@ -51,6 +52,21 @@ class ComedyChannel extends Model
         'lead_priority' => 'integer',
         'last_scanned_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $model) {
+            if (empty($model->slug) && ! empty($model->name)) {
+                $model->slug = Str::slug($model->name);
+            }
+            if (empty($model->youtube_channel_name) && ! empty($model->name)) {
+                $model->youtube_channel_name = $model->name;
+            }
+            if (empty($model->youtube_channel_url) && ! empty($model->slug)) {
+                $model->youtube_channel_url = 'https://www.youtube.com/@'.$model->slug;
+            }
+        });
+    }
 
     public function scopeTopPriority(Builder $query): Builder
     {
