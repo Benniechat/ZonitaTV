@@ -57,7 +57,7 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
 Route::get('/channels', [ChannelController::class, 'index'])->name('channels.index');
 Route::get('/channel/{slug}', [ChannelController::class, 'show'])->name('channels.show');
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
-Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/search', [SearchController::class, 'index'])->name('search')->middleware('throttle:search');
 Route::get('/guide', [GuideController::class, 'index'])->name('guide.index');
 Route::get('/epg/export.xml', [GuideController::class, 'exportXmltv'])->name('guide.xmltv.export');
 Route::get('/api/epg/xmltv', [GuideController::class, 'xmltv'])->name('api.epg.xmltv');
@@ -83,21 +83,21 @@ Route::prefix('sports')->name('sports.')->group(function () {
 // Audience Engine & Growth
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 Route::get('/wa/join', [HomeController::class, 'whatsappRedirect'])->name('wa.join');
-Route::post('/channel/{channel}/report', [ChannelController::class, 'reportProblem'])->name('channels.report');
+Route::post('/channel/{channel}/report', [ChannelController::class, 'reportProblem'])->name('channels.report')->middleware('throttle:reports');
 
 // User / Favourites Interaction
 Route::post('/channel/{channel}/favourite', [ChannelController::class, 'toggleFavourite'])->name('channels.favourite');
 Route::get('/my-guide', [GuideController::class, 'personalized'])->name('guide.personalized');
 
 // Zonita Intelligent Playout Engine API
-Route::prefix('api/playback')->group(function () {
+Route::prefix('api/playback')->middleware('throttle:telemetry')->group(function () {
     Route::post('/report-failure', [PlaybackController::class, 'reportFailure'])->withoutMiddleware([ValidateCsrfToken::class]);
     Route::get('/epg/{slug}', [PlaybackController::class, 'getEpg']);
     Route::get('/status/{slug}', [PlaybackController::class, 'getLiveStatus'])->name('api.playback.status');
 });
 
 // AI Recommendations & Personalisation Engine API
-Route::prefix('api/recommendations')->group(function () {
+Route::prefix('api/recommendations')->middleware('throttle:api')->group(function () {
     Route::get('/', [RecommendationController::class, 'index'])->name('api.recommendations.index');
     Route::get('/similar/{slug}', [RecommendationController::class, 'similar'])->name('api.recommendations.similar');
     Route::get('/guide', [RecommendationController::class, 'guide'])->name('api.recommendations.guide');

@@ -58,6 +58,11 @@
     </style>
 </head>
 <body class="bg-[#0b0d13] text-gray-200 antialiased min-h-screen flex flex-col selection:bg-orange-600 selection:text-white">
+    <!-- Skip to main content landmark for keyboard & screen-reader accessibility (WCAG 2.1 AA) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-red-600 focus:text-white focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white">
+        Skip to main content
+    </a>
+
     <!-- Google Tag Manager (noscript) -->
     @if(config('services.google.gtm_id'))
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('services.google.gtm_id') }}"
@@ -847,8 +852,8 @@
         </div>
     @endif
 
-    <!-- Main Content -->
-    <main class="flex-grow">
+    <!-- Main Content Landmark -->
+    <main class="flex-grow" id="main-content" role="main" tabindex="-1">
         @yield('content')
     </main>
 

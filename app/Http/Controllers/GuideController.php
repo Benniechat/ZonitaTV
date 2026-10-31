@@ -11,6 +11,7 @@ use App\Services\Zonita\XmltvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class GuideController extends Controller
@@ -195,24 +196,26 @@ class GuideController extends Controller
      */
     public function xmltv(Request $request): Response
     {
-        $channelSlug = $request->input('channel');
+        $channelSlug = (string) $request->input('channel', 'all');
         $days = min(30, max(1, (int) $request->input('days', 7)));
-        $tz = $request->input('tz', 'UTC');
+        $tz = (string) $request->input('tz', 'UTC');
 
-        $channels = null;
-        if ($channelSlug) {
-            $channels = Channel::where('slug', $channelSlug)->get();
-        }
+        $cacheKey = "epg_xmltv_feed_{$channelSlug}_{$days}_{$tz}";
 
-        $xml = $this->xmltvService->generateXml(
-            $channels,
-            now('UTC')->subHours(6),
-            now('UTC')->addDays($days),
-            $tz
-        );
+        $xml = Cache::remember($cacheKey, 300, function () use ($channelSlug, $days, $tz) {
+            $channels = ($channelSlug !== 'all') ? Channel::where('slug', $channelSlug)->get() : null;
+
+            return $this->xmltvService->generateXml(
+                $channels,
+                now('UTC')->subHours(6),
+                now('UTC')->addDays($days),
+                $tz
+            );
+        });
 
         return response($xml, 200, [
             'Content-Type' => 'application/xml; charset=utf-8',
+            'Cache-Control' => 'public, max-age=300',
         ]);
     }
 
