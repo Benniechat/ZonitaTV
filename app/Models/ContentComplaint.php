@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class ContentComplaint extends Model
 {
@@ -38,6 +39,18 @@ class ContentComplaint extends Model
         'authority_confirmation' => 'boolean',
         'resolved_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (ContentComplaint $complaint) {
+            if (empty($complaint->reference_number)) {
+                $complaint->reference_number = 'DMCA-'.now()->format('Ymd').'-'.strtoupper(Str::random(6));
+            }
+            if (empty($complaint->infringement_details)) {
+                $complaint->infringement_details = 'Unauthorized broadcast reported by copyright owner.';
+            }
+        });
+    }
 
     public function video(): BelongsTo
     {

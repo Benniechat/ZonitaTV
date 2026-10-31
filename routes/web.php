@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\PartnerAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
 use App\Http\Controllers\Admin\RightsAuditController;
 use App\Http\Controllers\Admin\SportsAdminController;
+use App\Http\Controllers\Admin\SupportTicketAdminController;
+use App\Http\Controllers\Admin\SystemAlertsAdminController;
 use App\Http\Controllers\Api\PlaybackController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Auth\AuthController;
@@ -230,5 +232,26 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
     Route::prefix('compliance-audit')->name('compliance.')->group(function () {
         Route::get('/', [RightsAuditController::class, 'index'])->name('index');
         Route::post('/remediate/{right}', [RightsAuditController::class, 'remediate'])->name('remediate');
+    });
+
+    // Support Tickets & Problem Reports Triage
+    Route::prefix('support')->name('support.')->group(function () {
+        Route::get('/', [SupportTicketAdminController::class, 'index'])->name('index');
+        Route::get('/{report}', [SupportTicketAdminController::class, 'show'])->name('show');
+        Route::post('/{report}', [SupportTicketAdminController::class, 'update'])->name('update');
+        Route::delete('/{report}', [SupportTicketAdminController::class, 'destroy'])->name('destroy');
+    });
+
+    // Master System Alerts & Notification Dispatch
+    Route::prefix('alerts')->name('alerts.')->group(function () {
+        Route::get('/', [SystemAlertsAdminController::class, 'index'])->name('index');
+        Route::post('/{alert}/resolve', [SystemAlertsAdminController::class, 'resolve'])->name('resolve');
+        Route::post('/resolve-all', [SystemAlertsAdminController::class, 'resolveAll'])->name('resolve-all');
+    });
+
+    // WhatsApp Community Guide Alerts & Broadcasts
+    Route::prefix('community-alerts')->name('community.')->group(function () {
+        Route::get('/', [SystemAlertsAdminController::class, 'community'])->name('index');
+        Route::post('/broadcast', [SystemAlertsAdminController::class, 'broadcast'])->name('broadcast');
     });
 });

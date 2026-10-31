@@ -20,7 +20,7 @@
 | **15** | **Vertical Portals (Comedy, Nollywood, Faith)**| Curated channel landing pages, genre tags, festival showcases | Batch 14 | ✅ **Completed** |
 | **16** | **AI Recommendations & Personalisation** | Similar channel matching, personalized watch guides, explainable picks | Batch 15 | ✅ **Completed** |
 | **17** | **Admin Control Hub, Analytics & Reporting** | System health dashboard, viewership metrics, rights audit log viewer | Batch 16 | ✅ **Completed** |
-| **18** | **Notifications, Alerts & Support Workflows** | Takedown alerts, stream failure alerts, WhatsApp bot integration | Batch 17 | ⏳ **Next Up** |
-| **19** | **Security, Performance & Accessibility** | OWASP review, rate limiting, CSP hardening, WCAG 2.1 AA audit | Batch 18 | 📋 Planned |
+| **18** | **Notifications, Alerts & Support Workflows** | Takedown alerts, stream failure alerts, WhatsApp bot integration | Batch 17 | ✅ **Completed** |
+| **19** | **Security, Performance & Accessibility** | OWASP review, rate limiting, CSP hardening, WCAG 2.1 AA audit | Batch 18 | ⏳ **Next Up** |
 | **20** | **End-to-End System Testing & QA** | Full test suite expansion, simulated playout failure drills | Batch 19 | 📋 Planned |
 | **21** | **Production Deployment & Handover** | Cloud production release, automated backup verify, runbooks | Batch 20 | 📋 Planned |

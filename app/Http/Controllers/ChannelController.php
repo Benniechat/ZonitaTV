@@ -7,6 +7,7 @@ use App\Models\Channel;
 use App\Models\Favourite;
 use App\Models\ProblemReport;
 use App\Models\ViewingEvent;
+use App\Services\AlertNotificationService;
 use App\Services\ChannelCatalogueService;
 use App\Services\LinearChannelEngineService;
 use App\Services\RightsEligibilityService;
@@ -139,7 +140,7 @@ class ChannelController extends Controller
             'description' => 'required|string|max:1000',
         ]);
 
-        ProblemReport::create([
+        $report = ProblemReport::create([
             'channel_id' => $channel->id,
             'user_id' => $request->user()?->id,
             'email' => $validated['email'] ?? $request->user()?->email,
@@ -147,6 +148,8 @@ class ChannelController extends Controller
             'description' => $validated['description'],
             'status' => 'new',
         ]);
+
+        app(AlertNotificationService::class)->notifyProblemReportLogged($report);
 
         return back()->with('success', 'Thank you for reporting. Our technical team has been notified.');
     }

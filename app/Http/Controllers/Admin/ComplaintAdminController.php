@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ContentComplaint;
 use App\Models\ScheduleEntry;
 use App\Models\Video;
+use App\Services\AlertNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -136,6 +137,8 @@ class ComplaintAdminController extends Controller
             'resolved_by_user_id' => Auth::id(),
             'resolved_at' => now(),
         ]);
+
+        app(AlertNotificationService::class)->notifyCopyrightTakedown($complaint);
 
         return redirect()->route('admin.complaints.show', $complaint)
             ->with('success', "Content associated with complaint {$complaint->reference_number} has been disabled and purged from active broadcast schedules.");
