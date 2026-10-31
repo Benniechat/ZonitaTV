@@ -220,6 +220,11 @@ class Channel extends Model
         return $this->hasMany(ContentRight::class);
     }
 
+    public function rights(): HasMany
+    {
+        return $this->hasMany(ContentRight::class);
+    }
+
     public function latestRights(): HasOne
     {
         return $this->hasOne(ContentRight::class)->latestOfMany();

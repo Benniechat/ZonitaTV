@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnalyticsAdminController;
 use App\Http\Controllers\Admin\BroadcastingAdminController;
 use App\Http\Controllers\Admin\ChannelAdminController;
 use App\Http\Controllers\Admin\CloudinaryMediaController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Admin\DiscoveryWorkbenchController;
 use App\Http\Controllers\Admin\IngestAdminController;
 use App\Http\Controllers\Admin\PartnerAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
+use App\Http\Controllers\Admin\RightsAuditController;
 use App\Http\Controllers\Admin\SportsAdminController;
 use App\Http\Controllers\Api\PlaybackController;
 use App\Http\Controllers\Api\RecommendationController;
@@ -216,5 +218,17 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
         Route::get('/', [CloudinaryMediaController::class, 'index'])->name('index');
         Route::get('/signature', [CloudinaryMediaController::class, 'signature'])->name('signature');
         Route::post('/upload', [CloudinaryMediaController::class, 'upload'])->name('upload');
+    });
+
+    // Viewership & Audience Analytics Reporting
+    Route::prefix('analytics')->name('analytics.')->group(function () {
+        Route::get('/', [AnalyticsAdminController::class, 'index'])->name('index');
+        Route::get('/export', [AnalyticsAdminController::class, 'export'])->name('export');
+    });
+
+    // Rights Compliance Audit & Governance Log
+    Route::prefix('compliance-audit')->name('compliance.')->group(function () {
+        Route::get('/', [RightsAuditController::class, 'index'])->name('index');
+        Route::post('/remediate/{right}', [RightsAuditController::class, 'remediate'])->name('remediate');
     });
 });

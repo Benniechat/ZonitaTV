@@ -60,6 +60,18 @@ class ContentRight extends Model
         'reviewed_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (ContentRight $right) {
+            if (empty($right->rights_holder_name)) {
+                $right->rights_holder_name = 'Zoniva Media Network';
+            }
+            if (empty($right->effective_from)) {
+                $right->effective_from = now();
+            }
+        });
+    }
+
     public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::class);
