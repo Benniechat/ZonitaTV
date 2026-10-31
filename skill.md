@@ -71,8 +71,9 @@
 - **Batch 1 (Foundation & Standards):** ✅ Completed. Linting rules, environment templates, standardized API responses, and health test harness deployed.
 - **Batch 2 (Authentication & User Persistence):** ✅ Completed. Resilient dual login, profile preference isolation, Google OAuth, and Supabase connection verified across 18 tests.
 - **Batch 3 (Profiles & Role Permissions):** ✅ Completed. Profile updates, secure password changes, preference editing, account deactivation, and role middleware authorization.
-- **Batch 4 (UI/UX Design System & Layout):** ⏳ Next Up.
-- **Batch 5 through 21:** Sequenced per master specification.
+- **Batch 4 (UI/UX Design System & Layout):** ✅ Completed. Two-tier responsive header, 4-column consolidated Explore mega-menu, accessible mobile drawer, and zero horizontal viewport clipping.
+- **Batch 5 (Public Homepage & Viewer Experience):** ⏳ Next Up.
+- **Batch 6 through 21:** Sequenced per master specification.
 - **Batch 5 through 21:** Sequenced per master specification.
 
 ---
