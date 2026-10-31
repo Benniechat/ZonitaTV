@@ -75,8 +75,9 @@
 - **Batch 5 (Public Homepage & Viewer Experience):** ✅ Completed. Hero carousel, live & trending channels, programmatic showcase rows (football/sports, gospel, islamic), responsive viewer experience, and search accessibility verified.
 - **Batch 6 (Content Database, Metadata, & Catalogue Management):** ✅ Completed. Extended video & movie metadata (aspect ratios, resolutions, ratings, advisory tags, geocoding), relational series/seasons/episodes hierarchy, channel->programme->video relations, administrative catalogue management (index, create, show, edit, soft delete, restore), and search/filter verified across 7 feature tests.
 - **Batch 7 (Content Discovery & Provider Research):** ✅ Completed. Ingestion pipeline with deduplication (content hash & source ID), discovery staging area (`DiscoveryCandidate`), Content Provider directory (`ContentProvider`), administrative Discovery Workbench (URL intake, review, promotion to active pool, documented rejection), and legal takedown exclusion verified across 8 feature tests.
-- **Batch 8 (Content Rights, Licensing, & Compliance):** ⏳ Next Up.
-- **Batch 9 through 21:** Sequenced per master specification.
+- **Batch 8 (Content Rights, Licensing, & Compliance):** ✅ Completed. Enhanced Rights & Licensing Ledger (channels, videos, movies, series), multi-tier rights classifications, territorial rights enforcement (`isTerritoryPermitted`), automated license expiration monitor (`rights:monitor-expirations` & auto-delist engine), DMCA takedown ticket execution workflow, and administrative governance interface verified across 6 feature tests.
+- **Batch 9 (Content Acquisition & Partner Management):** ⏳ Next Up.
+- **Batch 10 through 21:** Sequenced per master specification.
 
 ---
 

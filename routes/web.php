@@ -167,6 +167,7 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
 
     // Rights & Permissions
     Route::get('rights', [RightsAdminController::class, 'index'])->name('rights.index');
+    Route::post('rights', [RightsAdminController::class, 'store'])->name('rights.store');
     Route::post('rights/{right}/status', [RightsAdminController::class, 'updateStatus'])->name('rights.update-status');
 
     // Diagnostics

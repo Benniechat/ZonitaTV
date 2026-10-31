@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Channel;
+use App\Models\ContentRight;
+use App\Models\ScheduleEntry;
 use Carbon\Carbon;
 
 class RightsEligibilityService
@@ -104,5 +106,59 @@ class RightsEligibilityService
         }
 
         return in_array($clientCountry, $rights->permitted_territories);
+    }
+
+    /**
+     * Purges and de-lists content assets whose rights have expired.
+     */
+    public function purgeExpiredRights(bool $isDryRun = false): array
+    {
+        $expiredRights = ContentRight::with(['channel', 'video', 'movie'])
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now())
+            ->where('status', '!=', 'expired')
+            ->get();
+
+        $expiredCount = 0;
+        $purgedSchedulesCount = 0;
+
+        foreach ($expiredRights as $right) {
+            $expiredCount++;
+
+            if (! $isDryRun) {
+                $right->update(['status' => 'expired']);
+
+                if ($right->auto_delist_on_expiry) {
+                    if ($right->channel) {
+                        $right->channel->update(['is_published' => false]);
+                    }
+
+                    if ($right->video) {
+                        $right->video->update([
+                            'availability_status' => 'expired',
+                            'is_embeddable' => false,
+                        ]);
+
+                        $cancelled = ScheduleEntry::where('video_id', $right->video->id)
+                            ->where('start_time', '>=', now())
+                            ->update(['status' => 'cancelled']);
+
+                        $purgedSchedulesCount += $cancelled;
+                    }
+
+                    if ($right->movie) {
+                        $right->movie->update([
+                            'is_schedulable' => false,
+                            'verification_status' => 'expired',
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return [
+            'expired_count' => $expiredCount,
+            'purged_schedules_count' => $purgedSchedulesCount,
+        ];
     }
 }
