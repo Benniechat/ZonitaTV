@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Video extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'youtube_id',
@@ -21,6 +22,12 @@ class Video extends Model
         'channel_title',
         'published_at',
         'duration_seconds',
+        'aspect_ratio',
+        'resolution',
+        'content_rating',
+        'advisory_tags',
+        'language_code',
+        'country_code',
         'privacy_status',
         'is_embeddable',
         'availability_status',
@@ -46,6 +53,7 @@ class Video extends Model
         'confidence_score' => 'integer',
         'consecutive_failures' => 'integer',
         'relevance_score' => 'integer',
+        'advisory_tags' => 'array',
         'tags' => 'array',
     ];
 
@@ -67,6 +75,21 @@ class Video extends Model
     public function complaints(): HasMany
     {
         return $this->hasMany(ContentComplaint::class);
+    }
+
+    public function episodes(): HasMany
+    {
+        return $this->hasMany(Episode::class);
+    }
+
+    public function movies(): HasMany
+    {
+        return $this->hasMany(Movie::class);
+    }
+
+    public function programmes(): HasMany
+    {
+        return $this->hasMany(Programme::class, 'video_record_id');
     }
 
     public function scopeEligibleForScheduling(Builder $query): Builder

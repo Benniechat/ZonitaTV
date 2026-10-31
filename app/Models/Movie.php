@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Movie extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'video_id',
@@ -29,6 +30,10 @@ class Movie extends Model
         'source_identifier',
         'stream_url',
         'media_format',
+        'aspect_ratio',
+        'resolution',
+        'content_rating',
+        'advisory_tags',
         'rights_classification',
         'licence_name',
         'licence_reference',
@@ -57,6 +62,7 @@ class Movie extends Model
         'is_schedulable' => 'boolean',
         'permitted_territories' => 'array',
         'blocked_territories' => 'array',
+        'advisory_tags' => 'array',
         'licence_expires_at' => 'datetime',
         'last_verified_at' => 'datetime',
     ];

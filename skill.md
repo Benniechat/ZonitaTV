@@ -73,8 +73,9 @@
 - **Batch 3 (Profiles & Role Permissions):** ✅ Completed. Profile updates, secure password changes, preference editing, account deactivation, and role middleware authorization.
 - **Batch 4 (UI/UX Design System & Layout):** ✅ Completed. Two-tier responsive header, 4-column consolidated Explore mega-menu, accessible mobile drawer, and zero horizontal viewport clipping.
 - **Batch 5 (Public Homepage & Viewer Experience):** ✅ Completed. Hero carousel, live & trending channels, programmatic showcase rows (football/sports, gospel, islamic), responsive viewer experience, and search accessibility verified.
-- **Batch 6 (Content Database, Metadata, & Catalogue Management):** ⏳ Next Up.
-- **Batch 7 through 21:** Sequenced per master specification.
+- **Batch 6 (Content Database, Metadata, & Catalogue Management):** ✅ Completed. Extended video & movie metadata (aspect ratios, resolutions, ratings, advisory tags, geocoding), relational series/seasons/episodes hierarchy, channel->programme->video relations, administrative catalogue management (index, create, show, edit, soft delete, restore), and search/filter verified across 7 feature tests.
+- **Batch 7 (Content Discovery & Provider Research):** ⏳ Next Up.
+- **Batch 8 through 21:** Sequenced per master specification.
 
 ---
 

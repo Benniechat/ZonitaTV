@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BroadcastingAdminController;
 use App\Http\Controllers\Admin\ChannelAdminController;
 use App\Http\Controllers\Admin\CloudinaryMediaController;
 use App\Http\Controllers\Admin\ComplaintAdminController;
+use App\Http\Controllers\Admin\ContentCatalogueController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
 use App\Http\Controllers\Admin\IngestAdminController;
@@ -117,6 +118,18 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
 
     // Channels
     Route::resource('channels', ChannelAdminController::class);
+
+    // Content Database & Unified Catalogue Management
+    Route::prefix('catalogue')->name('catalogue.')->group(function () {
+        Route::get('/', [ContentCatalogueController::class, 'index'])->name('index');
+        Route::get('/create', [ContentCatalogueController::class, 'create'])->name('create');
+        Route::post('/', [ContentCatalogueController::class, 'store'])->name('store');
+        Route::get('/{id}', [ContentCatalogueController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [ContentCatalogueController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [ContentCatalogueController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ContentCatalogueController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/restore', [ContentCatalogueController::class, 'restore'])->name('restore');
+    });
 
     // 24/7 Virtual Broadcasting Engine
     Route::prefix('broadcasting')->name('broadcasting.')->group(function () {

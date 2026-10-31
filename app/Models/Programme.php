@@ -20,6 +20,7 @@ class Programme extends Model
         'poster_image',
         'video_source',
         'video_id',
+        'video_record_id',
         'video_url',
         'start_time',
         'end_time',
@@ -44,5 +45,23 @@ class Programme extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function videoRecord(): BelongsTo
+    {
+        return $this->belongsTo(Video::class, 'video_record_id');
+    }
+
+    public function getResolvedVideoAttribute(): ?Video
+    {
+        if ($this->videoRecord) {
+            return $this->videoRecord;
+        }
+
+        if (! empty($this->video_id)) {
+            return Video::where('youtube_id', $this->video_id)->first();
+        }
+
+        return null;
     }
 }
