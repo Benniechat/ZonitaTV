@@ -85,6 +85,11 @@ class User extends Authenticatable
         return $this->hasMany(Favourite::class);
     }
 
+    public function viewingEvents(): HasMany
+    {
+        return $this->hasMany(ViewingEvent::class);
+    }
+
     public function favouriteChannels(): BelongsToMany
     {
         return $this->belongsToMany(Channel::class, 'favourites');

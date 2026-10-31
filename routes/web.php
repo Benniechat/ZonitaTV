@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PartnerAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
 use App\Http\Controllers\Admin\SportsAdminController;
 use App\Http\Controllers\Api\PlaybackController;
+use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\CategoryController;
@@ -89,6 +90,13 @@ Route::prefix('api/playback')->group(function () {
     Route::post('/report-failure', [PlaybackController::class, 'reportFailure'])->withoutMiddleware([ValidateCsrfToken::class]);
     Route::get('/epg/{slug}', [PlaybackController::class, 'getEpg']);
     Route::get('/status/{slug}', [PlaybackController::class, 'getLiveStatus'])->name('api.playback.status');
+});
+
+// AI Recommendations & Personalisation Engine API
+Route::prefix('api/recommendations')->group(function () {
+    Route::get('/', [RecommendationController::class, 'index'])->name('api.recommendations.index');
+    Route::get('/similar/{slug}', [RecommendationController::class, 'similar'])->name('api.recommendations.similar');
+    Route::get('/guide', [RecommendationController::class, 'guide'])->name('api.recommendations.guide');
 });
 
 // Legal Disclaimer & Platform Compliance Framework

@@ -18,8 +18,8 @@
 | **13** | **Continuous Channel Playout Automation** | Playout progression worker, dead-stream auto-recovery, health heartbeats | Batch 12 | ✅ **Completed** |
 | **14** | **Live Events & Sports Programming** | Matchday fixtures, broadcast rights territory gates, live score hooks | Batch 13 | ✅ **Completed** |
 | **15** | **Vertical Portals (Comedy, Nollywood, Faith)**| Curated channel landing pages, genre tags, festival showcases | Batch 14 | ✅ **Completed** |
-| **16** | **AI Recommendations & Personalisation** | Similar channel matching, personalized watch guides, explainable picks | Batch 15 | ⏳ **Next Up** |
-| **17** | **Admin Control Hub, Analytics & Reporting** | System health dashboard, viewership metrics, rights audit log viewer | Batch 16 | 📋 Planned |
+| **16** | **AI Recommendations & Personalisation** | Similar channel matching, personalized watch guides, explainable picks | Batch 15 | ✅ **Completed** |
+| **17** | **Admin Control Hub, Analytics & Reporting** | System health dashboard, viewership metrics, rights audit log viewer | Batch 16 | ⏳ **Next Up** |
 | **18** | **Notifications, Alerts & Support Workflows** | Takedown alerts, stream failure alerts, WhatsApp bot integration | Batch 17 | 📋 Planned |
 | **19** | **Security, Performance & Accessibility** | OWASP review, rate limiting, CSP hardening, WCAG 2.1 AA audit | Batch 18 | 📋 Planned |
 | **20** | **End-to-End System Testing & QA** | Full test suite expansion, simulated playout failure drills | Batch 19 | 📋 Planned |

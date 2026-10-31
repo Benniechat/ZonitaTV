@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Channel extends Model
 {
@@ -55,6 +56,19 @@ class Channel extends Model
         'last_verified_at' => 'datetime',
         'display_order' => 'integer',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Channel $channel) {
+            if (empty($channel->slug) && ! empty($channel->name)) {
+                $channel->slug = Str::slug($channel->name);
+            }
+            if (empty($channel->official_destination_url)) {
+                $slug = $channel->slug ?? Str::slug($channel->name);
+                $channel->official_destination_url = "https://zonitatv.com/channel/{$slug}";
+            }
+        });
+    }
 
     public function categories(): BelongsToMany
     {

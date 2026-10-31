@@ -178,10 +178,16 @@ class GuideController extends Controller
     public function personalized(Request $request): View
     {
         $user = $request->user();
-        $recommendedChannels = $this->recommendationService->rankChannelsForUser($user, 12);
-        $favourites = $user->favouriteChannels()->with('categories')->get();
+        $guideData = $this->recommendationService->getPersonalizedWatchGuide($user, 12);
 
-        return view('guide.personalized', compact('user', 'recommendedChannels', 'favourites'));
+        return view('guide.personalized', [
+            'user' => $user,
+            'recommendedChannels' => $guideData['recommended_channels'],
+            'favourites' => $guideData['favourites'],
+            'recentHistory' => $guideData['recent_history'],
+            'categoryPicks' => $guideData['category_picks'],
+            'stats' => $guideData['stats'],
+        ]);
     }
 
     /**
