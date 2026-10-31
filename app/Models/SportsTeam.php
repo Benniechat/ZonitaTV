@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class SportsTeam extends Model
 {
@@ -21,6 +22,15 @@ class SportsTeam extends Model
         'provider',
         'provider_id',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (SportsTeam $team) {
+            if (empty($team->slug) && ! empty($team->name)) {
+                $team->slug = Str::slug($team->name);
+            }
+        });
+    }
 
     public function homeFixtures(): HasMany
     {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class SportsCompetition extends Model
 {
@@ -26,6 +27,15 @@ class SportsCompetition extends Model
         'is_active' => 'boolean',
         'display_order' => 'integer',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (SportsCompetition $competition) {
+            if (empty($competition->slug) && ! empty($competition->name)) {
+                $competition->slug = Str::slug($competition->name);
+            }
+        });
+    }
 
     public function fixtures(): HasMany
     {
