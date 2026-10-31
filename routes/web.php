@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ComplaintAdminController;
 use App\Http\Controllers\Admin\ContentCatalogueController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiagnosticsAdminController;
+use App\Http\Controllers\Admin\DiscoveryWorkbenchController;
 use App\Http\Controllers\Admin\IngestAdminController;
 use App\Http\Controllers\Admin\RightsAdminController;
 use App\Http\Controllers\Admin\SportsAdminController;
@@ -129,6 +130,18 @@ Route::middleware(['auth', 'role:super_admin,content_manager,rights_reviewer'])-
         Route::put('/{id}', [ContentCatalogueController::class, 'update'])->name('update');
         Route::delete('/{id}', [ContentCatalogueController::class, 'destroy'])->name('destroy');
         Route::post('/{id}/restore', [ContentCatalogueController::class, 'restore'])->name('restore');
+    });
+
+    // Content Discovery & Intake Workbench
+    Route::prefix('discovery')->name('discovery.')->group(function () {
+        Route::get('/', [DiscoveryWorkbenchController::class, 'index'])->name('index');
+        Route::get('/create', [DiscoveryWorkbenchController::class, 'create'])->name('create');
+        Route::post('/', [DiscoveryWorkbenchController::class, 'store'])->name('store');
+        Route::get('/providers', [DiscoveryWorkbenchController::class, 'providers'])->name('providers');
+        Route::post('/providers', [DiscoveryWorkbenchController::class, 'storeProvider'])->name('providers.store');
+        Route::get('/{id}', [DiscoveryWorkbenchController::class, 'show'])->name('show');
+        Route::post('/{id}/approve', [DiscoveryWorkbenchController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [DiscoveryWorkbenchController::class, 'reject'])->name('reject');
     });
 
     // 24/7 Virtual Broadcasting Engine
