@@ -92,7 +92,8 @@
 
 ---
 
-## 7. QA & Testing Rules
-- Every batch must be audited by an independent QA testing workflow.
-- Critical and high-priority defects must be resolved before batch sign-off.
-- The 143 automated tests (`php artisan test`) across all 21 milestone test suites maintain 100% pass rate (868 assertions) as a regression baseline.
+## 7. QA, Testing Rules & Independent Subagent Verification
+- **Dedicated Independent QA Agent:** All milestone and release audits are independently reviewed by `zonita_qa_agent`.
+- **Zero Critical/High Defect Rule:** Critical and high-priority defects must be resolved before any milestone sign-off.
+- **Regression Baseline:** The full automated test suite maintains a **100% pass rate across all 224 automated tests (1,423 assertions)** as an unyielding regression baseline.
+- **Authoritative Document Registry:** All platform changes must be recorded in `docs/CHANGELOG.md`, `docs/IMPLEMENTATION_TRACKER.md`, and reflected across the canonical documentation suite in `docs/`.

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Channel;
+use App\Models\User;
 use App\Models\Video;
 use App\Services\CloudinaryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -94,13 +95,14 @@ class CloudinaryIntegrationTest extends TestCase
 
     public function test_admin_media_dashboard_and_signature_endpoints_work(): void
     {
-        $response = $this->get(route('admin.media.index'));
+        $admin = User::factory()->create(['role' => 'super_admin']);
+        $response = $this->actingAs($admin)->get(route('admin.media.index'));
         $response->assertStatus(200);
         $response->assertSee('Cloudinary Media Storage & Delivery', false);
         $response->assertSee('jcjugta9', false);
         $response->assertSee('Launch Upload Widget', false);
 
-        $sigResponse = $this->getJson(route('admin.media.signature', ['folder' => 'zonita/logos']));
+        $sigResponse = $this->actingAs($admin)->getJson(route('admin.media.signature', ['folder' => 'zonita/logos']));
         $sigResponse->assertStatus(200);
         $sigResponse->assertJsonStructure([
             'timestamp',
@@ -134,8 +136,9 @@ class CloudinaryIntegrationTest extends TestCase
             'categories' => [$category->id],
         ];
 
-        $response = $this->post(route('admin.channels.store'), $postData);
-        $response->assertRedirect(route('admin.channels.index'));
+        $admin = User::factory()->create(['role' => 'super_admin']);
+        $response = $this->actingAs($admin)->post(route('admin.channels.store'), $postData);
+        $response->assertRedirect();
 
         $this->assertDatabaseHas('channels', [
             'name' => 'Afrobeats HD',

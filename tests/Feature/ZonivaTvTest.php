@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Channel;
+use App\Models\User;
 use App\Services\EpgSyncService;
 use App\Services\IptvPlaylistIngestService;
 use App\Services\RecommendationService;
@@ -87,10 +88,11 @@ class ZonivaTvTest extends TestCase
 
     public function test_admin_dashboard_loads(): void
     {
-        $response = $this->get('/admin/dashboard');
+        $admin = User::factory()->create(['role' => 'super_admin']);
+        $response = $this->actingAs($admin)->get('/admin/dashboard');
         $response->assertStatus(200);
-        $response->assertSee('Compliance Dashboard');
-        $response->assertSee('Published Channels');
+        $response->assertSee('Executive Control Hub');
+        $response->assertSee('Broadcast Stream Health');
     }
 
     public function test_iptv_playlist_parser_creates_channels(): void
@@ -136,7 +138,8 @@ M3U;
 
     public function test_admin_ingest_dashboard_loads(): void
     {
-        $response = $this->get('/admin/ingest');
+        $admin = User::factory()->create(['role' => 'super_admin']);
+        $response = $this->actingAs($admin)->get('/admin/ingest');
         $response->assertStatus(200);
         $response->assertSee('IPTV Playlist Ingest');
         $response->assertSee('Electronic Program Guide (EPG)');

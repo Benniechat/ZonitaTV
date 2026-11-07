@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Channel;
 use App\Models\ChannelSourceRule;
 use App\Models\ContentRight;
+use App\Models\User;
 use App\Models\Video;
 use App\Services\Zonita\ChannelRelevanceService;
 use App\Services\Zonita\ChannelReserveService;
@@ -355,16 +356,17 @@ class ZonitaProgrammingEngineTest extends TestCase
 
     public function test_admin_broadcasting_management_interface(): void
     {
-        $response = $this->get(route('admin.broadcasting.index'));
+        $admin = User::factory()->create(['role' => 'super_admin']);
+        $response = $this->actingAs($admin)->get(route('admin.broadcasting.index'));
         $response->assertStatus(200);
         $response->assertSee('24/7 Virtual Broadcasting Network');
         $response->assertSee($this->footballChannel->name);
 
-        $rulesResponse = $this->get(route('admin.broadcasting.rules.edit', $this->footballChannel));
+        $rulesResponse = $this->actingAs($admin)->get(route('admin.broadcasting.rules.edit', $this->footballChannel));
         $rulesResponse->assertStatus(200);
         $rulesResponse->assertSee('Programming Rules: '.$this->footballChannel->name);
 
-        $updateResponse = $this->post(route('admin.broadcasting.rules.update', $this->footballChannel), [
+        $updateResponse = $this->actingAs($admin)->post(route('admin.broadcasting.rules.update', $this->footballChannel), [
             'search_keywords' => 'Updated Football, Soccer Highlights',
             'excluded_keywords' => 'gaming, esports',
             'approved_publishers' => 'UEFA, FIFA',
