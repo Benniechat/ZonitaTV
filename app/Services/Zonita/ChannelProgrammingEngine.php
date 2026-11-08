@@ -643,6 +643,7 @@ class ChannelProgrammingEngine
                 'slug' => 'christian-cartoons-bible-tv',
                 'tvg_id' => 'ChristianCartoonsBibleTV.zoniva',
                 'category_slug' => 'kids',
+                'additional_categories' => ['christian-tv'],
                 'country_code' => 'NGA',
                 'language_code' => 'en',
                 'tagline' => '24/7 Superbook Animated Bible Adventures & Scriptural Cartoons',
@@ -746,8 +747,20 @@ class ChannelProgrammingEngine
                 ]
             );
 
+            $catIds = [];
             if ($category) {
-                $channel->categories()->syncWithoutDetaching([$category->id]);
+                $catIds[] = $category->id;
+            }
+            if (! empty($def['additional_categories'])) {
+                foreach ($def['additional_categories'] as $addSlug) {
+                    $addCat = Category::where('slug', $addSlug)->first();
+                    if ($addCat) {
+                        $catIds[] = $addCat->id;
+                    }
+                }
+            }
+            if (! empty($catIds)) {
+                $channel->categories()->syncWithoutDetaching($catIds);
                 $channel->load('categories');
             }
 

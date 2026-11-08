@@ -1322,6 +1322,7 @@ class NollywoodDirectoryService
         );
 
         $entertainmentCategory = Category::where('slug', 'entertainment')->first();
+        $comedyCategory = Category::where('slug', 'comedy')->first();
 
         // High quality Nollywood verified candidate features
         $nollywoodFeatures = [
@@ -1397,10 +1398,13 @@ class NollywoodDirectoryService
                 ]
             );
 
-            // Sync with movies category (and entertainment if available)
+            // Sync with movies category (and entertainment/comedy if available)
             $catIds = [$movieCategory->id];
             if ($entertainmentCategory) {
                 $catIds[] = $entertainmentCategory->id;
+            }
+            if ($comedyCategory && in_array($nolly->slug, ['faan-tv-funke-akindele', 'bimbo-ademoye-tv'], true)) {
+                $catIds[] = $comedyCategory->id;
             }
             $channel->categories()->syncWithoutDetaching($catIds);
 

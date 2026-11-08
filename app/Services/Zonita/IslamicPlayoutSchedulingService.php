@@ -288,6 +288,9 @@ class IslamicPlayoutSchedulingService
             ]
         );
 
+        $movieCat = Category::where('slug', 'movies')->first();
+        $entertainmentCat = Category::where('slug', 'entertainment')->first();
+
         $channelsDeployed = 0;
         $totalScheduleEntries = 0;
         $channelSummaries = [];
@@ -319,7 +322,28 @@ class IslamicPlayoutSchedulingService
                 ]
             );
 
-            $channel->categories()->syncWithoutDetaching([$category->id]);
+            $catIds = [$category->id];
+            $currentSlug = isset($provider) ? $provider->slug : $slug;
+            $movieSlugs = [
+                'zonita-arewa-movies',
+                'zonita-islamic-cinema',
+                'zonita-yoruba-islamic',
+                'arewa24',
+                'saira-movies',
+                'fkd-productions',
+                'kannywood-tv',
+                'ali-nuhu-official-media',
+                'adam-a-zango-official-media',
+                'al-rahuz-tv',
+                'yoruba-islamic-film-producers-syndicate',
+            ];
+            if ($movieCat && in_array($currentSlug, $movieSlugs, true)) {
+                $catIds[] = $movieCat->id;
+            }
+            if ($entertainmentCat && $currentSlug === 'arewa24') {
+                $catIds[] = $entertainmentCat->id;
+            }
+            $channel->categories()->syncWithoutDetaching($catIds);
 
             // 2. Source Rules
             ChannelSourceRule::updateOrCreate(
@@ -450,6 +474,9 @@ class IslamicPlayoutSchedulingService
             ]
         );
 
+        $movieCat = Category::where('slug', 'movies')->first();
+        $entertainmentCat = Category::where('slug', 'entertainment')->first();
+
         $featuresPool = [
             ['youtube_id' => 'd_C16w44Drc', 'title' => 'The Message of Faith || Full Cinematic Feature', 'duration' => 7200],
             ['youtube_id' => 'zwhE4qE6u8c', 'title' => 'Historical Islamic Civilisation & The Golden Age', 'duration' => 5400],
@@ -521,7 +548,28 @@ class IslamicPlayoutSchedulingService
                 ]
             );
 
-            $channel->categories()->syncWithoutDetaching([$category->id]);
+            $catIds = [$category->id];
+            $currentSlug = isset($provider) ? $provider->slug : $slug;
+            $movieSlugs = [
+                'zonita-arewa-movies',
+                'zonita-islamic-cinema',
+                'zonita-yoruba-islamic',
+                'arewa24',
+                'saira-movies',
+                'fkd-productions',
+                'kannywood-tv',
+                'ali-nuhu-official-media',
+                'adam-a-zango-official-media',
+                'al-rahuz-tv',
+                'yoruba-islamic-film-producers-syndicate',
+            ];
+            if ($movieCat && in_array($currentSlug, $movieSlugs, true)) {
+                $catIds[] = $movieCat->id;
+            }
+            if ($entertainmentCat && $currentSlug === 'arewa24') {
+                $catIds[] = $entertainmentCat->id;
+            }
+            $channel->categories()->syncWithoutDetaching($catIds);
 
             ChannelSourceRule::updateOrCreate(
                 ['channel_id' => $channel->id],

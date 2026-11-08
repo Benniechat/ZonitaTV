@@ -1106,6 +1106,7 @@ class GospelFilmDirectoryService
             ['slug' => 'christian-tv'],
             ['name' => 'Christian Television', 'sort_order' => 3]
         );
+        $comedyCat = Category::where('slug', 'comedy')->first();
 
         $featuresPool = [
             ['youtube_id' => 'H91bEGJYBU4', 'title' => 'Deliverance From The Pit || Full Christian Feature Drama', 'duration' => 5400],
@@ -1171,7 +1172,11 @@ class GospelFilmDirectoryService
                 ]
             );
 
-            $channel->categories()->syncWithoutDetaching([$cat->id]);
+            $catIds = [$cat->id];
+            if ($comedyCat && $prod->slug === 'the-winlos') {
+                $catIds[] = $comedyCat->id;
+            }
+            $channel->categories()->syncWithoutDetaching($catIds);
 
             ChannelSourceRule::updateOrCreate(
                 ['channel_id' => $channel->id],
@@ -1254,6 +1259,7 @@ class GospelFilmDirectoryService
             ['slug' => 'christian-tv'],
             ['name' => 'Christian Television', 'sort_order' => 3]
         );
+        $comedyCat = Category::where('slug', 'comedy')->first();
 
         $channel = Channel::updateOrCreate(
             ['slug' => 'african-gospel-cinema-tv'],
