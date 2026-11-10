@@ -128,11 +128,12 @@ Route::redirect('/terms', '/terms-of-use', 301);
 // Authentication & Identity
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:15,1');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
     Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+    Route::post('/auth/supabase/sync', [AuthController::class, 'syncSupabaseSession'])->name('auth.supabase.sync');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 

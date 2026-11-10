@@ -432,4 +432,139 @@ class AuthenticationTest extends TestCase
             'name' => 'Spacey User',
         ]);
     }
+
+    public function test_registration_supports_custom_username(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Kemi Adebayo',
+            'username' => 'kemi_ade',
+            'email' => 'kemi@example.com',
+            'password' => 'PassKemi123!',
+            'password_confirmation' => 'PassKemi123!',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $this->assertAuthenticated();
+
+        $user = User::where('email', 'kemi@example.com')->first();
+        $this->assertNotNull($user);
+        $this->assertEquals('kemi_ade', $user->username);
+        $this->assertEquals('@kemi_ade', $user->display_name);
+    }
+
+    public function test_login_with_explicit_username_column(): void
+    {
+        $user = User::create([
+            'name' => 'Chidi Obi',
+            'username' => 'chidiobi99',
+            'email' => 'chidi@example.com',
+            'password' => Hash::make('ChidiSecurePass2026!'),
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'CHIDIOBI99',
+            'password' => 'ChidiSecurePass2026!',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_supabase_auth_sync_endpoint_authenticates_valid_jwt(): void
+    {
+        $claims = [
+            'sub' => 'supabase-uuid-12345-67890',
+            'email' => 'supabase.user@example.com',
+            'exp' => time() + 3600,
+            'user_metadata' => [
+                'full_name' => 'Tunde Bakare',
+                'avatar_url' => 'https://example.com/tunde.jpg',
+            ],
+            'app_metadata' => [
+                'provider' => 'email',
+                'role' => 'user',
+            ],
+            'email_confirmed_at' => now()->toIso8601String(),
+        ];
+
+        $header = base64_encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+        $payload = base64_encode(json_encode($claims));
+        $signature = base64_encode('mock-signature');
+        $jwt = "{$header}.{$payload}.{$signature}";
+
+        $response = $this->postJson('/auth/supabase/sync', [
+            'access_token' => $jwt,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'user' => [
+                    'email' => 'supabase.user@example.com',
+                    'name' => 'Tunde Bakare',
+                ],
+            ]);
+
+        $this->assertAuthenticated();
+        $user = User::where('email', 'supabase.user@example.com')->first();
+        $this->assertNotNull($user);
+        $this->assertEquals('supabase-uuid-12345-67890', $user->supabase_id);
+        $this->assertNotNull($user->preferences);
+    }
+
+    public function test_supabase_auth_sync_rejects_expired_token(): void
+    {
+        $claims = [
+            'sub' => 'expired-uuid',
+            'email' => 'expired@example.com',
+            'exp' => time() - 3600, // Expired 1 hour ago
+        ];
+
+        $header = base64_encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+        $payload = base64_encode(json_encode($claims));
+        $signature = base64_encode('mock-signature');
+        $jwt = "{$header}.{$payload}.{$signature}";
+
+        $response = $this->postJson('/auth/supabase/sync', [
+            'access_token' => $jwt,
+        ]);
+
+        $response->assertStatus(401)
+            ->assertJson([
+                'success' => false,
+            ]);
+
+        $this->assertGuest();
+    }
+
+    public function test_supabase_auth_sync_never_uses_user_metadata_for_roles(): void
+    {
+        // Malicious client attempting to elevate privilege via user_metadata
+        $claims = [
+            'sub' => 'privilege-escalation-attempt',
+            'email' => 'hacker@example.com',
+            'exp' => time() + 3600,
+            'user_metadata' => [
+                'role' => 'super_admin',
+            ],
+            'app_metadata' => [],
+        ];
+
+        $header = base64_encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+        $payload = base64_encode(json_encode($claims));
+        $signature = base64_encode('mock-signature');
+        $jwt = "{$header}.{$payload}.{$signature}";
+
+        $response = $this->postJson('/auth/supabase/sync', [
+            'access_token' => $jwt,
+        ]);
+
+        $response->assertStatus(200);
+
+        $user = User::where('email', 'hacker@example.com')->first();
+        $this->assertNotNull($user);
+        // Must remain 'user' role despite malicious user_metadata claim!
+        $this->assertEquals('user', $user->role);
+        $this->assertFalse($user->isSuperAdmin());
+    }
 }

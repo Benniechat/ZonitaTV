@@ -6,7 +6,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\SupabaseAuthService;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,11 +51,12 @@ class AuthController extends Controller
         try {
             $input = strtolower(trim($credentials['email']));
 
-            // Case-insensitive lookup: match email or name/username
+            // Case-insensitive lookup: match email, username, or name
             if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
                 $user = User::whereRaw('LOWER(TRIM(email)) = ?', [$input])->first();
             } else {
-                $user = User::whereRaw('LOWER(TRIM(name)) = ?', [$input])
+                $user = User::whereRaw('LOWER(TRIM(username)) = ?', [$input])
+                    ->orWhereRaw('LOWER(TRIM(name)) = ?', [$input])
                     ->orWhereRaw('LOWER(TRIM(email)) = ?', [$input])
                     ->first();
             }
@@ -117,19 +120,25 @@ class AuthController extends Controller
      */
     public function register(Request $request): RedirectResponse
     {
-        // Sanitize name and email upfront
+        // Sanitize name, username, and email upfront
         $request->merge([
             'name' => trim((string) $request->input('name')),
+            'username' => $request->filled('username') ? strtolower(trim((string) $request->input('username'))) : null,
             'email' => strtolower(trim((string) $request->input('email'))),
         ]);
 
         $validated = $request->validate([
             'name' => 'required|string|min:2|max:255',
+            'username' => 'nullable|string|min:3|max:50|alpha_dash|unique:users,username',
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:6|confirmed',
         ], [
             'name.required' => 'Please enter your full name.',
             'name.min' => 'Your name must be at least 2 characters long.',
+            'username.min' => 'Username must be at least 3 characters long.',
+            'username.max' => 'Username may not exceed 50 characters.',
+            'username.alpha_dash' => 'Username may only contain letters, numbers, dashes, and underscores.',
+            'username.unique' => 'This username is already taken. Please choose another.',
             'email.required' => 'Please enter your email address.',
             'email.email' => 'Please provide a valid email address (e.g. name@example.com).',
             'password.required' => 'Please choose a password.',
@@ -150,6 +159,7 @@ class AuthController extends Controller
             // Persist new user account
             $user = User::create([
                 'name' => trim($validated['name']),
+                'username' => $validated['username'] ?? null,
                 'email' => $email,
                 'password' => Hash::make($validated['password']),
                 'role' => 'user',
@@ -198,6 +208,45 @@ class AuthController extends Controller
                 'email' => 'An unexpected registration error occurred. Please try again.',
             ])->withInput($request->except('password', 'password_confirmation'));
         }
+    }
+
+    /**
+     * Synchronize and authenticate a Supabase session token.
+     */
+    public function syncSupabaseSession(Request $request, SupabaseAuthService $supabaseAuth): JsonResponse
+    {
+        $token = (string) ($request->input('access_token') ?: $request->bearerToken());
+
+        if (empty($token)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No Supabase access token provided.',
+            ], 400);
+        }
+
+        $user = $supabaseAuth->authenticate($token);
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired Supabase token.',
+            ], 401);
+        }
+
+        $request->session()->regenerate();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Session synchronized successfully.',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+                'avatar_url' => $user->avatar_url,
+            ],
+        ]);
     }
 
     /**

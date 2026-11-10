@@ -72,6 +72,21 @@
                 </div>
 
                 <div>
+                    <label for="username" class="block text-xs font-semibold text-gray-300 mb-1.5">
+                        Username <span class="text-gray-500 font-normal">(Optional)</span>
+                    </label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-3.5 text-gray-500 text-xs">@</span>
+                        <input type="text" name="username" id="username" value="{{ old('username') }}"
+                               class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl pl-8 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
+                               placeholder="alexjohnson">
+                    </div>
+                    @error('username')
+                        <p class="text-red-400 text-[11px] mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
                     <label for="email" class="block text-xs font-semibold text-gray-300 mb-1.5">Email Address</label>
                     <input type="email" name="email" id="email" value="{{ old('email', $initialEmail ?? request('email')) }}" required
                            class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"

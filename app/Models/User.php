@@ -17,10 +17,12 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',
         'google_id',
+        'supabase_id',
         'avatar',
         'email_verified_at',
     ];
@@ -40,6 +42,22 @@ class User extends Authenticatable
     public function setEmailAttribute(string $value): void
     {
         $this->attributes['email'] = strtolower(trim($value));
+    }
+
+    /**
+     * Normalize stored username to lowercase, trimmed, or null if blank.
+     */
+    public function setUsernameAttribute(?string $value): void
+    {
+        $this->attributes['username'] = filled($value) ? strtolower(trim($value)) : null;
+    }
+
+    /**
+     * Formatted display handle or fallback to name.
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->username ? '@'.$this->username : $this->name;
     }
 
     protected $hidden = [
