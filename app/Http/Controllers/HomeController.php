@@ -51,31 +51,36 @@ class HomeController extends Controller
             return $prog;
         });
 
-        // 3. Popular Channels across Sports, News, Gospel, Islamic, and Cinema
-        $popularChannels = Channel::with(['categories'])
+        // 3. Flagship Launch Channels Portfolio & Popular Stations
+        $flagshipSlugs = [
+            'zonita-african-cinema',
+            'zonita-comedy-central',
+            'african-gospel-cinema-tv',
+            'zonita-music-world',
+            'zonita-family-laughs',
+            'zonita-documentaries',
+            'cocomelon-kids-tv',
+            'the-matchroom-africa',
+        ];
+
+        $flagshipChannels = Channel::with(['categories'])
             ->where('is_active', true)
             ->where('is_published', true)
-            ->whereIn('slug', [
-                'channels-tv',
-                'african-gospel-cinema-tv',
-                'zonita-islamic-cinema',
-                'mount-zion-gospel-drama-tv',
-                'zonita-arewa-movies',
-                'sports-central',
-                'cocomelon-kids-tv',
-                'zonita-quran',
-            ])
-            ->orderBy('display_order', 'asc')
+            ->whereIn('slug', $flagshipSlugs)
             ->get();
 
-        if ($popularChannels->count() < 6) {
-            $popularChannels = Channel::with(['categories'])
+        if ($flagshipChannels->count() < 8) {
+            $filler = Channel::with(['categories'])
                 ->where('is_active', true)
                 ->where('is_published', true)
+                ->whereNotIn('id', $flagshipChannels->pluck('id'))
                 ->orderBy('display_order', 'asc')
-                ->take(8)
+                ->take(8 - $flagshipChannels->count())
                 ->get();
+            $flagshipChannels = $flagshipChannels->concat($filler);
         }
+
+        $popularChannels = $flagshipChannels;
 
         // 4. Section 1 (2-Col): Football & Sports Showcase
         $footballSports = [
@@ -360,6 +365,7 @@ class HomeController extends Controller
         return view('home', compact(
             'heroChannel',
             'liveTrending',
+            'flagshipChannels',
             'popularChannels',
             'footballSports',
             'newsWorld',

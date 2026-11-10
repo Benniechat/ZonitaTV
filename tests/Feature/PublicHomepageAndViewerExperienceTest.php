@@ -23,7 +23,7 @@ class PublicHomepageAndViewerExperienceTest extends TestCase
         // Verify Hero & Core Sections
         $response->assertSee('Great Stories');
         $response->assertSee('Start Watching Now');
-        $response->assertSee('Popular Channels');
+        $response->assertSee('24/7 Virtual Channels Playout');
         $response->assertSee('Live &amp; Trending Now', false);
     }
 
@@ -88,5 +88,41 @@ class PublicHomepageAndViewerExperienceTest extends TestCase
         $response->assertSee(route('movies.index'));
         $response->assertSee(route('nollywood.index'));
         $response->assertSee(route('comedy.index'));
+    }
+
+    public function test_homepage_prioritizes_flagship_channels_in_playout_showcase(): void
+    {
+        $flagshipChannel = Channel::create([
+            'name' => 'Zonita African Cinema',
+            'slug' => 'zonita-african-cinema',
+            'official_destination_url' => 'https://youtube.com/@ZonitaCinema',
+            'is_active' => true,
+            'is_published' => true,
+            'display_order' => 1,
+        ]);
+
+        $response = $this->get(route('home'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Zonita African Cinema');
+        $response->assertSee(route('channels.show', 'zonita-african-cinema'));
+    }
+
+    public function test_guest_can_freely_browse_homepage_and_access_streams(): void
+    {
+        $channel = Channel::create([
+            'name' => 'Free Guest Channel',
+            'slug' => 'free-guest-channel',
+            'official_destination_url' => 'https://youtube.com/@FreeGuest',
+            'is_active' => true,
+            'is_published' => true,
+        ]);
+
+        // Unauthenticated guest request
+        $response = $this->get(route('home'));
+
+        $response->assertStatus(200);
+        $this->assertGuest();
+        $response->assertSee(route('channels.show', 'free-guest-channel'));
     }
 }

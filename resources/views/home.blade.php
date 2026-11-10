@@ -227,18 +227,19 @@
                 </div>
             </section>
 
-            <!-- SECTION 2: Popular Channels -->
+            <!-- SECTION 2: 24/7 Virtual Channels Playout -->
             <section>
                 <div class="flex items-center justify-between mb-4">
                     <a href="{{ route('channels.index') }}" class="flex items-center gap-2 group">
-                        <h2 class="text-lg font-bold text-white group-hover:text-amber-400 transition">Popular Channels</h2>
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        <h2 class="text-lg font-bold text-white group-hover:text-amber-400 transition">24/7 Virtual Channels Playout</h2>
                         <svg class="w-4 h-4 text-gray-500 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
-                    <a href="{{ route('channels.index') }}" class="text-xs text-gray-400 hover:text-white transition">View All</a>
+                    <a href="{{ route('channels.index') }}" class="text-xs text-gray-400 hover:text-white transition">View All 120+ Channels &rarr;</a>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                    @foreach($popularChannels as $channel)
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3">
+                    @foreach(($flagshipChannels ?? $popularChannels) as $channel)
                         <a href="{{ route('channels.show', $channel->slug) }}" 
                            class="group relative rounded-2xl overflow-hidden bg-[#121620] border border-gray-800 hover:border-gray-700 transition flex flex-col shadow-lg">
                             <div class="relative aspect-video w-full overflow-hidden bg-gray-900 flex items-center justify-center">
