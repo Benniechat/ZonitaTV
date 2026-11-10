@@ -51,8 +51,9 @@
 
 - **Batch 0 (Strategic Discovery & Governance):** COMPLETED & PUSHED (Commit `49c8e25`). Authoritative documents `PRODUCT_STRATEGY.md`, `CONTENT_RIGHTS_POLICY.md`, `CONTENT_ACQUISITION_STRATEGY.md`, `MONETISATION_STRATEGY.md`, `IMPLEMENTATION_ROADMAP.md`, `PROJECT_MASTERPLAN.md`, and `skill.md` established.
 - **Batch 1 (Application Foundation & Engineering Standards):** COMPLETED & PUSHED (Commit `6b7d021`). App naming harmonized (`APP_NAME="Zonita TV"`), health service version set to `2.0.0-production`, health & ping test coverage expanded (34 assertions, 100% pass), Pint formatted.
-- **Batch 2 (Authentication, User Identity & Database Foundation):** COMPLETED & VERIFIED. Schema enhanced with `username` and `supabase_id` columns, resilient dual identifier login (email/username), optional handle registration with `@` display syntax, `SupabaseAuthService` with secure role mapping from `app_metadata` (never `user_metadata`), session sync endpoint `/auth/supabase/sync`, brute-force throttling (`throttle:15,1` on login), test suite expanded to 231 tests (1,460 assertions, 100% pass).
-- **Batch 3 (User Profiles, Role Permissions & Access Control):** Awaiting explicit user sign-off to begin execution.
+- **Batch 2 (Authentication, User Identity & Database Foundation):** COMPLETED & PUSHED (Commit `b01aae8`). Schema enhanced with `username` and `supabase_id` columns, resilient dual identifier login (email/username), optional handle registration with `@` display syntax, `SupabaseAuthService` with secure role mapping from `app_metadata` (never `user_metadata`), session sync endpoint `/auth/supabase/sync`, brute-force throttling (`throttle:15,1` on login), test suite expanded to 231 tests (1,460 assertions, 100% pass).
+- **Batch 3 (User Profiles, Role Permissions & Access Control):** COMPLETED & VERIFIED. Profile management upgraded with username handle (`@username`) and avatar URL updates, viewing preference customization (country code, recommendation toggle, multilingual array, preferred categories), role helpers (`hasRole()`, `isStaff()`), five-role badge UI in account hub with direct Admin Hub link for staff, test suite expanded to 235 tests (1,482 assertions, 100% pass).
+- **Batch 4 (UI/UX Design System, Navigation Architecture & Responsive Drawers):** Awaiting explicit user sign-off to begin execution.
 
 ---
 

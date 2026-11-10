@@ -137,4 +137,25 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['super_admin', 'content_manager', 'rights_reviewer', 'advertising_manager']);
     }
+
+    public function isStaff(): bool
+    {
+        return $this->canAccessAdmin();
+    }
+
+    /**
+     * Determine if the user possesses any of the specified roles.
+     *
+     * @param  string|array<int, string>  $roles
+     */
+    public function hasRole(string|array $roles): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        $rolesList = is_array($roles) ? $roles : [$roles];
+
+        return in_array($this->role, $rolesList, true);
+    }
 }

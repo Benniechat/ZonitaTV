@@ -37,14 +37,26 @@
                     <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
                 </div>
                 <h3 class="text-base font-bold text-white truncate">{{ $user->name }}</h3>
-                <p class="text-xs text-gray-400 truncate">{{ $user->email }}</p>
+                @if($user->username)
+                    <p class="text-xs text-amber-400 font-mono">{{ $user->display_name }}</p>
+                @endif
+                <p class="text-xs text-gray-400 truncate mt-0.5">{{ $user->email }}</p>
                 
                 <div class="mt-4">
                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider
-                        {{ $user->isSuperAdmin() ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30' : ($user->isContentManager() ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30') }}">
-                        Role: {{ ucfirst($user->role ?? 'user') }}
+                        {{ $user->isSuperAdmin() ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30' : ($user->isContentManager() ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30' : ($user->isRightsReviewer() ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : ($user->isAdvertisingManager() ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'))) }}">
+                        Role: {{ ucfirst(str_replace('_', ' ', $user->role ?? 'user')) }}
                     </span>
                 </div>
+
+                @if($user->canAccessAdmin())
+                    <div class="mt-5">
+                        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs tracking-wide transition shadow">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>Open Admin Hub</span>
+                        </a>
+                    </div>
+                @endif
                 
                 <div class="mt-6 pt-6 border-t border-gray-800 text-[11px] text-gray-500">
                     Member since {{ $user->created_at->format('M Y') }}
@@ -68,9 +80,26 @@
                     </div>
 
                     <div>
+                        <label for="username" class="block text-xs font-semibold text-gray-300 mb-1.5">Username / Channel Handle</label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-3.5 text-gray-500 text-xs">@</span>
+                            <input type="text" name="username" id="username" value="{{ old('username', $user->username) }}"
+                                   class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl pl-8 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
+                                   placeholder="username">
+                        </div>
+                    </div>
+
+                    <div>
                         <label for="email" class="block text-xs font-semibold text-gray-300 mb-1.5">Email Address</label>
                         <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
                                class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
+                    </div>
+
+                    <div>
+                        <label for="avatar" class="block text-xs font-semibold text-gray-300 mb-1.5">Avatar Image URL (Optional)</label>
+                        <input type="url" name="avatar" id="avatar" value="{{ old('avatar', $user->avatar) }}"
+                               class="w-full bg-[#0b0d13] border border-gray-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 transition"
+                               placeholder="https://example.com/avatar.jpg">
                     </div>
 
                     <div class="pt-2">

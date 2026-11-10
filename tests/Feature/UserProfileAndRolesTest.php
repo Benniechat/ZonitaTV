@@ -161,4 +161,113 @@ class UserProfileAndRolesTest extends TestCase
         $response = $this->actingAs($adminUser)->get(route('admin.dashboard'));
         $response->assertStatus(200);
     }
+
+    public function test_user_can_update_username_and_avatar(): void
+    {
+        $user = User::create([
+            'name' => 'Benedict Test',
+            'email' => 'benedict@zonitatv.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $response = $this->actingAs($user)->patch(route('profile.update'), [
+            'name' => 'Wada Oluwapelumi Benedict',
+            'username' => 'benedict_zonita',
+            'email' => 'benedict@zonitatv.com',
+            'avatar' => 'https://example.com/pelumi.jpg',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success', 'Profile details updated successfully.');
+
+        $fresh = $user->fresh();
+        $this->assertEquals('Wada Oluwapelumi Benedict', $fresh->name);
+        $this->assertEquals('benedict_zonita', $fresh->username);
+        $this->assertEquals('@benedict_zonita', $fresh->display_name);
+        $this->assertEquals('https://example.com/pelumi.jpg', $fresh->avatar);
+    }
+
+    public function test_username_update_enforces_uniqueness(): void
+    {
+        User::create([
+            'name' => 'First User',
+            'username' => 'existing_handle',
+            'email' => 'first@example.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $secondUser = User::create([
+            'name' => 'Second User',
+            'username' => 'second_handle',
+            'email' => 'second@example.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $response = $this->actingAs($secondUser)->patch(route('profile.update'), [
+            'name' => 'Second User',
+            'username' => 'existing_handle',
+            'email' => 'second@example.com',
+        ]);
+
+        $response->assertSessionHasErrors('username');
+        $this->assertEquals('second_handle', $secondUser->fresh()->username);
+    }
+
+    public function test_user_can_update_language_and_category_preferences(): void
+    {
+        $user = User::create([
+            'name' => 'Multilingual Streamer',
+            'email' => 'polyglot@example.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $response = $this->actingAs($user)->patch(route('profile.preferences'), [
+            'country_code' => 'NGA',
+            'enable_recommendations' => '1',
+            'preferred_languages' => ['en', 'yo', 'ha', 'ig'],
+            'preferred_categories' => [1, 3, 5],
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success', 'Viewing preferences saved.');
+
+        $prefs = $user->getOrCreatePreferences();
+        $this->assertEquals('NGA', $prefs->country_code);
+        $this->assertTrue((bool) $prefs->enable_recommendations);
+        $this->assertEquals(['en', 'yo', 'ha', 'ig'], $prefs->preferred_languages);
+        $this->assertEquals([1, 3, 5], $prefs->preferred_categories);
+    }
+
+    public function test_all_staff_roles_can_access_admin_dashboard_and_viewer_is_forbidden(): void
+    {
+        $contentManager = User::create([
+            'name' => 'Manager User',
+            'email' => 'cm@zonitatv.com',
+            'password' => Hash::make('password123'),
+            'role' => 'content_manager',
+        ]);
+
+        $rightsReviewer = User::create([
+            'name' => 'Reviewer User',
+            'email' => 'rr@zonitatv.com',
+            'password' => Hash::make('password123'),
+            'role' => 'rights_reviewer',
+        ]);
+
+        $viewer = User::create([
+            'name' => 'Normal Viewer',
+            'email' => 'viewer2@zonitatv.com',
+            'password' => Hash::make('password123'),
+            'role' => 'user',
+        ]);
+
+        $this->assertTrue($contentManager->isStaff());
+        $this->assertTrue($contentManager->hasRole('content_manager'));
+        $this->assertTrue($rightsReviewer->isStaff());
+        $this->assertFalse($viewer->isStaff());
+
+        $this->actingAs($contentManager)->get(route('admin.dashboard'))->assertStatus(200);
+        $this->actingAs($rightsReviewer)->get(route('admin.dashboard'))->assertStatus(200);
+        $this->actingAs($viewer)->get(route('admin.dashboard'))->assertStatus(403);
+    }
 }
