@@ -186,6 +186,12 @@
                     <!-- 3. System Utility Actions -->
                     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                         
+                        <!-- Regional Market Pill (NGA / Pan-Africa) -->
+                        <div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-800/80 border border-gray-700/60 text-[11px] font-semibold text-gray-300" title="Primary Broadcast Territory">
+                            <span class="text-xs">🇳🇬</span>
+                            <span>{{ auth()->user()?->preferences?->country_code ?? 'NGA' }}</span>
+                        </div>
+
                         <!-- Mobile Search Toggle -->
                         <a href="{{ route('search') }}" 
                            class="md:hidden p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition" 
@@ -801,6 +807,24 @@
                             </a>
                         </div>
                     @else
+                        <!-- Mobile User Action Links -->
+                        <div class="space-y-1 mb-2">
+                            <a href="{{ route('profile.show') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-200 hover:text-white hover:bg-gray-800/60 transition">
+                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <span>Account Settings</span>
+                            </a>
+                            <a href="{{ route('guide.personalized') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-200 hover:text-white hover:bg-gray-800/60 transition">
+                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                                <span>My Personalised Guide</span>
+                            </a>
+                            @if(auth()->user()->canAccessAdmin())
+                                <a href="{{ route('admin.dashboard') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 transition">
+                                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span>Control Hub (Admin)</span>
+                                </a>
+                            @endif
+                        </div>
+
                         <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800 flex items-center justify-between">
                             <div class="flex items-center gap-2.5 min-w-0">
                                 <div class="w-8 h-8 rounded-full ring-2 ring-amber-500/40 overflow-hidden bg-gray-800 flex items-center justify-center text-xs font-bold text-white shrink-0">

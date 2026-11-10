@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class NavigationAndDesignSystemTest extends TestCase
@@ -81,5 +83,59 @@ class NavigationAndDesignSystemTest extends TestCase
         $response->assertSee('role="dialog"', false);
         $response->assertSee('aria-label="Mobile Navigation Menu"', false);
         $response->assertSee('aria-modal="true"', false);
+    }
+
+    /**
+     * Test Tier 1 Header renders regional market pill indicator.
+     */
+    public function test_header_renders_regional_market_pill(): void
+    {
+        $response = $this->get(route('home'));
+
+        $response->assertStatus(200);
+        $response->assertSee('🇳🇬');
+        $response->assertSee('NGA');
+    }
+
+    /**
+     * Test authenticated viewer gets Account Settings & Personalised Guide links in drawer.
+     */
+    public function test_authenticated_mobile_drawer_renders_account_settings_and_guide(): void
+    {
+        $user = User::create([
+            'name' => 'Mobile Viewer',
+            'email' => 'mobile@zonitatv.com',
+            'password' => Hash::make('password123'),
+            'role' => 'user',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('home'));
+
+        $response->assertStatus(200);
+        $response->assertSee(route('profile.show'));
+        $response->assertSee('Account Settings');
+        $response->assertSee(route('guide.personalized'));
+        $response->assertSee('My Personalised Guide');
+        // Standard user does NOT see admin dashboard
+        $response->assertDontSee('Control Hub (Admin)');
+    }
+
+    /**
+     * Test staff role receives Control Hub link in mobile drawer.
+     */
+    public function test_staff_mobile_drawer_renders_control_hub_link(): void
+    {
+        $admin = User::create([
+            'name' => 'Mobile Admin',
+            'email' => 'admin.mobile@zonitatv.com',
+            'password' => Hash::make('password123'),
+            'role' => 'super_admin',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('home'));
+
+        $response->assertStatus(200);
+        $response->assertSee(route('admin.dashboard'));
+        $response->assertSee('Control Hub (Admin)');
     }
 }
