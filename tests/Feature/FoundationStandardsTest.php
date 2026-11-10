@@ -80,4 +80,42 @@ class FoundationStandardsTest extends TestCase
         $this->assertNotEmpty($result);
         $this->assertEquals(1, $result[0]->is_alive);
     }
+
+    /**
+     * Verify health check probe returns 200 with 2.0 system metadata.
+     */
+    public function test_health_check_endpoint_returns_healthy_report(): void
+    {
+        $response = $this->getJson('/api/health');
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'status',
+                'app_name',
+                'app_version',
+                'environment',
+                'services' => [
+                    'database',
+                    'cache',
+                    'storage',
+                    'playout',
+                ],
+            ])
+            ->assertJson([
+                'app_version' => '2.0.0-production',
+            ]);
+    }
+
+    /**
+     * Verify lightweight ping endpoint responds with 200 OK.
+     */
+    public function test_ping_endpoint_returns_ok(): void
+    {
+        $response = $this->getJson('/api/ping');
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'status' => 'ok',
+            ]);
+    }
 }

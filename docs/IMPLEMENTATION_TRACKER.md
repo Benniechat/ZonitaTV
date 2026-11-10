@@ -49,9 +49,9 @@
 
 ## 3. Outstanding Tasks & Next Actions
 
-- **Task 0.1:** Execute Batch 0 formal independent QA review via `zonita_qa_agent`.
-- **Task 0.2:** Finalize remaining governance documents: `docs/DATABASE_ARCHITECTURE.md`, `docs/API_DOCUMENTATION.md`, `docs/QA_STRATEGY.md`, `docs/TECHNICAL_DEBT.md`, `docs/CHANGELOG.md`, `docs/DEPLOYMENT_GUIDE.md`, and update `skill.md`.
-- **Task 0.3:** Present Batch 0 milestone report to user for formal sign-off.
+- **Batch 0 (Strategic Discovery & Governance):** COMPLETED & PUSHED (Commit `49c8e25`). Authoritative documents `PRODUCT_STRATEGY.md`, `CONTENT_RIGHTS_POLICY.md`, `CONTENT_ACQUISITION_STRATEGY.md`, `MONETISATION_STRATEGY.md`, `IMPLEMENTATION_ROADMAP.md`, `PROJECT_MASTERPLAN.md`, and `skill.md` established.
+- **Batch 1 (Application Foundation & Engineering Standards):** COMPLETED & VERIFIED. App naming harmonized (`APP_NAME="Zonita TV"`), health service version set to `2.0.0-production`, health & ping test coverage expanded (34 assertions, 100% pass), Pint formatted.
+- **Batch 2 (Authentication, User Identity & Database Foundation):** Awaiting explicit user sign-off to begin execution.
 
 ---
 

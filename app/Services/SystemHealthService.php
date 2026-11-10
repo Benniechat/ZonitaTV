@@ -42,7 +42,7 @@ class SystemHealthService
         return [
             'status' => $status,
             'app_name' => config('app.name', 'Zonita TV'),
-            'app_version' => '1.0.0-production',
+            'app_version' => '2.0.0-production',
             'environment' => config('app.env', 'production'),
             'timestamp' => now()->toIso8601String(),
             'response_time_ms' => $totalDurationMs,
