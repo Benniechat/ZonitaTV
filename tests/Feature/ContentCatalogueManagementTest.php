@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Channel;
 use App\Models\Episode;
+use App\Models\Movie;
 use App\Models\Programme;
 use App\Models\Season;
 use App\Models\Series;
@@ -307,5 +308,47 @@ class ContentCatalogueManagementTest extends TestCase
         $seriesTabResponse->assertOk();
         $seriesTabResponse->assertSee('Series');
         $seriesTabResponse->assertSee('Episodes');
+    }
+
+    public function test_registering_feature_video_automatically_bridges_movie_catalogue(): void
+    {
+        $manager = User::factory()->create(['role' => 'content_manager']);
+
+        $postData = [
+            'title' => 'Kingdom of Benin: The Lost Heritage',
+            'youtube_id' => 'v_benin_movie_2026',
+            'channel_title' => 'Nollywood Studios Africa',
+            'description' => 'An epic historical film charting the Kingdom of Benin.',
+            'duration_seconds' => 7200,
+            'aspect_ratio' => '16:9',
+            'resolution' => '1080p',
+            'content_rating' => 'PG',
+            'language_code' => 'en',
+            'country_code' => 'NGA',
+            'rights_basis' => 'official_embed_permitted',
+            'format_type' => 'feature',
+            'availability_status' => 'approved',
+            'is_embeddable' => '1',
+            'is_evergreen' => '1',
+        ];
+
+        $response = $this->actingAs($manager)->post(route('admin.catalogue.store'), $postData);
+
+        $video = Video::where('youtube_id', 'v_benin_movie_2026')->first();
+        $this->assertNotNull($video);
+        $response->assertRedirect(route('admin.catalogue.show', $video->id));
+
+        // Verify bridged Movie record
+        $movie = Movie::where('video_id', $video->id)->first();
+        $this->assertNotNull($movie);
+        $this->assertEquals('Kingdom of Benin: The Lost Heritage', $movie->title);
+        $this->assertEquals(7200, $movie->duration_seconds);
+        $this->assertEquals(120, $movie->runtime_minutes);
+        $this->assertEquals('verified', $movie->verification_status);
+
+        // Verify movies tab shows the bridged movie
+        $moviesTab = $this->actingAs($manager)->get(route('admin.catalogue.index', ['type' => 'movies']));
+        $moviesTab->assertOk();
+        $moviesTab->assertSee('Kingdom of Benin: The Lost Heritage');
     }
 }

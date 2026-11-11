@@ -10,6 +10,7 @@ use App\Models\Series;
 use App\Models\Video;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ContentCatalogueController extends Controller
@@ -181,6 +182,34 @@ class ContentCatalogueController extends Controller
             'last_verified_at' => now(),
         ]);
 
+        // If registered as feature film, automatically bridge to Movie catalogue
+        if ($video->format_type === 'feature') {
+            Movie::updateOrCreate(
+                ['video_id' => $video->id],
+                [
+                    'title' => $video->title,
+                    'slug' => Str::slug($video->title.'-'.substr($video->youtube_id, 0, 6)),
+                    'release_year' => (int) date('Y'),
+                    'genre' => $video->category_slug ?? 'Entertainment',
+                    'language' => $video->language_code,
+                    'runtime_minutes' => (int) max(1, round($video->duration_seconds / 60)),
+                    'duration_seconds' => $video->duration_seconds,
+                    'synopsis' => $video->description,
+                    'poster_url' => $video->thumbnail_url,
+                    'source_provider' => 'youtube',
+                    'source_url' => 'https://www.youtube.com/watch?v='.$video->youtube_id,
+                    'source_identifier' => $video->youtube_id,
+                    'stream_url' => $video->media_url ?? 'https://www.youtube.com/embed/'.$video->youtube_id,
+                    'media_format' => 'youtube_embed',
+                    'content_rating' => $video->content_rating,
+                    'aspect_ratio' => $video->aspect_ratio,
+                    'resolution' => $video->resolution,
+                    'verification_status' => $video->availability_status === 'approved' ? 'verified' : 'pending_verification',
+                    'is_schedulable' => $video->is_embeddable,
+                ]
+            );
+        }
+
         return redirect()->route('admin.catalogue.show', $video->id)
             ->with('success', "Content asset '{$video->title}' was successfully registered in the catalogue.");
     }
@@ -261,6 +290,28 @@ class ContentCatalogueController extends Controller
             'is_evergreen' => $request->boolean('is_evergreen'),
             'availability_status' => $validated['availability_status'],
         ]);
+
+        if ($video->format_type === 'feature') {
+            Movie::updateOrCreate(
+                ['video_id' => $video->id],
+                [
+                    'title' => $video->title,
+                    'slug' => Str::slug($video->title.'-'.substr($video->youtube_id, 0, 6)),
+                    'release_year' => (int) date('Y'),
+                    'genre' => $video->category_slug ?? 'Entertainment',
+                    'language' => $video->language_code,
+                    'runtime_minutes' => (int) max(1, round($video->duration_seconds / 60)),
+                    'duration_seconds' => $video->duration_seconds,
+                    'synopsis' => $video->description,
+                    'poster_url' => $video->thumbnail_url,
+                    'content_rating' => $video->content_rating,
+                    'aspect_ratio' => $video->aspect_ratio,
+                    'resolution' => $video->resolution,
+                    'verification_status' => $video->availability_status === 'approved' ? 'verified' : 'pending_verification',
+                    'is_schedulable' => $video->is_embeddable,
+                ]
+            );
+        }
 
         return redirect()->route('admin.catalogue.show', $video->id)
             ->with('success', 'Catalogue item metadata updated successfully.');
