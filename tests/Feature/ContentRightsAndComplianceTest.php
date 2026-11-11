@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Channel;
 use App\Models\ContentComplaint;
 use App\Models\ContentRight;
+use App\Models\Movie;
 use App\Models\ScheduleEntry;
 use App\Models\User;
 use App\Models\Video;
@@ -254,6 +255,29 @@ class ContentRightsAndComplianceTest extends TestCase
         $this->assertEquals('disabled', $video->availability_status);
         $this->assertFalse($video->is_embeddable);
         $this->assertEquals(0, $video->confidence_score);
+
+        // Also create a linked movie to verify synchronization on takedown
+        $movie = Movie::create([
+            'video_id' => $video->id,
+            'title' => 'Contested Footage Segment',
+            'slug' => 'contested-footage-segment-test',
+            'source_provider' => 'youtube',
+            'source_url' => 'https://youtube.com/watch?v=v_takedown_target_99',
+            'verification_status' => 'verified',
+            'rights_classification' => 'authorized_distributor',
+            'is_schedulable' => true,
+        ]);
+
+        // Re-execute takedown to verify Movie synchronization
+        $this->actingAs($admin)->post(route('admin.complaints.takedown', $complaint), [
+            'takedown_action' => 'disable_video',
+            'admin_reason' => 'DMCA takedown verified and executed pursuant to notice from rights holder.',
+        ]);
+
+        $movie->refresh();
+        $this->assertEquals('rights_rejected', $movie->verification_status);
+        $this->assertEquals('restricted', $movie->rights_classification);
+        $this->assertFalse($movie->is_schedulable);
 
         // Assert future scheduled entry cancelled
         $schedule->refresh();

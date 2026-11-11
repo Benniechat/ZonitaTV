@@ -222,7 +222,7 @@ class ContentDiscoveryPipelineService
                     'content_rating' => $video->content_rating ?? 'PG',
                     'resolution' => $video->resolution ?? '1080p',
                     'aspect_ratio' => $video->aspect_ratio ?? '16:9',
-                    'rights_status' => 'cleared',
+                    'rights_classification' => 'authorized_distributor',
                     'verification_status' => 'verified',
                     'is_featured' => false,
                     'is_schedulable' => true,

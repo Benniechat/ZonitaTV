@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContentComplaint;
+use App\Models\Movie;
 use App\Models\ScheduleEntry;
 use App\Models\Video;
 use App\Services\AlertNotificationService;
@@ -124,6 +125,13 @@ class ComplaintAdminController extends Controller
                 ->update(['status' => 'cancelled']);
 
             $affectedItems += $cancelled;
+
+            // Also synchronize Movie catalogue record if one exists
+            Movie::where('video_id', $video->id)->update([
+                'verification_status' => 'rights_rejected',
+                'rights_classification' => 'restricted',
+                'is_schedulable' => false,
+            ]);
 
             Log::warning("Legal Takedown: Video {$video->youtube_id} marked {$newStatus}. Cancelled {$cancelled} future schedule entries.");
         }
