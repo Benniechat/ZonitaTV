@@ -196,6 +196,13 @@ class ContentDiscoveryAndWorkbenchTest extends TestCase
 
         // Assert ChannelVideo relationship established
         $this->assertTrue(ChannelVideo::where('channel_id', $channel->id)->where('video_id', $video->id)->exists());
+
+        // Assert Movie catalogue synchronization occurs for feature videos
+        $this->assertDatabaseHas('movies', [
+            'video_id' => $video->id,
+            'title' => 'Ancient Kingdoms of West Africa',
+            'runtime_minutes' => 70, // 4200 seconds / 60
+        ]);
     }
 
     public function test_candidate_rejection_records_reason_and_reviewer(): void

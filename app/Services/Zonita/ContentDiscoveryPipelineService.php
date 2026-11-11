@@ -7,9 +7,11 @@ use App\Models\Channel;
 use App\Models\ChannelVideo;
 use App\Models\ContentProvider;
 use App\Models\DiscoveryCandidate;
+use App\Models\Movie;
 use App\Models\User;
 use App\Models\Video;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ContentDiscoveryPipelineService
 {
@@ -193,6 +195,37 @@ class ContentDiscoveryPipelineService
                 [
                     'is_approved' => true,
                     'relevance_score' => 100,
+                ]
+            );
+        }
+
+        // Maintain catalogue synchronization with Movie model if format is feature
+        if ($video->format_type === 'feature' || ($candidate->duration_seconds && $candidate->duration_seconds >= 2400)) {
+            Movie::updateOrCreate(
+                ['video_id' => $video->id],
+                [
+                    'title' => $video->title,
+                    'slug' => Str::slug($video->title.'-'.substr($video->youtube_id, 0, 6)),
+                    'release_year' => (int) date('Y'),
+                    'genre' => $targetCategory?->name ?? 'Entertainment',
+                    'language' => $video->language_code ?? 'en',
+                    'synopsis' => $video->description ?: 'Feature presentation discovered for Zonita TV.',
+                    'runtime_minutes' => (int) ceil(($video->duration_seconds ?: $candidate->duration_seconds ?: 3600) / 60),
+                    'duration_seconds' => $video->duration_seconds ?: $candidate->duration_seconds ?: 3600,
+                    'poster_url' => $video->thumbnail_url,
+                    'source_provider' => 'youtube',
+                    'source_url' => 'https://www.youtube.com/watch?v='.$video->youtube_id,
+                    'source_identifier' => $video->youtube_id,
+                    'stream_url' => 'https://www.youtube.com/embed/'.$video->youtube_id,
+                    'media_format' => 'youtube_embed',
+                    'country_code' => $targetChannel?->country_code ?? 'NGA',
+                    'content_rating' => $video->content_rating ?? 'PG',
+                    'resolution' => $video->resolution ?? '1080p',
+                    'aspect_ratio' => $video->aspect_ratio ?? '16:9',
+                    'rights_status' => 'cleared',
+                    'verification_status' => 'verified',
+                    'is_featured' => false,
+                    'is_schedulable' => true,
                 ]
             );
         }

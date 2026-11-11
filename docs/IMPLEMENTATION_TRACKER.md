@@ -38,9 +38,10 @@
 
 ## 2. Completed Tasks Summary
 
-- **Automated Test Harness Stabilization:** All 224 automated feature and unit tests passing with 1,423 assertions (100% pass rate).
+- **Automated Test Harness Stabilization:** All 241 automated feature and unit tests passing with 1,511 assertions (100% pass rate).
+- **Batch 7 Content Discovery Engine & Intake:** Implemented cryptographic deduplication hashing (`sha256(source_type:source_identifier)`), staging workbench intake, approval promotion with automated Movie catalogue synchronization, and takedown blacklist rejection.
 - **Legacy Test Authentication Alignment:** Resolved unauthenticated admin route invocations in legacy test suites (`CloudinaryIntegrationTest`, `ZonitaProgrammingEngineTest`, `ZonivaTvTest`).
-- **Database Seeder Test Optimization:** Guarded heavy channel directory synching in `DatabaseSeeder.php` with `app()->runningUnitTests()` check, accelerating test execution from 3 minutes to under 8 seconds.
+- **Database Seeder Test Optimization:** Guarded heavy channel directory synching in `DatabaseSeeder.php` with `app()->runningUnitTests()` check, accelerating test execution.
 - **Deep Health Diagnostics:** Delivered `/health` and `/api/health` probes checking database latency, cache write/read, storage disk, and MCR linear playout health.
 - **Zero-Memory Backup Generation:** Re-engineered `ExportDatabaseSqlDumpCommand` (`zoniva:export-sql`) with chunked file streaming (`chunk(200)` via `fwrite()`), protecting production memory limits.
 - **Authoritative Documentation Establishment:** Created `docs/PROJECT_REORGANISATION_AUDIT.md`, `docs/PROJECT_MASTERPLAN.md`, `docs/PROJECT_STRUCTURE.md`, `docs/IMPLEMENTATION_TRACKER.md`.
