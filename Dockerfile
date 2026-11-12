@@ -27,6 +27,8 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     icu-dev \
+    icu-libs \
+    icu-data-full \
     libxml2-dev \
     oniguruma-dev \
     sqlite-dev \
@@ -34,14 +36,15 @@ RUN apk add --no-cache \
     postgresql-dev
 
 # Install required PHP extensions
+# Note: intl must be compiled with -j1 to prevent libtool race condition on Alpine ("can't create directory 'msgformat/.libs': File exists")
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j1 intl \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         ctype \
         dom \
         fileinfo \
         gd \
-        intl \
         mbstring \
         opcache \
         pdo \
